@@ -3,121 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonus Activé !</title>
+    <title>Bonus Central Equipements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' opacity='0.1'%3E%3Cdefs%3E%3Cfilter id='grayscale'%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23grayscale)'%3E%3C!-- Cuisine professionnelle côté gauche --%3E%3Crect x='0' y='0' width='400' height='600' fill='%23f5f5f5'/%3E%3C!-- Équipements de cuisine --%3E%3Crect x='20' y='100' width='80' height='120' fill='%23666' rx='5'/%3E%3Crect x='25' y='105' width='70' height='20' fill='%23333'/%3E%3Ccircle cx='45' cy='140' r='15' fill='%23444'/%3E%3Ccircle cx='75' cy='140' r='15' fill='%23444'/%3E%3Crect x='120' y='80' width='60' height='100' fill='%23777' rx='3'/%3E%3Crect x='125' y='85' width='50' height='15' fill='%23333'/%3E%3Crect x='200' y='90' width='70' height='80' fill='%23888' rx='5'/%3E%3C!-- Plan de travail --%3E%3Crect x='20' y='220' width='350' height='40' fill='%23aaa'/%3E%3C!-- Personnages sénégalais en cuisine --%3E%3C!-- Chef 1 --%3E%3Cellipse cx='80' cy='320' rx='15' ry='20' fill='%238B4513'/%3E%3Ccircle cx='80' cy='300' r='12' fill='%23654321'/%3E%3Crect x='75' y='305' width='10' height='3' fill='%23333'/%3E%3Crect x='70' y='340' width='20' height='80' fill='%23fff'/%3E%3Crect x='65' y='350' width='30' height='60' fill='%23ddd'/%3E%3Crect x='60' y='420' width='15' height='30' fill='%23333'/%3E%3Crect x='85' y='420' width='15' height='30' fill='%23333'/%3E%3C!-- Chef 2 --%3E%3Cellipse cx='150' cy='320' rx='15' ry='20' fill='%238B4513'/%3E%3Ccircle cx='150' cy='300' r='12' fill='%23654321'/%3E%3Crect x='145' y='305' width='10' height='3' fill='%23333'/%3E%3Crect x='140' y='340' width='20' height='80' fill='%23fff'/%3E%3Crect x='135' y='350' width='30' height='60' fill='%23ddd'/%3E%3Crect x='130' y='420' width='15' height='30' fill='%23333'/%3E%3Crect x='155' y='420' width='15' height='30' fill='%23333'/%3E%3C!-- Chef 3 --%3E%3Cellipse cx='220' cy='320' rx='15' ry='20' fill='%238B4513'/%3E%3Ccircle cx='220' cy='300' r='12' fill='%23654321'/%3E%3Crect x='215' y='305' width='10' height='3' fill='%23333'/%3E%3Crect x='210' y='340' width='20' height='80' fill='%23fff'/%3E%3Crect x='205' y='350' width='30' height='60' fill='%23ddd'/%3E%3Crect x='200' y='420' width='15' height='30' fill='%23333'/%3E%3Crect x='225' y='420' width='15' height='30' fill='%23333'/%3E%3C!-- Ustensiles --%3E%3Cline x1='90' y1='280' x2='110' y2='270' stroke='%23666' stroke-width='3'/%3E%3Cline x1='160' y1='280' x2='180' y2='270' stroke='%23666' stroke-width='3'/%3E%3C!-- Usine de transformation côté droit --%3E%3Crect x='400' y='0' width='400' height='600' fill='%23e8e8e8'/%3E%3C!-- Machines industrielles --%3E%3Crect x='420' y='80' width='100' height='150' fill='%23777' rx='5'/%3E%3Crect x='430' y='90' width='80' height='20' fill='%23555'/%3E%3Ccircle cx='470' cy='130' r='20' fill='%23666'/%3E%3Crect x='540' y='100' width='80' height='120' fill='%23888' rx='3'/%3E%3Crect x='650' y='90' width='120' height='140' fill='%23999' rx='5'/%3E%3C!-- Tapis roulant --%3E%3Crect x='420' y='250' width='350' height='30' fill='%23555'/%3E%3Crect x='430' y='255' width='20' height='20' fill='%23777'/%3E%3Crect x='460' y='255' width='20' height='20' fill='%23777'/%3E%3Crect x='490' y='255' width='20' height='20' fill='%23777'/%3E%3C!-- Femmes sénégalaises dans l'usine --%3E%3C!-- Femme 1 --%3E%3Cellipse cx='480' cy='350' rx='12' ry='18' fill='%238B4513'/%3E%3Ccircle cx='480' cy='330' r='10' fill='%23654321'/%3E%3Crect x='476' y='335' width='8' height='2' fill='%23333'/%3E%3Crect x='475' y='368' width='10' height='60' fill='%23007acc'/%3E%3Crect x='470' y='375' width='20' height='45' fill='%23005599'/%3E%3Crect x='468' y='428' width='10' height='25' fill='%23333'/%3E%3Crect x='482' y='428' width='10' height='25' fill='%23333'/%3E%3C!-- Femme 2 --%3E%3Cellipse cx='540' cy='350' rx='12' ry='18' fill='%238B4513'/%3E%3Ccircle cx='540' cy='330' r='10' fill='%23654321'/%3E%3Crect x='536' y='335' width='8' height='2' fill='%23333'/%3E%3Crect x='535' y='368' width='10' height='60' fill='%23007acc'/%3E%3Crect x='530' y='375' width='20' height='45' fill='%23005599'/%3E%3Crect x='528' y='428' width='10' height='25' fill='%23333'/%3E%3Crect x='542' y='428' width='10' height='25' fill='%23333'/%3E%3C!-- Femme 3 --%3E%3Cellipse cx='600' cy='350' rx='12' ry='18' fill='%238B4513'/%3E%3Ccircle cx='600' cy='330' r='10' fill='%23654321'/%3E%3Crect x='596' y='335' width='8' height='2' fill='%23333'/%3E%3Crect x='595' y='368' width='10' height='60' fill='%23007acc'/%3E%3Crect x='590' y='375' width='20' height='45' fill='%23005599'/%3E%3Crect x='588' y='428' width='10' height='25' fill='%23333'/%3E%3Crect x='602' y='428' width='10' height='25' fill='%23333'/%3E%3C!-- Femme 4 --%3E%3Cellipse cx='660' cy='350' rx='12' ry='18' fill='%238B4513'/%3E%3Ccircle cx='660' cy='330' r='10' fill='%23654321'/%3E%3Crect x='656' y='335' width='8' height='2' fill='%23333'/%3E%3Crect x='655' y='368' width='10' height='60' fill='%23007acc'/%3E%3Crect x='650' y='375' width='20' height='45' fill='%23005599'/%3E%3Crect x='648' y='428' width='10' height='25' fill='%23333'/%3E%3Crect x='662' y='428' width='10' height='25' fill='%23333'/%3E%3C!-- Légumes sur tapis --%3E%3Ccircle cx='440' cy='265' r='5' fill='%23228B22'/%3E%3Ccircle cx='470' cy='265' r='5' fill='%23FF6347'/%3E%3Ccircle cx='500' cy='265' r='5' fill='%23FFA500'/%3E%3Ccircle cx='530' cy='265' r='5' fill='%23228B22'/%3E%3C!-- Outils de travail --%3E%3Cline x1='490' y1='310' x2='510' y2='300' stroke='%23666' stroke-width='2'/%3E%3Cline x1='550' y1='310' x2='570' y2='300' stroke='%23666' stroke-width='2'/%3E%3Cline x1='610' y1='310' x2='630' y2='300' stroke='%23666' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
-        .container {
+        .gold-text {
+            background: linear-gradient(135deg, #8B0000, #A0001C, #8B0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            max-width: 400px;
-            text-align: center;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
         }
-        .card {
-            background-color: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-        .header {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #333;
-        }
-        .bonus-percent {
-            font-size: 4em;
-            font-weight: 700;
-            color: #d9534f;
-            margin: 10px 0;
-        }
-        .bonus-text {
-            font-size: 1.2em;
-            color: #555;
-            text-transform: uppercase;
-        }
-        .validation-box {
-            background-color: #00AEEF; /* Bleu Central Equipements */
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        #datetime {
-            background-color: white;
-            color: #00AEEF;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: 700;
-            font-size: 1.1em;
-        }
-        .realtime-notice {
-            font-size: 0.8em;
-            margin-top: 10px;
-            opacity: 0.9;
-        }
-        .action-box {
-            background-color: #28a745; /* Vert Action */
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-weight: 700;
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header avec logo -->
+    <header class="bg-white shadow-sm p-4 text-center">
+        <div class="flex items-center justify-center">
+            <img src="https://drive.google.com/uc?export=view&id=16BNfLhxK9tQKcMqOGpT_huLM9QzO129f" 
+                 alt="Central Equipements" 
+                 class="h-12 w-auto object-contain"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h1 class="text-xl font-bold hidden" style="color: #22a8dc;">CENTRAL EQUIPEMENTS</h1>
+        </div>
+    </header>
 
-    <div class="container">
-        <div class="card">
-            <div class="header">⭐ BONUS ACTIVÉ ! 🎁</div>
-            <div class="bonus-percent">-5%</div>
-            <div class="bonus-text">SUPPLÉMENTAIRES</div>
+    <!-- Contenu principal -->
+    <main class="flex-1 px-6 py-8 space-y-8">
+        <!-- Section Titre -->
+        <div class="text-center space-y-4">
+            <div class="flex items-center justify-center space-x-3">
+                <svg class="w-8 h-8 text-yellow-500 pulse-animation" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <h2 class="text-3xl font-black tracking-wide" style="color: #22a8dc;">BONUS ACTIVÉ !</h2>
+                <svg class="w-8 h-8 text-red-500 pulse-animation" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
+                </svg>
+            </div>
         </div>
 
-        <div class="validation-box">
-            <div>Valable uniquement le :</div>
-            <div id="datetime">Chargement...</div>
-            <div class="realtime-notice">🔄 Mise à jour en temps réel</div>
+        <!-- Section Gain -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center shine">
+            <div class="space-y-2">
+                <div class="text-7xl font-black gold-text pulse-animation">-5%</div>
+                <div class="text-2xl font-bold text-gray-700 tracking-widest">SUPPLÉMENTAIRES</div>
+            </div>
         </div>
 
-        <div class="action-box">
-            📱<br>Montrez cet écran à votre conseiller pour profiter de votre remise
+        <!-- Section Code Sécurisé -->
+        <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl shadow-lg p-6 text-white">
+            <div class="space-y-4">
+                <div class="flex items-center justify-center space-x-2">
+                    <svg class="w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V5l-9-4z"/>
+                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none"/>
+                    </svg>
+                    <p class="text-lg font-semibold">CODE SÉCURISÉ DE VALIDATION</p>
+                </div>
+                
+                <!-- Formulaire de validation -->
+                <div id="validation-form" class="space-y-4">
+                    <div class="bg-white bg-opacity-20 rounded-xl p-4 space-y-3">
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-1">Adresse email :</label>
+                            <input type="email" id="email-input" class="w-full px-3 py-2 rounded-lg text-gray-800 font-medium" placeholder="votre@email.com" required>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-1">Numéro de facture :</label>
+                            <input type="text" id="invoice-input" class="w-full px-3 py-2 rounded-lg text-gray-800 font-medium" placeholder="Ex: FAC-2024-001" required>
+                        </div>
+                        <button onclick="validateAndGenerateCode()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-purple-800 font-bold py-3 px-6 rounded-lg transition-colors">
+                            🔓 GÉNÉRER MON CODE
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code généré (caché initialement) -->
+                <div id="code-display" class="hidden space-y-4">
+                    <div class="bg-white rounded-xl p-4 text-center">
+                        <div class="text-4xl font-black tracking-widest" style="color: #22a8dc;" id="unique-code">
+                            CE000
+                        </div>
+                    </div>
+                    <div class="text-sm opacity-90 space-y-1">
+                        <p>🔒 Code unique et non réutilisable</p>
+                        <p>⏰ Valide 24h pour cette IP et cet email</p>
+                        <p>📧 Email: <span id="validated-email" class="font-semibold"></span></p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Section Validation (CRITIQUE) -->
+        <div class="rounded-2xl shadow-lg p-6 text-center text-white" style="background-color: #22a8dc;">
+            <div class="space-y-4">
+                <p class="text-lg font-semibold">Valable uniquement le :</p>
+                <div class="bg-white rounded-xl p-4 font-bold text-lg" style="color: #22a8dc;" id="current-datetime">
+                    Chargement...
+                </div>
+                <div class="text-sm opacity-90">
+                    ⏰ Mise à jour en temps réel
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Action -->
+        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl shadow-lg p-6 text-center text-white">
+            <div class="space-y-3">
+                <svg class="w-12 h-12 mx-auto text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                <p class="text-lg font-semibold leading-relaxed">
+                    Montrez cet écran à votre conseiller pour profiter de votre remise immédiate.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t p-4 text-center">
+        <p class="text-sm text-gray-600">
+            Offre personnelle, valable une fois par jour sur présentation de cet écran.
+        </p>
+    </footer>
 
     <script>
-        // Le script "magique" qui empêche la fraude
-        function updateDateTime() {
-            const now = new Date();
-            const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-            const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+        // Système de stockage sécurisé (simulation)
+        const securityStorage = {
+            codes: JSON.parse(localStorage.getItem('ce_codes') || '{}'),
             
-            const dayName = days[now.getDay()];
-            const day = now.getDate();
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            saveCode: function(email, ip, code) {
+                const key = `${email}_${ip}`;
+                this.codes[key] = {
+                    code: code,
+                    timestamp: Date.now(),
+                    email: email,
+                    ip: ip
+                };
+                localStorage.setItem('ce_codes', JSON.stringify(this.codes));
+            },
+            
+            getCode: function(email, ip) {
+                const key = `${email}_${ip}`;
+                const stored = this.codes[key];
+                
+                if (!stored) return null;
+                
+                // Vérifier si le code est encore valide (24h)
+                const now = Date.now();
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                
+                if (now - stored.timestamp > twentyFourHours) {
+                    delete this.codes[key];
+                    localStorage.setItem('ce_codes', JSON.stringify(this.codes));
+                    return null;
+                }
+                
+                return stored;
+            }
+        };
 
-            const formattedDateTime = `${dayName} ${day} ${month} ${year} à ${hours}:${minutes}:${seconds}`;
-            
-            document.getElementById('datetime').textContent = formattedDateTime;
+        function generateCECode() {
+            // Générer un code au format CE + 3 chiffres
+            const randomNum = Math.floor(Math.random() * 900) + 100; // 100-999
+            return `CE${randomNum}`;
         }
 
-        // Met à jour l'heure toutes les secondes
-        setInterval(updateDateTime, 1000);
-        // Met à jour immédiatement au chargement
-        updateDateTime();
-    </script>
+        function getClientIP() {
+            // Simulation d'IP (en réalité, il faudrait un service externe)
+            return 'IP_' + Math.random().toString(36).substr(2, 8);
+        }
 
-</body>
+        function validateAndGenerateCode() {
+            const email = document.getElementById('email-input').value.trim();
+            const invoice = document.getElementById('invoice-input').value.trim();
+            
+            // Validation des champs
+            if (!email || !invoice) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Veuillez saisir une adresse email valide.');
+                return;
+            }
+            
+            if (invoice.length < 5) {
+                alert('Le numéro de facture doit contenir au moins 5 caractères.');
+                return;
+            }
+            
+            const clientIP = getClientIP();
+            
+            // Vérifier si un code existe déjà pour cette combinaison email/IP
+            let existingCode = securityStorage.getCode(email, clientIP);
+            
+            let code;
+            if (existingCode) {
+                code = existingCode.code;
+            } else {
+                // Générer un nouveau code
+                code = generateCECode();
+                securityStorage.saveCode(email, clientIP, code);
+            }
+            
+            // Afficher le code
+            document.getElementById('unique-code').textContent = code;
+            document.getElementById('validated-email').textContent = email;
+            
+            // Masquer le formulaire et afficher le code
+            document.getElementById('validation-form').classList.add('hidden');
+            document.getElementById('code-display').classList.remove('hidden');
+            
+            // Animation de succès
+            document.getElementById('code-display').style.animation = 'pulse 0.5s ease-in-out';
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            
+            const formattedDate = now.toLocaleDateString('fr-FR', options);
+            document.getElementById('current-datetime').textContent = formattedDate;
+        }
+
+        // Vérifier au chargement si un code existe déjà
+        window.onload = function() {
+            updateDateTime();
+            
+            // Nettoyer les codes expirés au chargement
+            const now = Date.now();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            let codes = JSON.parse(localStorage.getItem('ce_codes') || '{}');
+            let hasExpired = false;
+            
+            for (let key in codes) {
+                if (now - codes[key].timestamp > twentyFourHours) {
+                    delete codes[key];
+                    hasExpired = true;
+                }
+            }
+            
+            if (hasExpired) {
+                localStorage.setItem('ce_codes', JSON.stringify(codes));
+            }
+        };
+        
+        // Mettre à jour chaque seconde pour empêcher les captures d'écran
+        setInterval(updateDateTime, 1000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97638ec41673d7c8',t:'MTc1NjM4MTQ3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
