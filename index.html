@@ -3,73 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Avantage CE</title>
+    <title>Club Avantage CE - Central Equipements</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .hidden { display: none; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .pulse-animation { animation: pulse 2s infinite; }
     </style>
 </head>
 <body class="bg-gray-100">
 
-    <!-- Écran de chargement -->
+    <!-- ÉCRAN DE CHARGEMENT -->
     <div id="loading-screen" class="fixed inset-0 bg-white flex flex-col justify-center items-center z-50">
-        <img src="https://drive.google.com/uc?export=view&id=16BNfLhxK9tQKcMqOGpT_huLM9QzO129f" alt="Logo" class="h-20 mb-4 animate-pulse">
-        <p class="text-gray-600">Chargement...</p>
+        <img src="https://jokkootech.com/wp-content/uploads/elementor/thumbs/CENTRAL_EQUIPEMENT-1-removebg-preview-qmtu95vg6ca8in6ds4b6xx9yzi550nl7zpyzehgycc.webp" alt="Logo" class="h-20 mb-4 animate-pulse">
+        <p class="text-gray-600">Chargement de votre espace...</p>
     </div>
 
-    <!-- Conteneur principal de l'application -->
-    <div id="app" class="hidden min-h-screen bg-cover bg-center bg-fixed" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://www.groupesebi.com/wp-content/uploads/2020/04/cuisine-whole-sebi-paris-idf-normandie-1-uai-1600x685.jpg');">
-        
-        <!-- ÉCRAN DE CONNEXION / INSCRIPTION -->
-        <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
-            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 text-center">
-                <img src="https://drive.google.com/uc?export=view&id=16BNfLhxK9tQKcMqOGpT_huLM9QzO129f" alt="Logo" class="h-16 mx-auto mb-4">
-                <h1 id="auth-title" class="text-2xl font-bold text-gray-800 mb-2">Rejoignez le Club !</h1>
-                <p class="text-gray-500 mb-6">Inscrivez-vous pour obtenir vos avantages.</p>
-
-                <form id="signup-form" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="signup-nom" placeholder="Nom*" required class="w-full p-3 rounded-lg border">
-                        <input type="text" id="signup-prenom" placeholder="Prénom*" required class="w-full p-3 rounded-lg border">
+    <!-- CONTENEUR PRINCIPAL DE L'APPLICATION (initialement caché) -->
+    <div id="app-container" class="hidden">
+        <div class="min-h-screen bg-cover bg-center bg-fixed" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://www.groupesebi.com/wp-content/uploads/2020/04/cuisine-whole-sebi-paris-idf-normandie-1-uai-1600x685.jpg');">
+            
+            <!-- ÉCRAN D'INSCRIPTION / CONNEXION -->
+            <div id="auth-screen">
+                <main class="flex-1 px-4 py-8 space-y-8">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-3xl font-black tracking-wide text-white">Rejoignez le Club Avantage CE !</h2>
                     </div>
-                    <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" class="w-full p-3 rounded-lg border">
-                    <input type="tel" id="signup-telephone" placeholder="Téléphone (pour vous connecter)" class="w-full p-3 rounded-lg border">
-                    <input type="password" id="signup-password" placeholder="Mot de passe*" required class="w-full p-3 rounded-lg border">
-                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">S'inscrire</button>
-                </form>
-                
-                <p id="auth-message" class="text-sm text-red-500 mt-4 h-4"></p>
-                <p class="text-sm text-gray-500 mt-4">Déjà membre ? <a href="#" id="show-login-link" class="font-semibold text-blue-600">Connectez-vous</a></p>
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div id="form-container">
+                            <!-- Inscription (par défaut) -->
+                            <form id="signup-form" class="space-y-4">
+                                <h3 class="text-2xl font-bold text-center" style="color: #22a8dc;">📝 Inscription Gratuite</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" id="signup-prenom" placeholder="Prénom *" required class="w-full px-4 py-3 rounded-xl border">
+                                    <input type="text" id="signup-nom" placeholder="Nom *" required class="w-full px-4 py-3 rounded-xl border">
+                                </div>
+                                <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" class="w-full px-4 py-3 rounded-xl border">
+                                <input type="tel" id="signup-telephone" placeholder="Téléphone (pour vous connecter)" class="w-full px-4 py-3 rounded-xl border">
+                                <input type="password" id="signup-password" placeholder="Mot de passe *" required class="w-full px-4 py-3 rounded-xl border">
+                                <button type="submit" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl">🎁 M'inscrire et obtenir mon bonus</button>
+                            </form>
+                            <!-- Connexion (caché) -->
+                            <form id="login-form" class="hidden space-y-4">
+                                <h3 class="text-2xl font-bold text-center" style="color: #22a8dc;">👋 Content de vous revoir !</h3>
+                                <input type="text" id="login-identifier" placeholder="Email ou Téléphone" required class="w-full px-4 py-3 rounded-xl border">
+                                <input type="password" id="login-password" placeholder="Mot de passe" required class="w-full px-4 py-3 rounded-xl border">
+                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl">Se Connecter</button>
+                            </form>
+                        </div>
+                        <p id="auth-message" class="text-sm text-red-500 mt-4 h-4 text-center"></p>
+                        <p class="text-sm text-gray-500 mt-4 text-center">
+                            <span id="login-text">Déjà membre ? <a href="#" id="toggle-form" class="font-semibold text-blue-600">Connectez-vous</a></span>
+                            <span id="signup-text" class="hidden">Pas encore membre ? <a href="#" id="toggle-form-back" class="font-semibold text-blue-600">Inscrivez-vous</a></span>
+                        </p>
+                    </div>
+                </main>
             </div>
-        </div>
 
-        <!-- ÉCRAN DE LA CARTE VIRTUELLE -->
-        <div id="card-screen" class="hidden min-h-screen flex flex-col justify-between p-6">
-            <div>
-                <header class="flex justify-between items-center mb-8">
-                    <h2 class="text-white text-xl font-bold">Bonjour, <span id="user-name"></span> !</h2>
-                    <button id="logout-button" class="text-white text-sm opacity-80 hover:opacity-100">Déconnexion</button>
-                </header>
-
-                <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg p-6 text-center text-white">
-                    <p class="font-semibold">Votre solde de points</p>
-                    <p id="user-points" class="text-6xl font-black my-4">...</p>
-                    <p class="opacity-80">Accumulez des points à chaque achat.</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center mt-8">
-                <p class="font-semibold text-gray-700 mb-4">Présentez ce QR Code en caisse</p>
-                <div id="qrcode-container" class="bg-white p-2 rounded-xl inline-block shadow-inner"></div>
-                <p class="text-xs text-gray-500 mt-4">Ce code vous identifie de manière unique.</p>
+            <!-- ÉCRAN DE LA CARTE VIRTUELLE -->
+            <div id="card-screen" class="hidden">
+                 <main class="flex-1 px-4 py-8 space-y-8">
+                    <header class="flex justify-between items-center text-white">
+                        <h2 class="text-xl font-bold">Bonjour, <span id="user-name"></span> !</h2>
+                        <button id="logout-button" class="text-sm opacity-80 hover:opacity-100">Déconnexion</button>
+                    </header>
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg p-6 text-center text-white">
+                        <p class="font-semibold">Votre solde de points</p>
+                        <p id="user-points" class="text-6xl font-black my-4">...</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                        <p class="font-semibold text-gray-700 mb-4">Présentez ce QR Code en caisse</p>
+                        <div id="qrcode-container" class="bg-white p-2 rounded-xl inline-block shadow-inner"></div>
+                    </div>
+                 </main>
             </div>
         </div>
     </div>
-
-    <!-- SCRIPTS FIREBASE - À PLACER AVANT VOTRE SCRIPT D'APPLICATION -->
+    
+    <!-- SCRIPTS FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -84,91 +98,84 @@
             messagingSenderId: "VOTRE_MESSAGING_SENDER_ID",
             appId: "VOTRE_APP_ID"
         };
-
-        // Initialiser Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         // --- ÉLÉMENTS DU DOM ---
         const loadingScreen = document.getElementById('loading-screen');
-        const appContainer = document.getElementById('app');
+        const appContainer = document.getElementById('app-container');
         const authScreen = document.getElementById('auth-screen');
         const cardScreen = document.getElementById('card-screen');
         const signupForm = document.getElementById('signup-form');
+        const loginForm = document.getElementById('login-form');
+        const authMessage = document.getElementById('auth-message');
         const userNameDisplay = document.getElementById('user-name');
         const userPointsDisplay = document.getElementById('user-points');
         const qrcodeContainer = document.getElementById('qrcode-container');
         const logoutButton = document.getElementById('logout-button');
-        const authMessage = document.getElementById('auth-message');
-        
-        // Écouteur d'état d'authentification (le coeur de l'app)
+        const toggleLinks = [document.getElementById('toggle-form'), document.getElementById('toggle-form-back')];
+
+        // --- GESTION DE L'AUTHENTIFICATION ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                // L'utilisateur est connecté
-                db.collection('users').doc(user.uid).get().then(doc => {
+                db.collection('users').doc(user.uid).onSnapshot(doc => {
                     if (doc.exists) {
-                        const userData = doc.data();
-                        displayCardScreen(userData);
-                    } else {
-                        // Cas rare où l'utilisateur est authentifié mais n'a pas de profil
-                        console.error("Aucun profil trouvé pour cet utilisateur");
-                        auth.signOut();
+                        displayCardScreen(doc.data());
                     }
-                });
+                }, error => console.error("Erreur de lecture Firestore:", error));
             } else {
-                // L'utilisateur est déconnecté
                 displayAuthScreen();
             }
             loadingScreen.classList.add('hidden');
             appContainer.classList.remove('hidden');
         });
-        
-        // Gestion de l'inscription
+
+        // --- GESTION DES FORMULAIRES ---
         signupForm.addEventListener('submit', e => {
             e.preventDefault();
-            const nom = document.getElementById('signup-nom').value.trim();
             const prenom = document.getElementById('signup-prenom').value.trim();
+            const nom = document.getElementById('signup-nom').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const telephone = document.getElementById('signup-telephone').value.trim();
             const password = document.getElementById('signup-password').value;
 
-            if (!email && !telephone) {
-                authMessage.textContent = "Email ou téléphone requis.";
+            if (!email) {
+                authMessage.textContent = "L'email est requis pour créer un compte.";
                 return;
             }
-            
-            const loginIdentifier = email || telephone; // L'email est prioritaire pour la création de compte Firebase
 
-            auth.createUserWithEmailAndPassword(loginIdentifier, password)
+            auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     const user = userCredential.user;
-                    // Créer un document dans Firestore pour stocker les infos supplémentaires
                     return db.collection('users').doc(user.uid).set({
-                        nom: nom,
-                        prenom: prenom,
-                        email: email,
-                        telephone: telephone,
-                        points: 50, // Points de bienvenue
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        nom: nom, prenom: prenom, email: email, telephone: telephone,
+                        points: 50, createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 })
-                .then(() => {
-                    console.log("Utilisateur inscrit et profil créé !");
-                    // L'observateur onAuthStateChanged s'occupera d'afficher le bon écran
-                })
-                .catch(error => {
-                    console.error(error);
-                    authMessage.textContent = error.message;
-                });
+                .catch(error => { authMessage.textContent = error.message; });
         });
 
-        // Gestion de la déconnexion
-        logoutButton.addEventListener('click', () => {
-            auth.signOut();
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value;
+            auth.signInWithEmailAndPassword(identifier, password)
+                .catch(error => { authMessage.textContent = "Identifiant ou mot de passe incorrect."; });
         });
         
-        // --- Fonctions d'affichage ---
+        logoutButton.addEventListener('click', () => auth.signOut());
+
+        toggleLinks.forEach(link => link.addEventListener('click', e => {
+            e.preventDefault();
+            signupForm.classList.toggle('hidden');
+            loginForm.classList.toggle('hidden');
+            document.getElementById('login-text').classList.toggle('hidden');
+            document.getElementById('signup-text').classList.toggle('hidden');
+            authMessage.textContent = '';
+        }));
+
+        // --- FONCTIONS D'AFFICHAGE ---
         function displayAuthScreen() {
             authScreen.classList.remove('hidden');
             cardScreen.classList.add('hidden');
@@ -177,19 +184,14 @@
         function displayCardScreen(userData) {
             authScreen.classList.add('hidden');
             cardScreen.classList.remove('hidden');
-            
             userNameDisplay.textContent = userData.prenom;
             userPointsDisplay.textContent = userData.points;
-            generateQRCode(auth.currentUser.uid); // Le QR code contient l'ID utilisateur sécurisé
+            generateQRCode(auth.currentUser.uid);
         }
-        
+
         function generateQRCode(text) {
             qrcodeContainer.innerHTML = "";
-            new QRCode(qrcodeContainer, {
-                text: text,
-                width: 180,
-                height: 180
-            });
+            new QRCode(qrcodeContainer, { text, width: 180, height: 180 });
         }
     </script>
 </body>
