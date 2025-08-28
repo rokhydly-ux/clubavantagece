@@ -18,7 +18,13 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #22a8dc 0%, #1e90d1 50%, #1976d2 100%);
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url("https://deegreez.fr/wp-content/uploads/2023/10/quel-budget-pour-une-cuisine-professionnelle-scaled.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             min-height: 100vh;
         }
         
@@ -108,7 +114,7 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-white/10 backdrop-blur-md shadow-lg p-4 text-center">
+    <header class="bg-white shadow-lg p-4 text-center">
         <div class="flex items-center justify-between max-w-4xl mx-auto">
             <div class="w-10"></div>
             <div class="flex items-center space-x-3">
@@ -116,13 +122,14 @@
                      alt="Central Equipements" 
                      class="h-10 w-auto object-contain"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <h1 class="text-xl font-bold text-white hidden">CE</h1>
+                <h1 class="text-xl font-bold text-black hidden cursor-pointer hover:opacity-80 transition-opacity" 
+                    style="color: #22a8dc;">CENTRAL EQUIPEMENTS</h1>
                 <div class="text-center">
-                    <h2 class="text-lg font-bold text-white">Club Avantage CE</h2>
-                    <p class="text-xs text-white/80">Votre fidélité récompensée</p>
+                    <h2 class="text-lg font-bold text-black">Club Avantage CE</h2>
+                    <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
                 </div>
             </div>
-            <button id="logout-btn" class="hidden bg-red-500/20 text-white px-3 py-2 rounded-lg hover:bg-red-500/30 transition-all text-sm" onclick="logout()">
+            <button id="logout-btn" class="hidden bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-all text-sm" onclick="logout()">
                 Déconnexion
             </button>
         </div>
@@ -340,18 +347,7 @@
     </div>
 
     <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-            authDomain: "club-avantage-ce.firebaseapp.com",
-            projectId: "club-avantage-ce",
-            storageBucket: "club-avantage-ce.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdefghijklmnopqrstuvwxyz"
-        };
-
-        // Initialiser Firebase
-        firebase.initializeApp(firebaseConfig);
+        // Firebase sera initialisé par le script en bas de page
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -784,5 +780,29 @@
             }, 1500);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9767333c87027924',t:'MTc1NjQxOTY3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
+  authDomain: "clubavantage-52aed.firebaseapp.com",
+  projectId: "clubavantage-52aed",
+  storageBucket: "clubavantage-52aed.firebasestorage.app",
+  messagingSenderId: "655040433691",
+  appId: "1:655040433691:web:e3492b4fb64333ff01b2be",
+  measurementId: "G-Y0187YGWCT"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97675040f6ac9efd',t:'MTc1NjQyMDg1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
