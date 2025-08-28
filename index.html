@@ -278,7 +278,14 @@
                             
                             <input type="tel" id="telephone" placeholder="Téléphone" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium">
                             
-                            <input type="text" id="ticketNumber" placeholder="Numéro de ticket" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium text-center text-xl tracking-widest">
+                            <div class="space-y-2">
+                                <input type="text" id="ticketNumber" placeholder="Numéro de facture" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium text-center text-xl tracking-widest" maxlength="15" title="Format requis: S12345 ou 00000-000-0012">
+                                <div class="text-xs text-gray-600 bg-blue-50 p-2 rounded">
+                                    <p class="font-semibold text-blue-800">📋 Formats acceptés :</p>
+                                    <p>• <span class="font-mono bg-white px-1 rounded">S12345</span> (S suivi de 5 chiffres)</p>
+                                    <p>• <span class="font-mono bg-white px-1 rounded">00000-000-0012</span> (format long avec tirets)</p>
+                                </div>
+                            </div>
                             
                             <!-- Cet input sera caché, on le remplira avec le code généré -->
                             <input type="hidden" id="generatedCode">
@@ -548,6 +555,16 @@
                 return;
             }
             
+            // Validation du numéro de facture (format S + 5 chiffres OU format 00000-000-0012)
+            const invoicePattern1 = /^S[0-9]{5}$/; // S suivi de 5 chiffres
+            const invoicePattern2 = /^[0-9]{5}-[0-9]{3}-[0-9]{4}$/; // 00000-000-0012
+            
+            if (!invoicePattern1.test(ticketNumber) && !invoicePattern2.test(ticketNumber)) {
+                responseMessage.innerHTML = '⚠️ Le numéro de facture doit avoir le format S12345 ou 00000-000-0012.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
+                return;
+            }
+            
             const clientData = {
                 lastname: nom,
                 firstname: prenom,
@@ -663,6 +680,16 @@
             // Validation du téléphone (format basique)
             if (!/^[0-9\s\-\+\.]{10,}$/.test(telephone)) {
                 responseMessage.innerHTML = '⚠️ Veuillez saisir un numéro de téléphone valide.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
+                return;
+            }
+            
+            // Validation du numéro de facture (format S + 5 chiffres OU format 00000-000-0012)
+            const invoicePattern1 = /^S[0-9]{5}$/; // S suivi de 5 chiffres
+            const invoicePattern2 = /^[0-9]{5}-[0-9]{3}-[0-9]{4}$/; // 00000-000-0012
+            
+            if (!invoicePattern1.test(ticketNumber) && !invoicePattern2.test(ticketNumber)) {
+                responseMessage.innerHTML = '⚠️ Le numéro de facture doit avoir le format S12345 ou 00000-000-0012.';
                 responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
                 return;
             }
@@ -836,6 +863,49 @@
             // Ajouter l'événement de soumission du formulaire avec Google Apps Script
             document.getElementById('loyalty-form').addEventListener('submit', validateAndGenerateCodeWithGoogle);
             
+            // Formatage automatique du numéro de facture
+            document.getElementById('ticketNumber').addEventListener('input', function(e) {
+                let value = e.target.value.toUpperCase();
+                
+                // Détecter le type de format en cours de saisie
+                if (value.includes('-')) {
+                    // Format long avec tirets: 00000-000-0012
+                    value = value.replace(/[^0-9\-]/g, '');
+                    
+                    // Formatage automatique des tirets
+                    if (value.length > 5 && value.charAt(5) !== '-') {
+                        value = value.substring(0, 5) + '-' + value.substring(5);
+                    }
+                    if (value.length > 9 && value.charAt(9) !== '-') {
+                        value = value.substring(0, 9) + '-' + value.substring(9);
+                    }
+                    
+                    // Limiter à 13 caractères (00000-000-0012)
+                    if (value.length > 13) {
+                        value = value.substring(0, 13);
+                    }
+                } else {
+                    // Format court: S12345
+                    value = value.replace(/[^S0-9]/g, '');
+                    
+                    // S'assurer que ça commence par S si ce n'est que des chiffres
+                    if (value.length > 0 && !value.startsWith('S')) {
+                        if (value.match(/^[0-9]/)) {
+                            value = 'S' + value;
+                        } else {
+                            value = 'S';
+                        }
+                    }
+                    
+                    // Limiter à S + 5 chiffres maximum
+                    if (value.length > 6) {
+                        value = value.substring(0, 6);
+                    }
+                }
+                
+                e.target.value = value;
+            });
+            
             // Vérifier les codes existants au chargement
             setTimeout(() => {
                 checkExistingValidCode();
@@ -845,5 +915,5 @@
         // Mettre à jour chaque seconde pour empêcher les captures d'écran
         setInterval(updateDateTime, 1000);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976535e19583c79c',t:'MTc1NjM5ODgwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9765556a02f0f81a',t:'MTc1NjQwMDA5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
