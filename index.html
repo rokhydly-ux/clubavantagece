@@ -126,8 +126,11 @@
                     <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
                 </div>
             </div>
-            <button id="logout-btn" class="hidden bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-all text-sm" onclick="logout()">
-                Déconnexion
+            <button id="logout-btn" class="hidden bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 text-sm font-semibold" onclick="logout()">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H4v16h10v-2h2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10z"/>
+                </svg>
+                <span>Déconnexion</span>
             </button>
         </div>
     </header>
@@ -345,15 +348,35 @@
         </div>
     </div>
 
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <script>
-        // Variables globales - Firebase sera initialisé après le chargement des scripts
-        let auth, db;
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
+            authDomain: "clubavantage-52aed.firebaseapp.com",
+            projectId: "clubavantage-52aed",
+            storageBucket: "clubavantage-52aed.appspot.com",
+            messagingSenderId: "655040433691",
+            appId: "1:655040433691:web:e3492b4fb64333ff01b2be",
+            measurementId: "G-Y0187YGWCT"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Maintenant on peut initialiser auth et db
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // Variables globales
         let currentUser = null;
         let userDataListener = null;
 
-        // Fonction d'initialisation appelée après le chargement de Firebase
+        // Fonction d'initialisation
         function initializeApp() {
             // Écouteur d'état d'authentification
             auth.onAuthStateChanged((user) => {
@@ -786,37 +809,9 @@
                 // L'écouteur d'authentification prendra le relais
             }, 1500);
         });
+
+        // Démarrer l'application une fois que tout est chargé
+        initializeApp();
     </script>
-
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<script>
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
-  authDomain: "clubavantage-52aed.firebaseapp.com",
-  projectId: "clubavantage-52aed",
-  storageBucket: "clubavantage-52aed.appspot.com",
-  messagingSenderId: "655040433691",
-  appId: "1:655040433691:web:e3492b4fb64333ff01b2be",
-  measurementId: "G-Y0187YGWCT"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  
-  // Maintenant on peut initialiser auth et db
-  auth = firebase.auth();
-  db = firebase.firestore();
-  
-  // Démarrer l'écouteur d'authentification une fois Firebase initialisé
-  initializeApp();
-</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97677718168fe3bd',t:'MTc1NjQyMjQ1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976794f8817a785f',t:'MTc1NjQyMzY3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
