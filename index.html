@@ -7,10 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     
     <!-- QR Code Generator -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -347,16 +344,17 @@
     </div>
 
     <script>
-        // Firebase sera initialisé par le script en bas de page
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // Variables globales - Firebase sera initialisé après le chargement des scripts
+        let auth, db;
 
         // Variables globales
         let currentUser = null;
         let userDataListener = null;
 
-        // Écouteur d'état d'authentification
-        auth.onAuthStateChanged((user) => {
+        // Fonction d'initialisation appelée après le chargement de Firebase
+        function initializeApp() {
+            // Écouteur d'état d'authentification
+            auth.onAuthStateChanged((user) => {
             hideLoadingScreen();
             
             if (user) {
@@ -370,7 +368,8 @@
                 showAuthScreen();
                 document.getElementById('logout-btn').classList.add('hidden');
             }
-        });
+            });
+        }
 
         // Gestion des onglets
         function switchTab(tab) {
@@ -795,7 +794,7 @@
     apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
   authDomain: "clubavantage-52aed.firebaseapp.com",
   projectId: "clubavantage-52aed",
-  storageBucket: "clubavantage-52aed.firebasestorage.app",
+  storageBucket: "clubavantage-52aed.appspot.com",
   messagingSenderId: "655040433691",
   appId: "1:655040433691:web:e3492b4fb64333ff01b2be",
   measurementId: "G-Y0187YGWCT"
@@ -803,6 +802,13 @@
 
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+  
+  // Maintenant on peut initialiser auth et db
+  auth = firebase.auth();
+  db = firebase.firestore();
+  
+  // Démarrer l'écouteur d'authentification une fois Firebase initialisé
+  initializeApp();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97675040f6ac9efd',t:'MTc1NjQyMDg1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97675a5e216ce3bd',t:'MTc1NjQyMTI3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
