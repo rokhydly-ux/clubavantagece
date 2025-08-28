@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonus Activé !</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .header {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+        }
+        .bonus-percent {
+            font-size: 4em;
+            font-weight: 700;
+            color: #d9534f;
+            margin: 10px 0;
+        }
+        .bonus-text {
+            font-size: 1.2em;
+            color: #555;
+            text-transform: uppercase;
+        }
+        .validation-box {
+            background-color: #00AEEF; /* Bleu Central Equipements */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        #datetime {
+            background-color: white;
+            color: #00AEEF;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        .realtime-notice {
+            font-size: 0.8em;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        .action-box {
+            background-color: #28a745; /* Vert Action */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="header">⭐ BONUS ACTIVÉ ! 🎁</div>
+            <div class="bonus-percent">-5%</div>
+            <div class="bonus-text">SUPPLÉMENTAIRES</div>
+        </div>
+
+        <div class="validation-box">
+            <div>Valable uniquement le :</div>
+            <div id="datetime">Chargement...</div>
+            <div class="realtime-notice">🔄 Mise à jour en temps réel</div>
+        </div>
+
+        <div class="action-box">
+            📱<br>Montrez cet écran à votre conseiller pour profiter de votre remise
+        </div>
+    </div>
+
+    <script>
+        // Le script "magique" qui empêche la fraude
+        function updateDateTime() {
+            const now = new Date();
+            const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+            const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            
+            const dayName = days[now.getDay()];
+            const day = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const formattedDateTime = `${dayName} ${day} ${month} ${year} à ${hours}:${minutes}:${seconds}`;
+            
+            document.getElementById('datetime').textContent = formattedDateTime;
+        }
+
+        // Met à jour l'heure toutes les secondes
+        setInterval(updateDateTime, 1000);
+        // Met à jour immédiatement au chargement
+        updateDateTime();
+    </script>
+
+</body>
+</html>
