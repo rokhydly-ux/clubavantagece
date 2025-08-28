@@ -265,43 +265,28 @@
                 <!-- Formulaire de validation -->
                 <div id="validation-form" class="space-y-4">
                     <div class="bg-white rounded-xl p-4 space-y-3 border border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="text-left">
-                                <label class="block text-sm font-medium mb-1 text-gray-700">Nom * :</label>
-                                <input type="text" id="lastname-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Votre nom" required>
+                        <form id="loyalty-form" class="space-y-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <input type="text" id="nom" placeholder="Nom" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium">
+                                <input type="text" id="prenom" placeholder="Prénom" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium">
                             </div>
-                            <div class="text-left">
-                                <label class="block text-sm font-medium mb-1 text-gray-700">Prénom * :</label>
-                                <input type="text" id="firstname-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Votre prénom" required>
-                            </div>
-                        </div>
+                            
+                            <input type="email" id="email" placeholder="Email" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium">
+                            
+                            <input type="tel" id="telephone" placeholder="Téléphone" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium">
+                            
+                            <input type="text" id="ticketNumber" placeholder="Numéro de ticket" required class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium text-center text-xl tracking-widest">
+                            
+                            <!-- Cet input sera caché, on le remplira avec le code généré -->
+                            <input type="hidden" id="generatedCode">
+                            
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                                🔓 Obtenir mon code
+                            </button>
+                        </form>
                         
-                        <div class="text-left">
-                            <label class="block text-sm font-medium mb-1 text-gray-700">Téléphone :</label>
-                            <input type="tel" id="phone-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Ex: 06 12 34 56 78">
-                        </div>
-                        
-                        <div class="text-center text-sm font-medium text-gray-600">
-                            OU
-                        </div>
-                        
-                        <div class="text-left">
-                            <label class="block text-sm font-medium mb-1 text-gray-700">Email :</label>
-                            <input type="email" id="email-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="votre@email.com">
-                        </div>
-                        
-                        <div class="text-left">
-                            <label class="block text-sm font-medium mb-1 text-gray-700">Numéro de facture (4 chiffres) * :</label>
-                            <input type="text" id="invoice-input" maxlength="4" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium text-center text-xl tracking-widest" placeholder="0000" required>
-                        </div>
-                        
-                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded">
-                            * Champs obligatoires. Vous devez renseigner soit votre téléphone, soit votre email.
-                        </div>
-                        
-                        <button onclick="validateAndGenerateCode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
-                            🔓 GÉNÉRER MON CODE
-                        </button>
+                        <!-- Zone pour afficher les messages (succès, erreur) -->
+                        <div id="response-message" class="text-center text-sm font-medium"></div>
                     </div>
                 </div>
 
@@ -525,49 +510,47 @@
             return `CE${randomNum}`;
         }
 
-        function validateAndGenerateCode() {
-            const lastname = document.getElementById('lastname-input').value.trim();
-            const firstname = document.getElementById('firstname-input').value.trim();
-            const phone = document.getElementById('phone-input').value.trim();
-            const email = document.getElementById('email-input').value.trim();
-            const invoice = document.getElementById('invoice-input').value.trim();
+        function validateAndGenerateCode(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+            
+            const nom = document.getElementById('nom').value.trim();
+            const prenom = document.getElementById('prenom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const ticketNumber = document.getElementById('ticketNumber').value.trim();
+            const responseMessage = document.getElementById('response-message');
+            
+            // Réinitialiser le message
+            responseMessage.innerHTML = '';
+            responseMessage.className = 'text-center text-sm font-medium';
             
             // Validation des champs obligatoires
-            if (!lastname || !firstname || !invoice) {
-                alert('Veuillez remplir tous les champs obligatoires (nom, prénom, numéro de facture).');
+            if (!nom || !prenom || !email || !telephone || !ticketNumber) {
+                responseMessage.innerHTML = '⚠️ Veuillez remplir tous les champs obligatoires.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
                 return;
             }
             
-            // Validation du contact (téléphone OU email)
-            if (!phone && !email) {
-                alert('Veuillez renseigner soit votre numéro de téléphone, soit votre adresse email.');
+            // Validation de l'email
+            if (!email.includes('@') || !email.includes('.')) {
+                responseMessage.innerHTML = '⚠️ Veuillez saisir une adresse email valide.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
                 return;
             }
             
-            // Validation de l'email si renseigné
-            if (email && (!email.includes('@') || !email.includes('.'))) {
-                alert('Veuillez saisir une adresse email valide.');
-                return;
-            }
-            
-            // Validation du numéro de facture (exactement 4 chiffres)
-            if (!/^\d{4}$/.test(invoice)) {
-                alert('Le numéro de facture doit contenir exactement 4 chiffres.');
-                return;
-            }
-            
-            // Validation du téléphone si renseigné (format français basique)
-            if (phone && !/^[0-9\s\-\+\.]{10,}$/.test(phone)) {
-                alert('Veuillez saisir un numéro de téléphone valide.');
+            // Validation du téléphone (format basique)
+            if (!/^[0-9\s\-\+\.]{10,}$/.test(telephone)) {
+                responseMessage.innerHTML = '⚠️ Veuillez saisir un numéro de téléphone valide.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
                 return;
             }
             
             const clientData = {
-                lastname: lastname,
-                firstname: firstname,
-                phone: phone,
+                lastname: nom,
+                firstname: prenom,
+                phone: telephone,
                 email: email,
-                invoice: invoice
+                invoice: ticketNumber
             };
             
             // Vérifier si un code existe déjà pour ce client
@@ -576,23 +559,32 @@
             let code;
             if (existingCode) {
                 code = existingCode.code;
+                responseMessage.innerHTML = '✅ Code récupéré avec succès !';
+                responseMessage.className += ' text-green-600 bg-green-100 p-2 rounded';
             } else {
                 // Générer un nouveau code
                 code = generateCECode();
                 securityStorage.saveCode(clientData, code);
+                responseMessage.innerHTML = '🎉 Nouveau code généré avec succès !';
+                responseMessage.className += ' text-green-600 bg-green-100 p-2 rounded';
             }
+            
+            // Remplir le champ caché avec le code généré
+            document.getElementById('generatedCode').value = code;
             
             // Afficher le code
             document.getElementById('unique-code').textContent = code;
-            document.getElementById('validated-client').textContent = `${firstname} ${lastname}`;
-            document.getElementById('validated-contact').textContent = phone || email;
+            document.getElementById('validated-client').textContent = `${prenom} ${nom}`;
+            document.getElementById('validated-contact').textContent = `${telephone} - ${email}`;
             
-            // Masquer le formulaire et afficher le code
-            document.getElementById('validation-form').classList.add('hidden');
-            document.getElementById('code-display').classList.remove('hidden');
-            
-            // Animation de succès
-            document.getElementById('code-display').style.animation = 'pulse 0.5s ease-in-out';
+            // Masquer le formulaire et afficher le code après un délai
+            setTimeout(() => {
+                document.getElementById('validation-form').classList.add('hidden');
+                document.getElementById('code-display').classList.remove('hidden');
+                
+                // Animation de succès
+                document.getElementById('code-display').style.animation = 'pulse 0.5s ease-in-out';
+            }, 1500);
         }
 
         function updateDateTime() {
@@ -634,6 +626,121 @@
             }
         }
 
+        // Configuration Google Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/VOTRE_ID_UNIQUE/exec';
+
+        function validateAndGenerateCodeWithGoogle(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+            
+            const nom = document.getElementById('nom').value.trim();
+            const prenom = document.getElementById('prenom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const ticketNumber = document.getElementById('ticketNumber').value.trim();
+            const responseMessage = document.getElementById('response-message');
+            
+            // Réinitialiser le message
+            responseMessage.innerHTML = '';
+            responseMessage.className = 'text-center text-sm font-medium';
+            
+            // Validation des champs obligatoires
+            if (!nom || !prenom || !email || !telephone || !ticketNumber) {
+                responseMessage.innerHTML = '⚠️ Veuillez remplir tous les champs obligatoires.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
+                return;
+            }
+            
+            // Validation de l'email
+            if (!email.includes('@') || !email.includes('.')) {
+                responseMessage.innerHTML = '⚠️ Veuillez saisir une adresse email valide.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
+                return;
+            }
+            
+            // Validation du téléphone (format basique)
+            if (!/^[0-9\s\-\+\.]{10,}$/.test(telephone)) {
+                responseMessage.innerHTML = '⚠️ Veuillez saisir un numéro de téléphone valide.';
+                responseMessage.className += ' text-red-600 bg-red-100 p-2 rounded';
+                return;
+            }
+            
+            // Générer le code unique
+            const uniqueCode = 'CE' + Math.floor(Math.random() * 900 + 100);
+            document.getElementById('generatedCode').value = uniqueCode;
+            
+            // Afficher le message de traitement
+            responseMessage.innerHTML = `
+                <div class="text-green-600 bg-green-100 p-3 rounded space-y-2">
+                    <p>🎉 <strong>Votre code de réduction : ${uniqueCode}</strong></p>
+                    <p>⏳ Enregistrement en cours...</p>
+                </div>
+            `;
+            
+            // Préparer les données pour Google Apps Script
+            const formData = {
+                nom: nom,
+                prenom: prenom,
+                email: email,
+                telephone: telephone,
+                ticketNumber: ticketNumber,
+                generatedCode: uniqueCode,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Envoyer à Google Apps Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                console.log('Success!', response);
+                responseMessage.innerHTML = `
+                    <div class="text-green-600 bg-green-100 p-3 rounded space-y-2">
+                        <p>✅ <strong>Code généré : ${uniqueCode}</strong></p>
+                        <p>📝 Informations enregistrées avec succès !</p>
+                        <p>⏰ Valable 24h - Affichage du code dans 2 secondes...</p>
+                    </div>
+                `;
+                
+                // Afficher le code dans l'interface après un délai
+                setTimeout(() => {
+                    document.getElementById('unique-code').textContent = uniqueCode;
+                    document.getElementById('validated-client').textContent = `${prenom} ${nom}`;
+                    document.getElementById('validated-contact').textContent = `${telephone} - ${email}`;
+                    
+                    document.getElementById('validation-form').classList.add('hidden');
+                    document.getElementById('code-display').classList.remove('hidden');
+                    
+                    // Animation de succès
+                    document.getElementById('code-display').style.animation = 'pulse 0.5s ease-in-out';
+                }, 2000);
+                
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                responseMessage.innerHTML = `
+                    <div class="text-red-600 bg-red-100 p-3 rounded">
+                        <p>❌ Une erreur est survenue lors de l'enregistrement.</p>
+                        <p>Votre code ${uniqueCode} reste valide. Veuillez réessayer.</p>
+                    </div>
+                `;
+                
+                // Afficher quand même le code en cas d'erreur réseau
+                setTimeout(() => {
+                    document.getElementById('unique-code').textContent = uniqueCode;
+                    document.getElementById('validated-client').textContent = `${prenom} ${nom}`;
+                    document.getElementById('validated-contact').textContent = `${telephone} - ${email}`;
+                    
+                    document.getElementById('validation-form').classList.add('hidden');
+                    document.getElementById('code-display').classList.remove('hidden');
+                }, 3000);
+            });
+        }
+
         // Vérifier au chargement si un code existe déjà
         window.onload = function() {
             updateDateTime();
@@ -641,7 +748,10 @@
             // Créer les particules pour l'animation
             createParticles();
             
-            // Nettoyer les codes expirés au chargement
+            // Ajouter l'événement de soumission du formulaire avec Google Apps Script
+            document.getElementById('loyalty-form').addEventListener('submit', validateAndGenerateCodeWithGoogle);
+            
+            // Nettoyer les codes expirés au chargement (logique locale de sauvegarde)
             const now = Date.now();
             const twentyFourHours = 24 * 60 * 60 * 1000;
             let codes = JSON.parse(localStorage.getItem('ce_codes') || '{}');
@@ -657,19 +767,10 @@
             if (hasExpired) {
                 localStorage.setItem('ce_codes', JSON.stringify(codes));
             }
-            
-            // Vérifier si l'utilisateur a déjà un code valide
-            checkExistingCode();
         };
-        
-        function checkExistingCode() {
-            // Cette fonction pourrait être étendue pour vérifier automatiquement
-            // si l'utilisateur revient avec les mêmes données
-            // Pour l'instant, on laisse l'utilisateur saisir ses informations
-        }
         
         // Mettre à jour chaque seconde pour empêcher les captures d'écran
         setInterval(updateDateTime, 1000);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97645824202e6e2d',t:'MTc1NjM4OTcyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97647e0ed384de3e',t:'MTc1NjM5MTI3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
