@@ -201,16 +201,18 @@
                 <form id="signup-form" class="space-y-4">
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="signup-prenom" placeholder="Prénom" required 
-                               class="px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                               class="px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                         <input type="text" id="signup-nom" placeholder="Nom" required 
-                               class="px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                               class="px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     </div>
-                    <input type="email" id="signup-email" placeholder="Email" required 
-                           class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                    <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" required 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     <input type="tel" id="signup-telephone" placeholder="Téléphone" required 
-                           class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                    <input type="text" id="signup-ticket" placeholder="N° de facture/ticket" required 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     <input type="password" id="signup-password" placeholder="Mot de passe (min. 6 caractères)" required 
-                           class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     
                     <div class="flex items-center space-x-2">
                         <input type="checkbox" id="signup-terms" required class="rounded border-gray-300 text-blue-600">
@@ -403,6 +405,7 @@
             const nom = document.getElementById('signup-nom').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const telephone = document.getElementById('signup-telephone').value.trim();
+            const ticketNumber = document.getElementById('signup-ticket').value.trim();
             const password = document.getElementById('signup-password').value;
             const terms = document.getElementById('signup-terms').checked;
             
@@ -430,11 +433,12 @@
                 
                 // Créer le document utilisateur dans Firestore
                 await db.collection('users').doc(user.uid).set({
-                    prenom: prenom,
                     nom: nom,
+                    prenom: prenom,
                     email: email,
                     telephone: telephone,
-                    points: 50, // Points de bienvenue
+                    points: 50,
+                    lastTicket: ticketNumber, // Ajouter le numéro de ticket ici
                     tier: 'Bronze',
                     welcomeCode: 'CE' + Math.floor(Math.random() * 900 + 100),
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -527,7 +531,11 @@
             // Date d'inscription
             if (userData.createdAt) {
                 const date = userData.createdAt.toDate();
-                document.getElementById('member-since').textContent = date.toLocaleDateString('fr-FR');
+                const options = { year: 'numeric', month: 'short' };
+                document.getElementById('member-since').textContent = date.toLocaleDateString('fr-FR', options);
+            } else {
+                // Fallback si pas de date dans la base
+                document.getElementById('member-since').textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
             }
             
             // Points avec animation
@@ -810,5 +818,5 @@
   // Démarrer l'écouteur d'authentification une fois Firebase initialisé
   initializeApp();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97675a5e216ce3bd',t:'MTc1NjQyMTI3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97677718168fe3bd',t:'MTc1NjQyMjQ1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
