@@ -8,45 +8,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
-        /* ... collez ici l'intégralité de vos styles CSS ... */
-        body { font-family: 'Poppins', sans-serif; /* ... etc. */ }
+        body { font-family: 'Poppins', sans-serif; }
         .hidden { display: none; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(300deg); } }
-        /* ... etc. */
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .loading-spinner { animation: spin 1s linear infinite; }
+        /* ... collez ici vos autres styles @keyframes ... */
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Écran de chargement -->
+
+    <!-- Écran de chargement (GARDEZ-LE TEL QUEL) -->
     <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center z-50">
-        <!-- ... votre HTML pour l'écran de chargement ... -->
+        <div class="text-center text-white">
+            <div class="loading-spinner w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold mb-2">Club Avantage CE</h2>
+            <p class="text-blue-200">Chargement de votre espace membre...</p>
+        </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header (GARDEZ-LE TEL QUEL) -->
     <header id="app-header" class="bg-white shadow-lg p-4 text-center hidden">
-        <!-- ... votre HTML pour le header ... -->
+        <div class="flex items-center justify-between max-w-4xl mx-auto">
+            <div class="w-24"></div>
+            <div class="text-center">
+                <h2 class="text-lg font-bold text-black">Club Avantage CE</h2>
+                <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
+            </div>
+            <button id="logout-btn" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm" style="display: none;">Déconnexion</button>
+        </div>
     </header>
 
     <!-- Contenu Principal -->
-    <main id="app-content" class="hidden min-h-screen" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https-url-background.jpeg');">
-        <!-- Écran d'authentification -->
+    <main id="app-content" class="hidden min-h-screen" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://deegreez.fr/wp-content/uploads/2023/10/quel-budget-pour-une-cuisine-professionnelle-scaled.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;">
+        
+        <!-- ÉCRAN D'AUTHENTIFICATION -->
         <div id="auth-screen">
-             <!-- ... collez ici votre HTML pour la section #auth-screen ... -->
+            <!-- ============================================= -->
+            <!-- == COLLEZ VOTRE CODE HTML POUR AUTH-SCREEN ICI == -->
+            <!-- ============================================= -->
         </div>
 
-        <!-- Écran de la carte membre -->
+        <!-- ÉCRAN DE LA CARTE MEMBRE -->
         <div id="card-screen" class="hidden">
-            <!-- ... collez ici votre HTML pour la section #card-screen ... -->
+            <!-- ============================================== -->
+            <!-- == COLLEZ VOTRE CODE HTML POUR CARD-SCREEN ICI == -->
+            <!-- ============================================== -->
         </div>
     </main>
 
-    <!-- ======================= SECTION SCRIPTS ======================= -->
-    
-    <!-- 1. CHARGEMENT DES LIBRAIRIES EXTERNES -->
+    <!-- SECTION SCRIPTS (NE MODIFIEZ RIEN ICI) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- 2. SCRIPT COMPLET DE VOTRE APPLICATION -->
     <script>
         // --- A. CONFIGURATION FIREBASE ---
         const firebaseConfig = {
@@ -60,25 +73,15 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        // --- B. VARIABLES GLOBALES (après l'initialisation de Firebase) ---
+        // --- B. VARIABLES GLOBALES ---
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // DOM Elements
-        const loadingScreen = document.getElementById('loading-screen');
-        const appHeader = document.getElementById('app-header');
-        const appContent = document.getElementById('app-content');
-        const authScreen = document.getElementById('auth-screen');
-        const cardScreen = document.getElementById('card-screen');
-        const signupForm = document.getElementById('signup-form');
-        const signinForm = document.getElementById('signin-form');
-        const logoutBtn = document.getElementById('logout-btn');
-        // ... (ajoutez ici les autres getElementById)
-
+        // DOM Elements - Déclarés ici, vérifiés avant utilisation
         let currentUser = null;
         let userDataListener = null;
 
-        // --- C. POINT D'ENTRÉE DE L'APPLICATION ---
+        // --- C. POINT D'ENTRÉE ---
         auth.onAuthStateChanged((user) => {
             hideLoadingScreen();
             if (user) {
@@ -86,84 +89,32 @@
                 showCardScreen();
                 loadUserData();
                 generateQRCode(user.uid);
-                logoutBtn.style.display = 'flex'; // CORRECTION : Utiliser style.display
+                document.getElementById('logout-btn').style.display = 'block';
             } else {
                 currentUser = null;
                 showAuthScreen();
-                logoutBtn.style.display = 'none'; // CORRECTION : Utiliser style.display
+                document.getElementById('logout-btn').style.display = 'none';
             }
         });
 
-        // --- D. GESTIONNAIRES D'ÉVÉNEMENTS ---
-        signupForm.addEventListener('submit', async (e) => {
-             e.preventDefault();
-             // ... (votre logique d'inscription - inchangée)
-        });
-
-        signinForm.addEventListener('submit', async (e) => {
-             e.preventDefault();
-             // ... (votre logique de connexion - inchangée)
-        });
-
-        logoutBtn.addEventListener('click', () => {
-             if (userDataListener) {
-                 userDataListener(); // Détache l'écouteur
-                 userDataListener = null;
-             }
-             auth.signOut();
-        });
-
-        // --- E. FONCTIONS UTILITAIRES ---
-        function switchTab(tab) {
-             // ... (votre fonction switchTab - inchangée)
-        }
-
-        function loadUserData() {
-            if (!currentUser) return;
-            if (userDataListener) userDataListener(); // Détacher l'ancien écouteur
-            userDataListener = db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
-                if (doc.exists) {
-                    updateUserInterface(doc.data());
-                    loadRecentActivity();
-                }
-            });
-        }
-        
-        function updateUserInterface(userData) {
-            // CORRECTION : S'assurer que les éléments existent avant de les manipuler
-            document.getElementById('member-name').textContent = `${userData.prenom} ${userData.nom}`;
-            document.getElementById('member-email').textContent = userData.email;
-            if (userData.createdAt && userData.createdAt.toDate) {
-                const date = userData.createdAt.toDate();
-                document.getElementById('member-since').textContent = date.toLocaleDateString('fr-FR');
+        // --- D. GESTIONNAIRES D'ÉVÉNEMENTS (attachés après le chargement du DOM) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) {
+                signupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // ... votre logique d'inscription ...
+                });
             }
-            // ... (votre logique d'update - inchangée)
-        }
-        
-        function generateQRCode(userId) {
-            const canvas = document.getElementById('qr-code');
-            if (!canvas) return; // Sécurité
-            const qrData = JSON.stringify({ userId, type: 'club_member' });
-            QRCode.toCanvas(canvas, qrData, { /* ... options ... */ });
-        }
 
-        function hideLoadingScreen() {
-            loadingScreen.style.display = 'none'; // CORRECTION : Utiliser style.display
-            appHeader.classList.remove('hidden');
-            appContent.classList.remove('hidden');
-        }
-
-        function showAuthScreen() {
-            authScreen.classList.remove('hidden');
-            cardScreen.classList.add('hidden');
-        }
-
-        function showCardScreen() {
-            cardScreen.classList.remove('hidden');
-            authScreen.classList.add('hidden');
-        }
-        
-        // ... (collez ici toutes vos autres fonctions : loadRecentActivity, createActivityElement, etc.)
-    </script>
-</body>
-</html>
+            const signinForm = document.getElementById('signin-form');
+            if (signinForm) {
+                signinForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // ... votre logique de connexion ...
+                });
+            }
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if(logoutBtn) {
+                logoutBtn.a
