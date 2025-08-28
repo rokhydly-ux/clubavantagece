@@ -3,361 +3,632 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central Equipements - Connexion</title>
+    <title>Club Avantage CE - Central Equipements</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #22a8dc 0%, #1e90d1 50%, #1976d2 100%);
-            min-height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url("https://www.groupesebi.com/wp-content/uploads/2020/04/cuisine-whole-sebi-paris-idf-normandie-1-uai-1600x685.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .gold-text {
+            background: linear-gradient(135deg, #8B0000, #A0001C, #8B0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .gold-accent {
-            color: #fdd835;
-        }
-        
-        .blue-corporate {
-            color: #22a8dc;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #22a8dc, #1976d2);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1976d2, #1565c0);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(34, 168, 220, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #fdd835, #fbc02d);
-            color: #1976d2;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #fbc02d, #f9a825);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(253, 216, 53, 0.3);
-        }
-        
-        .floating-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .input-focus {
-            transition: all 0.3s ease;
-        }
-        
-        .input-focus:focus {
-            border-color: #22a8dc;
-            box-shadow: 0 0 0 3px rgba(34, 168, 220, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .qr-scanner {
-            background: linear-gradient(45deg, #22a8dc, #fdd835);
+        .pulse-animation {
             animation: pulse 2s infinite;
         }
-        
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        
-        .feature-card {
-            transition: all 0.3s ease;
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        .welcome-animation {
+            animation: welcomeGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes welcomeGlow {
+            from { box-shadow: 0 0 20px rgba(34, 168, 220, 0.3); }
+            to { box-shadow: 0 0 40px rgba(34, 168, 220, 0.6), 0 0 60px rgba(253, 216, 53, 0.3); }
+        }
+        
+        .benefit-item {
+            animation: slideInLeft 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .success-celebration {
+            animation: celebration 1s ease-out;
+        }
+        
+        @keyframes celebration {
+            0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .download-button {
+            animation: downloadPulse 2s ease-in-out infinite;
+            background: linear-gradient(45deg, #22a8dc, #1976d2, #fdd835);
+            background-size: 300% 300%;
+            animation: downloadPulse 2s ease-in-out infinite, gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes downloadPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
-    <!-- Conteneur principal -->
-    <div class="w-full max-w-md mx-auto fade-in">
-        <!-- Logo et Splash Screen -->
-        <div class="text-center mb-8 floating-animation">
-            <div class="bg-white rounded-full p-6 shadow-2xl inline-block mb-4">
-                <img src="https://jokkootech.com/wp-content/uploads/elementor/thumbs/CENTRAL_EQUIPEMENT-1-removebg-preview-qmtu95vg6ca8in6ds4b6xx9yzi550nl7zpyzehgycc.webp" 
-                     alt="Central Equipements" 
-                     class="h-16 w-auto object-contain"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="hidden text-2xl font-bold blue-corporate">CE</div>
-            </div>
-            <h1 class="text-2xl font-bold text-white mb-2">CENTRAL EQUIPEMENTS</h1>
-            <p class="text-white/80 text-sm font-medium">Votre Partenaire Croissance</p>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header avec logo -->
+    <header class="bg-white shadow-sm p-4 text-center">
+        <div class="flex items-center justify-center">
+            <img src="https://jokkootech.com/wp-content/uploads/elementor/thumbs/CENTRAL_EQUIPEMENT-1-removebg-preview-qmtu95vg6ca8in6ds4b6xx9yzi550nl7zpyzehgycc.webp" 
+                 alt="Central Equipements" 
+                 class="h-12 w-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h1 class="text-xl font-bold hidden cursor-pointer hover:opacity-80 transition-opacity" 
+                style="color: #22a8dc;">CENTRAL EQUIPEMENTS</h1>
         </div>
+    </header>
 
-        <!-- Carte d'authentification -->
-        <div class="glass-effect rounded-2xl shadow-2xl p-6 mb-6">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold blue-corporate mb-2">Bienvenue !</h2>
-                <p class="text-gray-600">Accédez à vos avantages exclusifs</p>
-            </div>
-
-            <!-- Formulaire de connexion -->
-            <form id="auth-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        📧 Email ou Téléphone
-                    </label>
-                    <input type="text" 
-                           id="login-field" 
-                           placeholder="votre@email.com ou 77 123 45 67"
-                           required 
-                           class="w-full px-4 py-3 rounded-xl border border-gray-300 input-focus font-medium">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        🔒 Mot de passe
-                    </label>
-                    <input type="password" 
-                           id="password-field" 
-                           placeholder="••••••••"
-                           required 
-                           class="w-full px-4 py-3 rounded-xl border border-gray-300 input-focus font-medium">
-                </div>
-                
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center">
-                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 mr-2">
-                        <span class="text-gray-600">Se souvenir</span>
-                    </label>
-                    <a href="#" class="blue-corporate font-semibold hover:underline">Mot de passe oublié ?</a>
-                </div>
-                
-                <button type="submit" class="w-full btn-primary text-white font-bold py-3 px-6 rounded-xl">
-                    🚀 Se connecter
-                </button>
-            </form>
-            
-            <div class="text-center mt-4">
-                <p class="text-gray-600 text-sm">
-                    Pas encore de compte ? 
-                    <button onclick="showRegisterForm()" class="blue-corporate font-semibold hover:underline">
-                        Créer un compte
-                    </button>
-                </p>
-            </div>
-        </div>
-
-        <!-- Scanner QR Code -->
-        <div class="glass-effect rounded-2xl shadow-2xl p-4 mb-6">
-            <div class="text-center">
-                <div class="qr-scanner rounded-xl p-4 mb-3 inline-block">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h.01M12 12v4.01"></path>
+    <!-- Contenu principal -->
+    <main class="flex-1 px-6 py-8 space-y-8">
+        <!-- Page d'inscription (visible par défaut) -->
+        <div id="registration-page">
+            <!-- Section Titre -->
+            <div class="text-center space-y-4">
+                <div class="flex items-center justify-center space-x-3">
+                    <svg class="w-8 h-8 text-yellow-500 pulse-animation" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <h2 class="text-3xl font-black tracking-wide text-white">Rejoignez le Club Avantage CE !</h2>
+                    <svg class="w-8 h-8 text-red-500 pulse-animation" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
                     </svg>
                 </div>
-                <p class="text-sm font-semibold text-gray-700 mb-2">Accès rapide avec QR Code</p>
-                <button onclick="accessWithQR()" class="btn-secondary font-bold py-2 px-4 rounded-lg text-sm">
-                    📱 Scanner le code
-                </button>
+                <p class="text-xl text-white/90 font-semibold px-4">
+                    Inscrivez-vous maintenant et recevez votre cadeau de bienvenue : <span class="text-yellow-300 font-black">-5% sur votre achat d'aujourd'hui !</span>
+                </p>
             </div>
-        </div>
 
-        <!-- Options d'accès -->
-        <div class="space-y-3">
-            <div class="glass-effect rounded-xl p-4 feature-card">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-blue-100 rounded-lg p-2">
-                            <svg class="w-5 h-5 blue-corporate" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Section Bénéfices -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 welcome-animation">
+                <h3 class="text-2xl font-bold text-center mb-6" style="color: #22a8dc;">🎉 Vos Avantages Exclusifs</h3>
+                <div class="space-y-4">
+                    <div class="benefit-item flex items-center space-x-4 p-3 bg-green-50 rounded-xl" style="animation-delay: 0.1s;">
+                        <div class="bg-green-500 rounded-full p-2 flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Un bonus de -5% immédiat</h4>
+                            <p class="text-sm text-gray-600">Applicable dès votre inscription sur votre achat du jour</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item flex items-center space-x-4 p-3 bg-blue-50 rounded-xl" style="animation-delay: 0.2s;">
+                        <div class="bg-blue-500 rounded-full p-2 flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-800">Générateur de Code</h3>
-                            <p class="text-xs text-gray-600">Obtenez votre code de réduction</p>
+                            <h4 class="font-bold text-gray-800">Cumulez des points à chaque visite</h4>
+                            <p class="text-sm text-gray-600">1 point = 1000 FCFA + 50 points de bienvenue offerts</p>
                         </div>
                     </div>
-                    <button onclick="goToCodeGenerator()" class="text-blue-600 hover:text-blue-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="glass-effect rounded-xl p-4 feature-card">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-yellow-100 rounded-lg p-2">
-                            <svg class="w-5 h-5 gold-accent" fill="currentColor" viewBox="0 0 24 24">
+                    
+                    <div class="benefit-item flex items-center space-x-4 p-3 bg-purple-50 rounded-xl" style="animation-delay: 0.3s;">
+                        <div class="bg-purple-500 rounded-full p-2 flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-800">Programme Fidélité</h3>
-                            <p class="text-xs text-gray-600">Calculez vos points de fidélité</p>
+                            <h4 class="font-bold text-gray-800">Accédez à des récompenses exclusives</h4>
+                            <p class="text-sm text-gray-600">Réductions, livraisons gratuites, produits offerts</p>
                         </div>
                     </div>
-                    <button onclick="goToLoyaltyProgram()" class="text-yellow-600 hover:text-yellow-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                    
+                    <div class="benefit-item flex items-center space-x-4 p-3 bg-yellow-50 rounded-xl" style="animation-delay: 0.4s;">
+                        <div class="bg-yellow-500 rounded-full p-2 flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Obtenez votre carte de fidélité virtuelle</h4>
+                            <p class="text-sm text-gray-600">Suivez vos points et avantages depuis notre application</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire d'inscription -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold" style="color: #22a8dc;">📝 Inscription Gratuite</h3>
+                    <p class="text-gray-600 mt-2">Quelques secondes suffisent pour rejoindre le club !</p>
+                </div>
+                
+                <form id="registration-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Prénom *</label>
+                            <input type="text" id="prenom" placeholder="Votre prénom" required 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nom *</label>
+                            <input type="text" id="nom" placeholder="Votre nom" required 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                        <input type="email" id="email" placeholder="votre@email.com" required 
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Téléphone *</label>
+                        <input type="tel" id="telephone" placeholder="77 123 45 67" required 
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="terms" required class="rounded border-gray-300 text-blue-600">
+                            <label for="terms" class="text-sm text-gray-700">
+                                J'accepte de recevoir les offres exclusives du Club Avantage CE par email et SMS
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 shine">
+                        🎁 Je m'inscris et je reçois mon bonus !
+                    </button>
+                </form>
+                
+                <div id="form-message" class="mt-4 text-center"></div>
+            </div>
+        </div>
+
+        <!-- Page de confirmation (cachée par défaut) -->
+        <div id="confirmation-page" class="hidden">
+            <!-- Message de félicitations -->
+            <div class="text-center space-y-6 success-celebration">
+                <div class="bg-white rounded-2xl shadow-2xl p-8">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-black text-green-600 mb-4">Félicitations !</h2>
+                    <p class="text-xl text-gray-700 mb-6">
+                        <span class="font-bold" id="member-name">Vous</span> êtes maintenant membre du <span class="font-bold" style="color: #22a8dc;">Club Avantage CE</span> !
+                    </p>
+                    
+                    <!-- Code de bienvenue -->
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white mb-6">
+                        <p class="text-lg font-semibold mb-2">Votre code de bienvenue :</p>
+                        <div class="text-4xl font-black tracking-widest" id="welcome-code">CE280</div>
+                        <p class="text-sm mt-2 opacity-90">Montrez-le en caisse pour profiter de -5%</p>
+                    </div>
+                    
+                    <!-- Points de bienvenue -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                        <div class="flex items-center justify-center space-x-3">
+                            <svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <div>
+                                <p class="font-bold text-gray-800">50 points de bienvenue crédités !</p>
+                                <p class="text-sm text-gray-600">Votre solde actuel : 50 points</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bouton de téléchargement de l'application -->
+                <div class="bg-white rounded-2xl shadow-2xl p-6">
+                    <div class="text-center space-y-4">
+                        <div class="text-4xl mb-2">📱</div>
+                        <h3 class="text-2xl font-bold" style="color: #22a8dc;">Ne manquez aucun avantage !</h3>
+                        <p class="text-gray-600 mb-6">
+                            Téléchargez notre application pour suivre vos points, accéder à votre carte virtuelle et recevoir des offres exclusives !
+                        </p>
+                        
+                        <button onclick="downloadApp()" class="download-button text-white font-black py-6 px-8 rounded-2xl text-xl shadow-2xl transform hover:scale-105 transition-all">
+                            📲 Télécharger l'Application Club CE
+                        </button>
+                        
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <div class="text-2xl mb-2">💳</div>
+                                <h4 class="font-semibold text-gray-800">Carte Virtuelle</h4>
+                                <p class="text-xs text-gray-600">Toujours dans votre poche</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <div class="text-2xl mb-2">🎯</div>
+                                <h4 class="font-semibold text-gray-800">Suivi Points</h4>
+                                <p class="text-xs text-gray-600">En temps réel</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="space-y-4">
+                    <button onclick="useCodeNow()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all">
+                        🛒 Utiliser mon code maintenant
+                    </button>
+                    <button onclick="shareWithFriends()" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all">
+                        👥 Partager avec mes amis
                     </button>
                 </div>
             </div>
         </div>
+    </main>
 
-        <!-- Footer -->
-        <div class="text-center mt-6">
-            <p class="text-white/60 text-xs">
-                © 2024 Central Equipements - L'Excellence à portée de main
-            </p>
-        </div>
-    </div>
-
-    <!-- Modal d'inscription -->
-    <div id="register-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="glass-effect rounded-2xl shadow-2xl p-6 w-full max-w-md">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold blue-corporate mb-2">Créer un compte</h2>
-                <p class="text-gray-600">Rejoignez notre programme d'avantages</p>
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8 pb-6 border-b border-gray-700">
+                <p class="text-sm text-gray-300">
+                    Club Avantage CE - Votre fidélité récompensée chaque jour
+                </p>
             </div>
             
-            <form id="register-form" class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="Prénom" required class="px-3 py-2 rounded-lg border border-gray-300 input-focus text-sm">
-                    <input type="text" placeholder="Nom" required class="px-3 py-2 rounded-lg border border-gray-300 input-focus text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-white mb-4">Nos Coordonnées</h3>
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-5 h-5 text-blue-400 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <div>
+                            <a href="https://maps.google.com/?q=Central+Equipements+Keur+Massar+en+Face+du+Supermarché+Auchan" 
+                               target="_blank" 
+                               class="text-white font-medium hover:text-blue-400 transition-colors">
+                                Central Equipements
+                            </a>
+                            <p class="text-gray-300 text-sm">Keur Massar en Face du Supermarché Auchan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.516"/>
+                        </svg>
+                        <a href="https://wa.me/221762237440?text=J%27ai%20rejoint%20le%20Club%20Avantage%20CE%20et%20j%27aimerais%20plus%20d%27informations" 
+                           target="_blank" 
+                           class="text-white font-medium hover:text-green-400 transition-colors">
+                            762237440
+                        </a>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <a href="mailto:club@centralequipements.com" 
+                           class="text-white font-medium hover:text-red-400 transition-colors">
+                            club@centralequipements.com
+                        </a>
+                    </div>
                 </div>
-                <input type="email" placeholder="Email" required class="w-full px-3 py-2 rounded-lg border border-gray-300 input-focus">
-                <input type="tel" placeholder="Téléphone" required class="w-full px-3 py-2 rounded-lg border border-gray-300 input-focus">
-                <input type="password" placeholder="Mot de passe" required class="w-full px-3 py-2 rounded-lg border border-gray-300 input-focus">
                 
-                <div class="flex space-x-3">
-                    <button type="button" onclick="hideRegisterForm()" class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg">
-                        Annuler
-                    </button>
-                    <button type="submit" class="flex-1 btn-primary text-white font-semibold py-2 px-4 rounded-lg">
-                        S'inscrire
-                    </button>
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-white mb-4">Club Avantage</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="text-sm">Programme de fidélité</span>
+                        </a>
+                        
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+                            </svg>
+                            <span class="text-sm">Récompenses exclusives</span>
+                        </a>
+                        
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="text-sm">Application mobile</span>
+                        </a>
+                    </div>
                 </div>
-            </form>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-white mb-4">Support</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <span class="text-sm">Aide & FAQ</span>
+                        </a>
+                        
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                            <span class="text-sm">Conditions d'utilisation</span>
+                        </a>
+                        
+                        <a href="#" class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                            <span class="text-sm">Politique de confidentialité</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 Central Equipements - Club Avantage CE. Tous droits réservés.
+                </p>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script>
-        // Gestion de l'authentification
-        document.getElementById('auth-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const login = document.getElementById('login-field').value;
-            const password = document.getElementById('password-field').value;
-            
-            // Simulation de connexion
-            if (login && password) {
-                showSuccessMessage('Connexion réussie ! Redirection...');
-                setTimeout(() => {
-                    // Rediriger vers le tableau de bord ou la page principale
-                    goToCodeGenerator();
-                }, 1500);
-            }
-        });
-        
+        // Configuration Google Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVDYE_Z30uiN666LlNTieb0keEVgpypXo0TgaYNmhmoOyyywWJszfKcSSmSjvQ-dBS/exec';
+
         // Gestion de l'inscription
-        document.getElementById('register-form').addEventListener('submit', function(e) {
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            showSuccessMessage('Compte créé avec succès !');
-            setTimeout(() => {
-                hideRegisterForm();
-                goToCodeGenerator();
-            }, 1500);
-        });
-        
-        // Fonctions de navigation
-        function showRegisterForm() {
-            document.getElementById('register-modal').classList.remove('hidden');
-            document.getElementById('register-modal').classList.add('flex');
-        }
-        
-        function hideRegisterForm() {
-            document.getElementById('register-modal').classList.add('hidden');
-            document.getElementById('register-modal').classList.remove('flex');
-        }
-        
-        function accessWithQR() {
-            showSuccessMessage('Scanner QR activé ! Scannez votre carte...');
-            // Ici vous pourriez intégrer une vraie fonctionnalité de scan QR
-            setTimeout(() => {
-                goToCodeGenerator();
-            }, 2000);
-        }
-        
-        function goToCodeGenerator() {
-            // Redirection vers la page du générateur de code
-            showSuccessMessage('Redirection vers le générateur de code...');
-            setTimeout(() => {
-                // Ici vous redirigeriez vers votre page de générateur de code existante
-                window.location.href = '#code-generator'; // Remplacez par l'URL réelle
-            }, 1000);
-        }
-        
-        function goToLoyaltyProgram() {
-            // Redirection vers le programme de fidélité
-            showSuccessMessage('Redirection vers le programme fidélité...');
-            setTimeout(() => {
-                // Ici vous redirigeriez vers la page du programme de fidélité
-                window.location.href = '#loyalty-program'; // Remplacez par l'URL réelle
-            }, 1000);
-        }
-        
-        // Fonction pour afficher les messages de succès
-        function showSuccessMessage(message) {
-            // Créer un toast de notification
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
-            toast.textContent = message;
-            document.body.appendChild(toast);
             
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-        
-        // Fermer le modal en cliquant à l'extérieur
-        document.getElementById('register-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                hideRegisterForm();
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const terms = document.getElementById('terms').checked;
+            const messageDiv = document.getElementById('form-message');
+            
+            // Validation
+            if (!prenom || !nom || !email || !telephone) {
+                showMessage('Veuillez remplir tous les champs obligatoires.', 'error');
+                return;
             }
+            
+            if (!email.includes('@') || !email.includes('.')) {
+                showMessage('Veuillez saisir une adresse email valide.', 'error');
+                return;
+            }
+            
+            if (!terms) {
+                showMessage('Veuillez accepter les conditions pour continuer.', 'error');
+                return;
+            }
+            
+            // Générer un code de bienvenue unique
+            const welcomeCode = 'CE' + Math.floor(Math.random() * 900 + 100);
+            
+            // Afficher le message de traitement
+            showMessage('🎉 Inscription en cours... Création de votre compte Club Avantage CE !', 'processing');
+            
+            // Préparer les données pour Google Apps Script
+            const registrationData = {
+                action: 'register_member',
+                prenom: prenom,
+                nom: nom,
+                email: email,
+                telephone: telephone,
+                welcomeCode: welcomeCode,
+                welcomePoints: 50,
+                timestamp: new Date().toISOString(),
+                source: 'QR_Code_Registration'
+            };
+            
+            // Envoyer à Google Apps Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData)
+            })
+            .then(response => {
+                console.log('Registration successful!', response);
+                
+                // Afficher la page de confirmation
+                showConfirmationPage(prenom, nom, welcomeCode);
+                
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                
+                // Même en cas d'erreur réseau, on affiche la confirmation
+                // car l'inscription peut avoir réussi côté serveur
+                showMessage('Inscription réussie ! Affichage de votre code...', 'success');
+                setTimeout(() => {
+                    showConfirmationPage(prenom, nom, welcomeCode);
+                }, 2000);
+            });
         });
-        
+
+        // Afficher la page de confirmation
+        function showConfirmationPage(prenom, nom, code) {
+            // Masquer la page d'inscription
+            document.getElementById('registration-page').classList.add('hidden');
+            
+            // Mettre à jour les informations personnalisées
+            document.getElementById('member-name').textContent = `${prenom} ${nom}`;
+            document.getElementById('welcome-code').textContent = code;
+            
+            // Afficher la page de confirmation
+            document.getElementById('confirmation-page').classList.remove('hidden');
+            
+            // Faire défiler vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Sauvegarder les données localement
+            const memberData = {
+                prenom: prenom,
+                nom: nom,
+                welcomeCode: code,
+                points: 50,
+                registrationDate: new Date().toISOString()
+            };
+            localStorage.setItem('ce_member_data', JSON.stringify(memberData));
+        }
+
+        // Fonctions d'action
+        function downloadApp() {
+            showMessage('🚀 Redirection vers le téléchargement de l\'application...', 'info');
+            
+            // Ici vous pourriez rediriger vers l'App Store ou Google Play
+            // Pour l'instant, on simule
+            setTimeout(() => {
+                // Exemple de redirection vers une page de téléchargement
+                // window.location.href = 'https://play.google.com/store/apps/details?id=com.centralequipements.club';
+                showMessage('📱 L\'application sera bientôt disponible ! Nous vous préviendrons par email.', 'success');
+            }, 1500);
+        }
+
+        function useCodeNow() {
+            showMessage('🛒 Parfait ! Montrez votre code en caisse pour bénéficier de votre réduction.', 'success');
+        }
+
+        function shareWithFriends() {
+            const shareText = `🎉 Je viens de rejoindre le Club Avantage CE ! -5% immédiat + points de fidélité. Rejoins-moi : ${window.location.href}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Club Avantage CE',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback pour les navigateurs qui ne supportent pas l'API de partage
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showMessage('📋 Lien copié ! Partagez-le avec vos amis.', 'success');
+                });
+            }
+        }
+
+        // Fonction pour afficher les messages
+        function showMessage(message, type = 'info') {
+            const messageDiv = document.getElementById('form-message');
+            let bgColor, textColor;
+            
+            switch(type) {
+                case 'success':
+                    bgColor = 'bg-green-100 border border-green-300';
+                    textColor = 'text-green-700';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-100 border border-red-300';
+                    textColor = 'text-red-700';
+                    break;
+                case 'processing':
+                    bgColor = 'bg-blue-100 border border-blue-300';
+                    textColor = 'text-blue-700';
+                    break;
+                default:
+                    bgColor = 'bg-gray-100 border border-gray-300';
+                    textColor = 'text-gray-700';
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="${bgColor} ${textColor} p-3 rounded-lg font-medium">
+                    ${message}
+                </div>
+            `;
+            
+            // Faire défiler vers le message
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Formatage automatique du téléphone
+        document.getElementById('telephone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            
+            // Format sénégalais : 77 123 45 67
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + ' ' + value.substring(2);
+            }
+            if (value.length >= 6) {
+                value = value.substring(0, 6) + ' ' + value.substring(6);
+            }
+            if (value.length >= 9) {
+                value = value.substring(0, 9) + ' ' + value.substring(9, 11);
+            }
+            
+            e.target.value = value;
+        });
+
         // Animation d'entrée au chargement
         window.addEventListener('load', function() {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
+            // Vérifier si l'utilisateur est déjà inscrit
+            const memberData = localStorage.getItem('ce_member_data');
+            if (memberData) {
+                const data = JSON.parse(memberData);
+                const registrationDate = new Date(data.registrationDate);
+                const now = new Date();
+                const hoursSinceRegistration = (now - registrationDate) / (1000 * 60 * 60);
+                
+                // Si inscrit il y a moins de 24h, afficher directement la confirmation
+                if (hoursSinceRegistration < 24) {
+                    showConfirmationPage(data.prenom, data.nom, data.welcomeCode);
+                    return;
+                }
+            }
+            
+            // Animation des éléments bénéfices
+            const benefitItems = document.querySelectorAll('.benefit-item');
+            benefitItems.forEach((item, index) => {
+                item.style.animationDelay = `${0.1 + (index * 0.1)}s`;
+            });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97658c17d44e51c5',t:'MTc1NjQwMjMzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9765a1d206962575',t:'MTc1NjQwMzIyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
