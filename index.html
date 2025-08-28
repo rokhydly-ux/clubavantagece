@@ -46,9 +46,175 @@
             0% { left: -100%; }
             100% { left: 100%; }
         }
+        
+        /* Animation de la boîte cadeau */
+        .gift-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-in-out 2.5s forwards;
+        }
+        
+        .gift-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            perspective: 1000px;
+        }
+        
+        .gift-base {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            border-radius: 8px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .gift-lid {
+            width: 120px;
+            height: 40px;
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            border-radius: 8px 8px 4px 4px;
+            position: absolute;
+            top: 0;
+            transform-origin: bottom;
+            animation: openLid 1s ease-in-out 0.5s forwards;
+        }
+        
+        .gift-ribbon-v {
+            width: 8px;
+            height: 120px;
+            background: linear-gradient(to bottom, #fbbf24, #f59e0b);
+            position: absolute;
+            left: 56px;
+            top: 0;
+            border-radius: 4px;
+        }
+        
+        .gift-ribbon-h {
+            width: 120px;
+            height: 8px;
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
+            position: absolute;
+            left: 0;
+            top: 36px;
+            border-radius: 4px;
+        }
+        
+        .gift-bow {
+            width: 24px;
+            height: 16px;
+            background: #fbbf24;
+            position: absolute;
+            left: 48px;
+            top: 28px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform: rotate(45deg);
+        }
+        
+        .gift-bow::before {
+            content: '';
+            width: 24px;
+            height: 16px;
+            background: #fbbf24;
+            position: absolute;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform: rotate(90deg);
+        }
+        
+        .percentage-popup {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            opacity: 0;
+            animation: popOut 1.5s ease-out 1.2s forwards;
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fbbf24;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s ease-out forwards;
+        }
+        
+        @keyframes openLid {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(-120deg); }
+        }
+        
+        @keyframes popOut {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-50%) scale(0.5) translateY(20px); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) scale(1.2) translateY(-10px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(-50%) scale(1) translateY(-20px); 
+            }
+        }
+        
+        @keyframes sparkle {
+            0% { 
+                opacity: 1; 
+                transform: scale(0) rotate(0deg); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1) rotate(180deg); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0.5) rotate(360deg) translateY(-100px); 
+            }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Animation de la boîte cadeau -->
+    <div id="gift-animation" class="gift-animation">
+        <div class="gift-box">
+            <div class="gift-base"></div>
+            <div class="gift-lid"></div>
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+            <div class="gift-bow"></div>
+            <div class="percentage-popup">-5%</div>
+            <div class="particles" id="particles"></div>
+        </div>
+    </div>
     <!-- Header avec logo -->
     <header class="bg-white shadow-sm p-4 text-center">
         <div class="flex items-center justify-center">
@@ -84,28 +250,54 @@
         </div>
 
         <!-- Section Code Sécurisé -->
-        <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl shadow-lg p-6 text-white">
+        <div class="bg-gray-300 rounded-2xl shadow-lg p-6 text-gray-800">
             <div class="space-y-4">
                 <div class="flex items-center justify-center space-x-2">
-                    <svg class="w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 1L3 5v6c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V5l-9-4z"/>
                         <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none"/>
                     </svg>
-                    <p class="text-lg font-semibold">CODE SÉCURISÉ DE VALIDATION</p>
+                    <p class="text-lg font-semibold text-gray-700">CODE SÉCURISÉ DE VALIDATION</p>
                 </div>
                 
                 <!-- Formulaire de validation -->
                 <div id="validation-form" class="space-y-4">
-                    <div class="bg-white bg-opacity-20 rounded-xl p-4 space-y-3">
-                        <div class="text-left">
-                            <label class="block text-sm font-medium mb-1">Adresse email :</label>
-                            <input type="email" id="email-input" class="w-full px-3 py-2 rounded-lg text-gray-800 font-medium" placeholder="votre@email.com" required>
+                    <div class="bg-white rounded-xl p-4 space-y-3 border border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="text-left">
+                                <label class="block text-sm font-medium mb-1 text-gray-700">Nom * :</label>
+                                <input type="text" id="lastname-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Votre nom" required>
+                            </div>
+                            <div class="text-left">
+                                <label class="block text-sm font-medium mb-1 text-gray-700">Prénom * :</label>
+                                <input type="text" id="firstname-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Votre prénom" required>
+                            </div>
                         </div>
+                        
                         <div class="text-left">
-                            <label class="block text-sm font-medium mb-1">Numéro de facture :</label>
-                            <input type="text" id="invoice-input" class="w-full px-3 py-2 rounded-lg text-gray-800 font-medium" placeholder="Ex: FAC-2024-001" required>
+                            <label class="block text-sm font-medium mb-1 text-gray-700">Téléphone :</label>
+                            <input type="tel" id="phone-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="Ex: 06 12 34 56 78">
                         </div>
-                        <button onclick="validateAndGenerateCode()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-purple-800 font-bold py-3 px-6 rounded-lg transition-colors">
+                        
+                        <div class="text-center text-sm font-medium text-gray-600">
+                            OU
+                        </div>
+                        
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-1 text-gray-700">Email :</label>
+                            <input type="email" id="email-input" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium" placeholder="votre@email.com">
+                        </div>
+                        
+                        <div class="text-left">
+                            <label class="block text-sm font-medium mb-1 text-gray-700">Numéro de facture (4 chiffres) * :</label>
+                            <input type="text" id="invoice-input" maxlength="4" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-800 font-medium text-center text-xl tracking-widest" placeholder="0000" required>
+                        </div>
+                        
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                            * Champs obligatoires. Vous devez renseigner soit votre téléphone, soit votre email.
+                        </div>
+                        
+                        <button onclick="validateAndGenerateCode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
                             🔓 GÉNÉRER MON CODE
                         </button>
                     </div>
@@ -113,15 +305,21 @@
 
                 <!-- Code généré (caché initialement) -->
                 <div id="code-display" class="hidden space-y-4">
-                    <div class="bg-white rounded-xl p-4 text-center">
+                    <div class="bg-white rounded-xl p-4 text-center border-2 border-green-500">
                         <div class="text-4xl font-black tracking-widest" style="color: #22a8dc;" id="unique-code">
                             CE000
                         </div>
                     </div>
-                    <div class="text-sm opacity-90 space-y-1">
-                        <p>🔒 Code unique et non réutilisable</p>
-                        <p>⏰ Valide 24h pour cette IP et cet email</p>
-                        <p>📧 Email: <span id="validated-email" class="font-semibold"></span></p>
+                    <div class="text-sm text-gray-600 space-y-1 bg-white p-3 rounded-lg">
+                        <p>🔒 <strong>Code unique et non réutilisable</strong></p>
+                        <p>⏰ Valide 24h pour vos informations</p>
+                        <p>👤 Client: <span id="validated-client" class="font-semibold"></span></p>
+                        <p>📞 Contact: <span id="validated-contact" class="font-semibold"></span></p>
+                    </div>
+                    <div class="bg-red-100 border border-red-300 rounded-lg p-3">
+                        <p class="text-red-700 text-sm font-medium">
+                            ⚠️ Vous ne pourrez plus générer de nouveau code avec ces informations.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -165,19 +363,18 @@
         const securityStorage = {
             codes: JSON.parse(localStorage.getItem('ce_codes') || '{}'),
             
-            saveCode: function(email, ip, code) {
-                const key = `${email}_${ip}`;
+            saveCode: function(clientData, code) {
+                const key = this.generateKey(clientData);
                 this.codes[key] = {
                     code: code,
                     timestamp: Date.now(),
-                    email: email,
-                    ip: ip
+                    clientData: clientData
                 };
                 localStorage.setItem('ce_codes', JSON.stringify(this.codes));
             },
             
-            getCode: function(email, ip) {
-                const key = `${email}_${ip}`;
+            getCode: function(clientData) {
+                const key = this.generateKey(clientData);
                 const stored = this.codes[key];
                 
                 if (!stored) return null;
@@ -193,6 +390,12 @@
                 }
                 
                 return stored;
+            },
+            
+            generateKey: function(clientData) {
+                // Créer une clé unique basée sur les données client
+                const contact = clientData.phone || clientData.email;
+                return `${clientData.lastname}_${clientData.firstname}_${contact}_${clientData.invoice}`.toLowerCase();
             }
         };
 
@@ -202,35 +405,53 @@
             return `CE${randomNum}`;
         }
 
-        function getClientIP() {
-            // Simulation d'IP (en réalité, il faudrait un service externe)
-            return 'IP_' + Math.random().toString(36).substr(2, 8);
-        }
-
         function validateAndGenerateCode() {
+            const lastname = document.getElementById('lastname-input').value.trim();
+            const firstname = document.getElementById('firstname-input').value.trim();
+            const phone = document.getElementById('phone-input').value.trim();
             const email = document.getElementById('email-input').value.trim();
             const invoice = document.getElementById('invoice-input').value.trim();
             
-            // Validation des champs
-            if (!email || !invoice) {
-                alert('Veuillez remplir tous les champs obligatoires.');
+            // Validation des champs obligatoires
+            if (!lastname || !firstname || !invoice) {
+                alert('Veuillez remplir tous les champs obligatoires (nom, prénom, numéro de facture).');
                 return;
             }
             
-            if (!email.includes('@') || !email.includes('.')) {
+            // Validation du contact (téléphone OU email)
+            if (!phone && !email) {
+                alert('Veuillez renseigner soit votre numéro de téléphone, soit votre adresse email.');
+                return;
+            }
+            
+            // Validation de l'email si renseigné
+            if (email && (!email.includes('@') || !email.includes('.'))) {
                 alert('Veuillez saisir une adresse email valide.');
                 return;
             }
             
-            if (invoice.length < 5) {
-                alert('Le numéro de facture doit contenir au moins 5 caractères.');
+            // Validation du numéro de facture (exactement 4 chiffres)
+            if (!/^\d{4}$/.test(invoice)) {
+                alert('Le numéro de facture doit contenir exactement 4 chiffres.');
                 return;
             }
             
-            const clientIP = getClientIP();
+            // Validation du téléphone si renseigné (format français basique)
+            if (phone && !/^[0-9\s\-\+\.]{10,}$/.test(phone)) {
+                alert('Veuillez saisir un numéro de téléphone valide.');
+                return;
+            }
             
-            // Vérifier si un code existe déjà pour cette combinaison email/IP
-            let existingCode = securityStorage.getCode(email, clientIP);
+            const clientData = {
+                lastname: lastname,
+                firstname: firstname,
+                phone: phone,
+                email: email,
+                invoice: invoice
+            };
+            
+            // Vérifier si un code existe déjà pour ce client
+            let existingCode = securityStorage.getCode(clientData);
             
             let code;
             if (existingCode) {
@@ -238,12 +459,13 @@
             } else {
                 // Générer un nouveau code
                 code = generateCECode();
-                securityStorage.saveCode(email, clientIP, code);
+                securityStorage.saveCode(clientData, code);
             }
             
             // Afficher le code
             document.getElementById('unique-code').textContent = code;
-            document.getElementById('validated-email').textContent = email;
+            document.getElementById('validated-client').textContent = `${firstname} ${lastname}`;
+            document.getElementById('validated-contact').textContent = phone || email;
             
             // Masquer le formulaire et afficher le code
             document.getElementById('validation-form').classList.add('hidden');
@@ -269,9 +491,35 @@
             document.getElementById('current-datetime').textContent = formattedDate;
         }
 
+        // Animation des particules
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 12;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Position aléatoire autour de la boîte
+                const angle = (360 / particleCount) * i;
+                const radius = 60;
+                const x = Math.cos(angle * Math.PI / 180) * radius + 60;
+                const y = Math.sin(angle * Math.PI / 180) * radius + 60;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.animationDelay = (1.2 + Math.random() * 0.5) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
         // Vérifier au chargement si un code existe déjà
         window.onload = function() {
             updateDateTime();
+            
+            // Créer les particules pour l'animation
+            createParticles();
             
             // Nettoyer les codes expirés au chargement
             const now = Date.now();
@@ -289,10 +537,19 @@
             if (hasExpired) {
                 localStorage.setItem('ce_codes', JSON.stringify(codes));
             }
+            
+            // Vérifier si l'utilisateur a déjà un code valide
+            checkExistingCode();
         };
+        
+        function checkExistingCode() {
+            // Cette fonction pourrait être étendue pour vérifier automatiquement
+            // si l'utilisateur revient avec les mêmes données
+            // Pour l'instant, on laisse l'utilisateur saisir ses informations
+        }
         
         // Mettre à jour chaque seconde pour empêcher les captures d'écran
         setInterval(updateDateTime, 1000);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97638ec41673d7c8',t:'MTc1NjM4MTQ3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9763c297426255aa',t:'MTc1NjM4MzU5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
