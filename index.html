@@ -642,7 +642,7 @@
                 return;
             }
             
-            console.log('📊 Chargement des données utilisateur...');
+            console.log('📊 Chargement des données utilisateur pour:', user.email);
             
             // Nettoyer l'ancien écouteur s'il existe
             if (userDataListener) {
@@ -653,51 +653,115 @@
             // Écouter les changements en temps réel
             userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
                 if (doc.exists) {
-                    console.log('✅ Données utilisateur reçues');
+                    console.log('✅ Données utilisateur reçues:', doc.data());
                     const userData = doc.data();
                     updateUserInterface(userData);
                     loadRecentActivity();
                     
                     // Générer le QR Code après avoir chargé les données
-                    generateQRCode(user.uid);
+                    setTimeout(() => {
+                        generateQRCode(user.uid);
+                    }, 500);
                 } else {
-                    console.error('❌ Document utilisateur non trouvé');
-                    showMessage('Erreur: Données utilisateur non trouvées', 'error');
+                    console.error('❌ Document utilisateur non trouvé pour UID:', user.uid);
+                    
+                    // Créer le document utilisateur s'il n'existe pas (cas de connexion d'un ancien compte)
+                    console.log('🔧 Création du document utilisateur manquant...');
+                    const displayName = user.displayName || 'Membre CE';
+                    const nameParts = displayName.split(' ');
+                    
+                    db.collection('users').doc(user.uid).set({
+                        nom: nameParts[1] || 'CE',
+                        prenom: nameParts[0] || 'Membre',
+                        email: user.email,
+                        telephone: '',
+                        points: 50,
+                        lastTicket: '',
+                        tier: 'Bronze',
+                        welcomeCode: 'CE' + Math.floor(Math.random() * 900 + 100),
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        console.log('✅ Document utilisateur créé');
+                        showMessage('Compte initialisé avec succès !', 'success');
+                    }).catch((error) => {
+                        console.error('❌ Erreur création document:', error);
+                        showMessage('Erreur d\'initialisation du compte', 'error');
+                    });
                 }
             }, (error) => {
                 console.error('❌ Erreur lors du chargement des données:', error);
-                showMessage('Erreur de chargement des données', 'error');
+                showMessage('Erreur de chargement des données: ' + error.message, 'error');
             });
         }
 
         // Mettre à jour l'interface utilisateur
         function updateUserInterface(userData) {
-            document.getElementById('member-name').textContent = `${userData.prenom} ${userData.nom}`;
-            document.getElementById('member-email').textContent = userData.email;
-            document.getElementById('member-tier').textContent = userData.tier || 'Bronze';
+            console.log('🎨 Mise à jour de l\'interface avec:', userData);
             
-            // Date d'inscription
-            if (userData.createdAt) {
-                const date = userData.createdAt.toDate();
-                const options = { year: 'numeric', month: 'short' };
-                document.getElementById('member-since').textContent = date.toLocaleDateString('fr-FR', options);
-            } else {
-                // Fallback si pas de date dans la base
-                document.getElementById('member-since').textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
+            // Vérifier que les éléments existent avant de les modifier
+            const memberName = document.getElementById('member-name');
+            const memberEmail = document.getElementById('member-email');
+            const memberTier = document.getElementById('member-tier');
+            const memberSince = document.getElementById('member-since');
+            const pointsBalance = document.getElementById('points-balance');
+            
+            if (memberName) {
+                memberName.textContent = `${userData.prenom || 'Membre'} ${userData.nom || 'CE'}`;
+                console.log('✅ Nom mis à jour:', memberName.textContent);
+            }
+            
+            if (memberEmail) {
+                memberEmail.textContent = userData.email || 'email@example.com';
+                console.log('✅ Email mis à jour:', memberEmail.textContent);
+            }
+            
+            if (memberTier) {
+                memberTier.textContent = userData.tier || 'Bronze';
+                console.log('✅ Niveau mis à jour:', memberTier.textContent);
+            }
+            
+            // Date d'inscription avec gestion améliorée
+            if (memberSince) {
+                if (userData.createdAt && userData.createdAt.toDate) {
+                    try {
+                        const date = userData.createdAt.toDate();
+                        const options = { year: 'numeric', month: 'short' };
+                        memberSince.textContent = date.toLocaleDateString('fr-FR', options);
+                        console.log('✅ Date d\'inscription mise à jour:', memberSince.textContent);
+                    } catch (error) {
+                        console.error('❌ Erreur conversion date:', error);
+                        memberSince.textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
+                    }
+                } else {
+                    // Fallback pour les nouveaux comptes ou dates manquantes
+                    memberSince.textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
+                    console.log('⚠️ Date fallback utilisée:', memberSince.textContent);
+                }
             }
             
             // Points avec animation
-            const currentPoints = parseInt(document.getElementById('points-balance').textContent) || 0;
-            const newPoints = userData.points || 0;
-            animateNumber('points-balance', currentPoints, newPoints, 1000);
+            if (pointsBalance) {
+                const currentPoints = parseInt(pointsBalance.textContent) || 0;
+                const newPoints = userData.points || 0;
+                console.log('💰 Animation points:', currentPoints, '->', newPoints);
+                animateNumber('points-balance', currentPoints, newPoints, 1000);
+            }
             
             // Progression du niveau
-            updateLevelProgress(newPoints);
+            updateLevelProgress(userData.points || 0);
+            
+            console.log('✅ Interface utilisateur mise à jour complètement');
         }
 
         // Charger l'activité récente
         function loadRecentActivity() {
-            if (!currentUser) return;
+            if (!currentUser) {
+                console.log('⚠️ Aucun utilisateur connecté pour charger l\'activité');
+                return;
+            }
+            
+            console.log('📊 Chargement de l\'activité récente...');
             
             db.collection('users').doc(currentUser.uid).collection('history')
                 .orderBy('timestamp', 'desc')
@@ -705,13 +769,43 @@
                 .get()
                 .then((querySnapshot) => {
                     const activityContainer = document.getElementById('recent-activity');
+                    if (!activityContainer) {
+                        console.error('❌ Container d\'activité non trouvé');
+                        return;
+                    }
+                    
                     activityContainer.innerHTML = '';
                     
-                    querySnapshot.forEach((doc) => {
-                        const activity = doc.data();
-                        const activityElement = createActivityElement(activity);
-                        activityContainer.appendChild(activityElement);
-                    });
+                    if (querySnapshot.empty) {
+                        console.log('📝 Aucune activité trouvée, affichage du message par défaut');
+                        activityContainer.innerHTML = `
+                            <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-sm font-medium">Bienvenue dans le Club !</span>
+                                </div>
+                                <span class="text-sm text-gray-600">+50 pts</span>
+                            </div>
+                        `;
+                    } else {
+                        console.log('✅ Activités trouvées:', querySnapshot.size);
+                        querySnapshot.forEach((doc) => {
+                            const activity = doc.data();
+                            const activityElement = createActivityElement(activity);
+                            activityContainer.appendChild(activityElement);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('❌ Erreur chargement activité:', error);
+                    const activityContainer = document.getElementById('recent-activity');
+                    if (activityContainer) {
+                        activityContainer.innerHTML = `
+                            <div class="text-center text-gray-500 text-sm p-4">
+                                Erreur de chargement de l'activité
+                            </div>
+                        `;
+                    }
                 });
         }
 
@@ -747,19 +841,17 @@
                 return;
             }
             
+            console.log('🔲 Tentative de génération du QR Code pour:', userId);
+            
             const canvas = document.getElementById('qr-code');
             if (!canvas) {
-                console.error('❌ Canvas QR Code non trouvé');
+                console.error('❌ Canvas QR Code non trouvé dans le DOM');
+                // Essayer de créer le canvas s'il n'existe pas
+                setTimeout(() => generateQRCode(userId), 1000);
                 return;
             }
             
-            console.log('🔲 Génération du QR Code...');
-            
-            const qrData = {
-                userId: userId,
-                type: 'club_member',
-                timestamp: Date.now()
-            };
+            console.log('✅ Canvas trouvé, dimensions:', canvas.width, 'x', canvas.height);
             
             // Vérifier que QRCode est disponible
             if (typeof QRCode === 'undefined') {
@@ -768,19 +860,45 @@
                 return;
             }
             
-            QRCode.toCanvas(canvas, JSON.stringify(qrData), {
+            console.log('✅ Librairie QRCode disponible');
+            
+            const qrData = {
+                userId: userId,
+                type: 'club_member',
+                timestamp: Date.now(),
+                app: 'ClubAvantage-CE'
+            };
+            
+            const qrString = JSON.stringify(qrData);
+            console.log('📝 Données QR Code:', qrString);
+            
+            // Nettoyer le canvas avant de générer
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            QRCode.toCanvas(canvas, qrString, {
                 width: 200,
+                height: 200,
                 margin: 2,
                 color: {
                     dark: '#22a8dc',
                     light: '#ffffff'
-                }
+                },
+                errorCorrectionLevel: 'M'
             }, (error) => {
                 if (error) {
                     console.error('❌ Erreur génération QR Code:', error);
-                    showMessage('Erreur lors de la génération du QR Code', 'error');
+                    showMessage('Erreur lors de la génération du QR Code: ' + error.message, 'error');
+                    
+                    // Fallback: afficher un message dans le canvas
+                    ctx.fillStyle = '#22a8dc';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('QR Code', canvas.width/2, canvas.height/2 - 10);
+                    ctx.fillText('en cours...', canvas.width/2, canvas.height/2 + 10);
                 } else {
-                    console.log('✅ QR Code généré avec succès');
+                    console.log('✅ QR Code généré avec succès !');
+                    showMessage('QR Code généré !', 'success');
                 }
             });
         }
@@ -1012,5 +1130,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9767ea1b734c785f',t:'MTc1NjQyNzE2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9767f47ca513785f',t:'MTc1NjQyNzU4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
