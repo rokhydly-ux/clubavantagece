@@ -635,8 +635,8 @@
             }
         }
 
-        // Charger les données utilisateur - Version optimisée
-        function loadUserData(user) {
+        // Charger les données utilisateur - Version avec gestion des permissions
+        async function loadUserData(user) {
             if (!user) {
                 console.error('❌ Aucun utilisateur fourni pour loadUserData');
                 return;
@@ -650,27 +650,20 @@
                 userDataListener = null;
             }
             
-            // Écouter les changements en temps réel
-            userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
-                if (doc.exists) {
-                    console.log('✅ Données utilisateur reçues:', doc.data());
-                    const userData = doc.data();
-                    updateUserInterface(userData);
-                    loadRecentActivity();
+            try {
+                // D'abord, essayer de lire le document une seule fois pour tester les permissions
+                console.log('🔍 Test de lecture du document utilisateur...');
+                const docRef = db.collection('users').doc(user.uid);
+                const docSnapshot = await docRef.get();
+                
+                if (!docSnapshot.exists) {
+                    console.log('📝 Document utilisateur inexistant, création en cours...');
                     
-                    // Générer le QR Code après avoir chargé les données
-                    setTimeout(() => {
-                        generateQRCode(user.uid);
-                    }, 500);
-                } else {
-                    console.error('❌ Document utilisateur non trouvé pour UID:', user.uid);
-                    
-                    // Créer le document utilisateur s'il n'existe pas (cas de connexion d'un ancien compte)
-                    console.log('🔧 Création du document utilisateur manquant...');
+                    // Créer le document utilisateur
                     const displayName = user.displayName || 'Membre CE';
                     const nameParts = displayName.split(' ');
                     
-                    db.collection('users').doc(user.uid).set({
+                    const newUserData = {
                         nom: nameParts[1] || 'CE',
                         prenom: nameParts[0] || 'Membre',
                         email: user.email,
@@ -681,18 +674,94 @@
                         welcomeCode: 'CE' + Math.floor(Math.random() * 900 + 100),
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        console.log('✅ Document utilisateur créé');
-                        showMessage('Compte initialisé avec succès !', 'success');
-                    }).catch((error) => {
-                        console.error('❌ Erreur création document:', error);
-                        showMessage('Erreur d\'initialisation du compte', 'error');
+                    };
+                    
+                    await docRef.set(newUserData);
+                    console.log('✅ Document utilisateur créé avec succès');
+                    
+                    // Mettre à jour l'interface avec les nouvelles données
+                    updateUserInterface({
+                        ...newUserData,
+                        createdAt: new Date() // Pour l'affichage immédiat
                     });
+                    
+                    // Ajouter l'événement d'inscription à l'historique
+                    try {
+                        await docRef.collection('history').add({
+                            type: 'inscription',
+                            points: 50,
+                            description: 'Inscription au Club Avantage CE',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        console.log('✅ Historique d\'inscription ajouté');
+                    } catch (historyError) {
+                        console.error('⚠️ Erreur ajout historique:', historyError);
+                        // Ne pas bloquer pour l'historique
+                    }
+                    
+                } else {
+                    console.log('✅ Document utilisateur trouvé');
+                    const userData = docSnapshot.data();
+                    updateUserInterface(userData);
                 }
-            }, (error) => {
+                
+                // Maintenant configurer l'écouteur en temps réel
+                console.log('👂 Configuration de l\'écouteur temps réel...');
+                userDataListener = docRef.onSnapshot((doc) => {
+                    if (doc.exists) {
+                        console.log('🔄 Mise à jour temps réel reçue');
+                        const userData = doc.data();
+                        updateUserInterface(userData);
+                    }
+                }, (error) => {
+                    console.error('❌ Erreur écouteur temps réel:', error);
+                    // Ne pas afficher d'erreur pour l'écouteur, les données sont déjà chargées
+                });
+                
+                // Charger l'activité récente
+                loadRecentActivity();
+                
+                // Générer le QR Code
+                setTimeout(() => {
+                    generateQRCode(user.uid);
+                }, 500);
+                
+                showMessage('✅ Données chargées avec succès !', 'success');
+                
+            } catch (error) {
                 console.error('❌ Erreur lors du chargement des données:', error);
-                showMessage('Erreur de chargement des données: ' + error.message, 'error');
-            });
+                
+                let errorMessage = 'Erreur de chargement des données';
+                
+                if (error.code === 'permission-denied') {
+                    errorMessage = 'Permissions insuffisantes. Veuillez vous reconnecter.';
+                    console.log('🔄 Tentative de reconnexion automatique...');
+                    
+                    // Essayer de se reconnecter
+                    setTimeout(() => {
+                        auth.signOut().then(() => {
+                            showMessage('Reconnexion nécessaire, veuillez vous connecter à nouveau.', 'info');
+                        });
+                    }, 2000);
+                    
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Service temporairement indisponible. Réessayez dans quelques instants.';
+                } else {
+                    errorMessage = `Erreur: ${error.message}`;
+                }
+                
+                showMessage(errorMessage, 'error');
+                
+                // Afficher des données par défaut pour ne pas laisser l'interface vide
+                updateUserInterface({
+                    nom: 'Membre',
+                    prenom: 'CE',
+                    email: user.email || 'email@example.com',
+                    points: 0,
+                    tier: 'Bronze',
+                    createdAt: new Date()
+                });
+            }
         }
 
         // Mettre à jour l'interface utilisateur
@@ -754,8 +823,8 @@
             console.log('✅ Interface utilisateur mise à jour complètement');
         }
 
-        // Charger l'activité récente
-        function loadRecentActivity() {
+        // Charger l'activité récente avec gestion des permissions
+        async function loadRecentActivity() {
             if (!currentUser) {
                 console.log('⚠️ Aucun utilisateur connecté pour charger l\'activité');
                 return;
@@ -763,50 +832,57 @@
             
             console.log('📊 Chargement de l\'activité récente...');
             
-            db.collection('users').doc(currentUser.uid).collection('history')
-                .orderBy('timestamp', 'desc')
-                .limit(5)
-                .get()
-                .then((querySnapshot) => {
-                    const activityContainer = document.getElementById('recent-activity');
-                    if (!activityContainer) {
-                        console.error('❌ Container d\'activité non trouvé');
-                        return;
-                    }
-                    
-                    activityContainer.innerHTML = '';
-                    
-                    if (querySnapshot.empty) {
-                        console.log('📝 Aucune activité trouvée, affichage du message par défaut');
-                        activityContainer.innerHTML = `
-                            <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span class="text-sm font-medium">Bienvenue dans le Club !</span>
-                                </div>
-                                <span class="text-sm text-gray-600">+50 pts</span>
+            const activityContainer = document.getElementById('recent-activity');
+            if (!activityContainer) {
+                console.error('❌ Container d\'activité non trouvé');
+                return;
+            }
+            
+            try {
+                const querySnapshot = await db.collection('users').doc(currentUser.uid).collection('history')
+                    .orderBy('timestamp', 'desc')
+                    .limit(5)
+                    .get();
+                
+                activityContainer.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    console.log('📝 Aucune activité trouvée, affichage du message par défaut');
+                    activityContainer.innerHTML = `
+                        <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-sm font-medium">Bienvenue dans le Club !</span>
                             </div>
-                        `;
-                    } else {
-                        console.log('✅ Activités trouvées:', querySnapshot.size);
-                        querySnapshot.forEach((doc) => {
-                            const activity = doc.data();
-                            const activityElement = createActivityElement(activity);
-                            activityContainer.appendChild(activityElement);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error('❌ Erreur chargement activité:', error);
-                    const activityContainer = document.getElementById('recent-activity');
-                    if (activityContainer) {
-                        activityContainer.innerHTML = `
-                            <div class="text-center text-gray-500 text-sm p-4">
-                                Erreur de chargement de l'activité
-                            </div>
-                        `;
-                    }
-                });
+                            <span class="text-sm text-gray-600">+50 pts</span>
+                        </div>
+                    `;
+                } else {
+                    console.log('✅ Activités trouvées:', querySnapshot.size);
+                    querySnapshot.forEach((doc) => {
+                        const activity = doc.data();
+                        const activityElement = createActivityElement(activity);
+                        activityContainer.appendChild(activityElement);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('❌ Erreur chargement activité:', error);
+                
+                // Afficher un message par défaut même en cas d'erreur
+                activityContainer.innerHTML = `
+                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-sm font-medium">Membre du Club Avantage CE</span>
+                        </div>
+                        <span class="text-sm text-gray-600">🎉</span>
+                    </div>
+                `;
+                
+                // Ne pas afficher d'erreur à l'utilisateur pour l'historique
+                console.log('ℹ️ Historique non disponible, affichage du message par défaut');
+            }
         }
 
         // Créer un élément d'activité
@@ -1130,5 +1206,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9767f47ca513785f',t:'MTc1NjQyNzU4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9767fa4d0455785f',t:'MTc1NjQyNzgyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
