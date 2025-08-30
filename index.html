@@ -216,10 +216,10 @@
                             <option value="+33">🇫🇷 +33</option>
                             <option value="+1">🇺🇸 +1</option>
                         </select>
-                        <input type="tel" id="signup-telephone" placeholder="762237440" required 
+                        <input type="tel" id="signup-telephone" placeholder="778787878" required 
                                class="w-full px-20 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
-                               pattern="[0-9]{9}"
-                               title="Format requis: 9 chiffres commençant par 7 (ex: 762237440)">
+                               pattern="^(70|75|76|77|78)[0-9]{7}$"
+                               title="Format requis: 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)">
                     </div>
                     <input type="text" id="signup-ticket" placeholder="N° de facture (ex: S01032 ou 00000-003-0012)" required 
                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
@@ -594,8 +594,8 @@
             
             // Validation du format téléphone selon le pays
             if (countryCode === '+221') {
-                if (!/^7[0-9]{8}$/.test(phoneNumber)) {
-                    showAuthMessage('Format téléphone sénégalais invalide. Doit commencer par 7 et avoir 9 chiffres (ex: 762237440)', 'error');
+                if (!/^(70|75|76|77|78)[0-9]{7}$/.test(phoneNumber)) {
+                    showAuthMessage('Format téléphone sénégalais invalide. Doit commencer par 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)', 'error');
                     return;
                 }
             } else if (countryCode === '+33') {
@@ -1363,17 +1363,13 @@
             let value = e.target.value.replace(/[^0-9]/g, '');
             
             if (countryCode === '+221') {
-                // Format sénégalais: 7XXXXXXXX (9 chiffres commençant par 7)
-                if (value.length > 0 && !value.startsWith('7')) {
-                    // Si le premier chiffre n'est pas 7, on le remplace
-                    value = '7' + value.substring(1);
-                }
+                // Format sénégalais: 7X XXX XX XX (9 chiffres: 70/75/76/77/78 + 7 chiffres)
                 // Limiter à 9 chiffres
                 value = value.substring(0, 9);
                 
-                // Formatage visuel: 7XX XX XX XX
-                if (value.length >= 3) {
-                    value = value.substring(0, 3) + ' ' + value.substring(3);
+                // Formatage visuel: 7X XXX XX XX
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + ' ' + value.substring(2);
                 }
                 if (value.length >= 7) {
                     value = value.substring(0, 7) + ' ' + value.substring(7);
@@ -1407,9 +1403,9 @@
             const phoneInput = document.getElementById('signup-telephone');
             
             if (countryCode === '+221') {
-                phoneInput.placeholder = '762237440';
-                phoneInput.pattern = '^7[0-9]{8}$';
-                phoneInput.title = 'Format requis: 9 chiffres commençant par 7 (ex: 762237440)';
+                phoneInput.placeholder = '778787878';
+                phoneInput.pattern = '^(70|75|76|77|78)[0-9]{7}$';
+                phoneInput.title = 'Format requis: 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)';
             } else if (countryCode === '+33') {
                 phoneInput.placeholder = '0123456789';
                 phoneInput.pattern = '^0[1-9][0-9]{8}$';
@@ -1458,5 +1454,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97685aa57416785f',t:'MTc1NjQzMTc3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773d25ac31d785f',t:'MTc1NjU1MjAxNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
