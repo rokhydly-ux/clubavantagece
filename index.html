@@ -216,10 +216,9 @@
                             <option value="+33">🇫🇷 +33</option>
                             <option value="+1">🇺🇸 +1</option>
                         </select>
-                        <input type="tel" id="signup-telephone" placeholder="778787878" required 
-                               class="w-full px-20 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
-                               pattern="^(70|75|76|77|78)[0-9]{7}$"
-                               title="Format requis: 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)">
+                        <input type="text" id="signup-telephone" placeholder="77 123 45 67" required 
+                               inputmode="tel"
+                               class="w-full px-20 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     </div>
                     <input type="text" id="signup-ticket" placeholder="N° de facture (ex: S01032 ou 00000-003-0012)" required 
                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
@@ -592,23 +591,34 @@
                 return;
             }
             
+            // --- BLOC DE VALIDATION DU TÉLÉPHONE ---
+            // 1. On retire tous les espaces pour la vérification
+            const telephoneSansEspaces = phoneNumber.replace(/\s/g, ''); 
+
             // Validation du format téléphone selon le pays
             if (countryCode === '+221') {
-                if (!/^(70|75|76|77|78)[0-9]{7}$/.test(phoneNumber)) {
-                    showAuthMessage('Format téléphone sénégalais invalide. Doit commencer par 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)', 'error');
-                    return;
+                // 2. On définit le format attendu (RegExp)
+                // Commence par 70, 75, 76, 77 ou 78, suivi de 7 chiffres. Total de 9 chiffres.
+                const senegalPhoneFormat = /^(70|75|76|77|78)\d{7}$/;
+                
+                // 3. On teste le format
+                if (!senegalPhoneFormat.test(telephoneSansEspaces)) {
+                    showAuthMessage('Format du téléphone invalide. Ex: 77 123 45 67', 'error');
+                    return; // On arrête la fonction si le format est mauvais
                 }
             } else if (countryCode === '+33') {
-                if (!/^0[1-9][0-9]{8}$/.test(phoneNumber)) {
-                    showAuthMessage('Format téléphone français invalide. Doit commencer par 0 et avoir 10 chiffres (ex: 0123456789)', 'error');
+                const frenchPhoneFormat = /^0[1-9]\d{8}$/;
+                if (!frenchPhoneFormat.test(telephoneSansEspaces)) {
+                    showAuthMessage('Format téléphone français invalide. Doit commencer par 0 et avoir 10 chiffres (ex: 01 23 45 67 89)', 'error');
                     return;
                 }
             } else {
-                if (!/^[0-9]{7,15}$/.test(phoneNumber)) {
+                if (!/^\d{7,15}$/.test(telephoneSansEspaces)) {
                     showAuthMessage('Format téléphone invalide. Entre 7 et 15 chiffres requis.', 'error');
                     return;
                 }
             }
+            // --- FIN DU BLOC DE VALIDATION ---
             
             // --- BLOC DE VALIDATION DU TICKET ---
             const formatS = /^S\d{5}$/i; // Commence par S (insensible à la casse), suivi par EXACTEMENT 5 chiffres.
@@ -1403,17 +1413,11 @@
             const phoneInput = document.getElementById('signup-telephone');
             
             if (countryCode === '+221') {
-                phoneInput.placeholder = '778787878';
-                phoneInput.pattern = '^(70|75|76|77|78)[0-9]{7}$';
-                phoneInput.title = 'Format requis: 70, 75, 76, 77 ou 78 suivi de 7 chiffres (ex: 778787878)';
+                phoneInput.placeholder = '77 123 45 67';
             } else if (countryCode === '+33') {
-                phoneInput.placeholder = '0123456789';
-                phoneInput.pattern = '^0[1-9][0-9]{8}$';
-                phoneInput.title = 'Format requis: 10 chiffres commençant par 0 (ex: 0123456789)';
+                phoneInput.placeholder = '01 23 45 67 89';
             } else {
                 phoneInput.placeholder = 'Numéro de téléphone';
-                phoneInput.pattern = '[0-9]{7,15}';
-                phoneInput.title = 'Format requis: 7 à 15 chiffres';
             }
             
             // Vider le champ lors du changement de pays
@@ -1454,5 +1458,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773d25ac31d785f',t:'MTc1NjU1MjAxNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773ddb451d415de',t:'MTc1NjU1MjQ4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
