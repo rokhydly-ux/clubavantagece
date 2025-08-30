@@ -6,1637 +6,177 @@
     <title>Club Avantage CE - Central Equipements</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
-
-    
-    <!-- QR Code Generator -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-image: 
-                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-                url("https://deegreez.fr/wp-content/uploads/2023/10/quel-budget-pour-une-cuisine-professionnelle-scaled.jpeg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .pulse-glow {
-            animation: pulseGlow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pulseGlow {
-            from { box-shadow: 0 0 20px rgba(34, 168, 220, 0.3); }
-            to { box-shadow: 0 0 40px rgba(34, 168, 220, 0.6), 0 0 60px rgba(253, 216, 53, 0.3); }
-        }
-        
-        .card-shine {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card-shine::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .points-counter {
-            animation: pointsGlow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pointsGlow {
-            from { text-shadow: 0 0 10px #fdd835; }
-            to { text-shadow: 0 0 20px #fdd835, 0 0 30px #fbc02d; }
-        }
-        
-        .qr-container {
-            background: linear-gradient(45deg, #ffffff, #f8f9fa);
-            border: 3px solid #22a8dc;
-            animation: qrPulse 3s ease-in-out infinite;
-        }
-        
-        @keyframes qrPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
+        body { font-family: 'Poppins', sans-serif; }
+        .hidden { display: none; }
+        /* ... Collez ici tous vos styles @keyframes ... */
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .loading-spinner { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Écran de chargement -->
-    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center z-50">
-        <div class="text-center text-white">
-            <div class="loading-spinner w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-            <h2 class="text-2xl font-bold mb-2">Club Avantage CE</h2>
-            <p class="text-blue-200">Chargement de votre espace membre...</p>
-        </div>
-    </div>
+    <!-- ... Votre HTML pour loading-screen, header, auth-screen et card-screen reste EXACTEMENT le même ... -->
+    <!-- ... Assurez-vous que le conteneur du QR Code est un DIV vide : <div id="qrcode-container"></div> ... -->
 
-    <!-- Header -->
-    <header class="bg-white shadow-lg p-4 text-center">
-        <div class="flex items-center justify-between max-w-4xl mx-auto">
-            <div class="w-10"></div>
-            <div class="flex items-center space-x-3">
-                <img src="https://jokkootech.com/wp-content/uploads/elementor/thumbs/CENTRAL_EQUIPEMENT-1-removebg-preview-qmtu95vg6ca8in6ds4b6xx9yzi550nl7zpyzehgycc.webp" 
-                     alt="Central Equipements" 
-                     class="h-10 w-auto object-contain"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <h1 class="text-xl font-bold text-black hidden cursor-pointer hover:opacity-80 transition-opacity" 
-                    style="color: #22a8dc;">CENTRAL EQUIPEMENTS</h1>
-                <div class="text-center">
-                    <h2 class="text-lg font-bold text-black">Club Avantage CE</h2>
-                    <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
-                </div>
-            </div>
-            <button id="logout-btn" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 text-sm font-semibold" style="display: none;">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H4v16h10v-2h2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10z"/>
-                </svg>
-                <span>Déconnexion</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- ÉCRAN D'AUTHENTIFICATION -->
-    <div id="auth-screen" class="min-h-screen p-6">
-        <div class="max-w-md mx-auto space-y-6 pt-8">
-            <!-- Titre d'accueil -->
-            <div class="text-center space-y-4 fade-in">
-                <div class="text-6xl mb-4">🎉</div>
-                <h2 class="text-3xl font-black text-white">Rejoignez le Club Avantage CE !</h2>
-                <p class="text-xl text-white/90 font-semibold">
-                    Inscrivez-vous maintenant et recevez votre cadeau de bienvenue : <span class="text-yellow-300 font-black">-5% sur votre achat d'aujourd'hui !</span>
-                </p>
-            </div>
-
-            <!-- Bénéfices -->
-            <div class="glass-effect rounded-2xl p-6 pulse-glow">
-                <h3 class="text-xl font-bold text-center mb-4" style="color: #22a8dc;">🎯 Vos Avantages Exclusifs</h3>
-                <div class="space-y-3">
-                    <div class="flex items-center space-x-3 p-2 bg-green-50 rounded-lg">
-                        <div class="bg-green-500 rounded-full p-1">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                            </svg>
-                        </div>
-                        <span class="font-semibold text-gray-800 text-sm">Un bonus de -5% immédiat</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-2 bg-blue-50 rounded-lg">
-                        <div class="bg-blue-500 rounded-full p-1">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                        </div>
-                        <span class="font-semibold text-gray-800 text-sm">Cumulez des points à chaque visite</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-2 bg-purple-50 rounded-lg">
-                        <div class="bg-purple-500 rounded-full p-1">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
-                            </svg>
-                        </div>
-                        <span class="font-semibold text-gray-800 text-sm">Accédez à des récompenses exclusives</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-2 bg-yellow-50 rounded-lg">
-                        <div class="bg-yellow-500 rounded-full p-1">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <span class="font-semibold text-gray-800 text-sm">Obtenez votre carte de fidélité virtuelle</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Onglets Inscription/Connexion -->
-            <div class="glass-effect rounded-2xl p-6">
-                <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
-                    <button id="signup-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all bg-blue-500 text-white" onclick="switchTab('signup')">
-                        Inscription
-                    </button>
-                    <button id="signin-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all text-gray-600 hover:text-gray-800" onclick="switchTab('signin')">
-                        Connexion
-                    </button>
-                </div>
-
-                <!-- Formulaire d'inscription -->
-                <form id="signup-form" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="signup-prenom" placeholder="Prénom" required 
-                               class="px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                        <input type="text" id="signup-nom" placeholder="Nom" required 
-                               class="px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    </div>
-                    <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" required 
-                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    <div class="relative">
-                        <select id="country-code" class="absolute left-3 top-3 bg-transparent border-none text-sm font-medium text-gray-700 focus:outline-none z-10">
-                            <option value="+221">🇸🇳 +221</option>
-                            <option value="+33">🇫🇷 +33</option>
-                            <option value="+1">🇺🇸 +1</option>
-                        </select>
-                        <input type="text" id="signup-telephone" placeholder="77 123 45 67" required 
-                               inputmode="tel"
-                               class="w-full px-20 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    </div>
-                    <input type="text" id="signup-ticket" placeholder="N° de facture (ex: S01032 ou 00000-003-0012)" required 
-                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
-                           pattern="^(S\d{5}|\d{5}-\d{3}-\d{4})$"
-                           title="Format requis: S suivi de 5 chiffres (ex: S01032) ou format 00000-003-0012">
-                    <input type="password" id="signup-password" placeholder="Mot de passe (min. 6 caractères)" required 
-                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="signup-terms" required class="rounded border-gray-300 text-blue-600">
-                        <label for="signup-terms" class="text-xs text-gray-700">
-                            J'accepte les conditions et de recevoir les offres exclusives
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 card-shine">
-                        🎁 Je m'inscris et je reçois mon bonus !
-                    </button>
-                </form>
-
-                <!-- Formulaire de connexion -->
-                <form id="signin-form" class="space-y-4 hidden">
-                    <input type="email" id="signin-email" placeholder="Email" required 
-                           class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    <input type="password" id="signin-password" placeholder="Mot de passe" required 
-                           class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
-                    
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105">
-                        🔑 Me connecter à mon compte
-                    </button>
-                </form>
-                
-                <div id="auth-message" class="mt-4 text-center text-sm"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ÉCRAN DE CONFIRMATION D'INSCRIPTION -->
-    <div id="confirmation-screen" class="hidden min-h-screen p-6">
-        <div class="max-w-md mx-auto space-y-6 pt-8">
-            <!-- Animation de succès -->
-            <div class="text-center space-y-4 fade-in">
-                <div class="text-8xl mb-4">🎉</div>
-                <h2 class="text-3xl font-black text-white">Félicitations !</h2>
-                <p class="text-xl text-white/90 font-semibold">
-                    Votre inscription au Club Avantage CE est confirmée !
-                </p>
-            </div>
-
-            <!-- Carte d'ID membre -->
-            <div class="glass-effect rounded-2xl p-6 card-shine">
-                <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🏆 Votre Carte Membre Officielle</h3>
-                    
-                    <!-- Numéro de membre -->
-                    <div class="bg-blue-600 rounded-2xl p-6 text-white mb-6">
-                        <p class="text-lg font-semibold mb-2">Votre Numéro de Membre Officiel :</p>
-                        <div class="text-4xl font-black tracking-widest" id="confirmation-member-id">CE-0000</div>
-                        <p class="text-sm mt-2 opacity-90">Conservez-le précieusement et présentez-le en magasin.</p>
-                    </div>
-
-                    <!-- Informations membre -->
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
-                        <h4 class="font-bold text-lg" id="confirmation-name">Membre CE</h4>
-                        <p class="text-sm opacity-90">Niveau Bronze • 50 points de bienvenue</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Avantages immédiats -->
-            <div class="glass-effect rounded-2xl p-6">
-                <h3 class="text-xl font-bold mb-4" style="color: #22a8dc;">🎁 Vos Avantages Immédiats</h3>
-                <div class="space-y-3">
-                    <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                        <div class="bg-green-500 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-800">50 points de bienvenue</p>
-                            <p class="text-sm text-gray-600">Déjà crédités sur votre compte</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                        <div class="bg-blue-500 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-800">Réduction de 5% disponible</p>
-                            <p class="text-sm text-gray-600">Utilisable dès maintenant en magasin</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                        <div class="bg-purple-500 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-800">Carte de fidélité virtuelle</p>
-                            <p class="text-sm text-gray-600">Accessible depuis votre espace membre</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Instructions -->
-            <div class="glass-effect rounded-2xl p-6">
-                <h3 class="text-xl font-bold mb-4" style="color: #22a8dc;">📋 Prochaines Étapes</h3>
-                <div class="space-y-3 text-sm">
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</div>
-                        <p class="text-gray-700">Notez votre numéro de membre <strong id="confirmation-member-id-copy">CE-0000</strong> dans un endroit sûr</p>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</div>
-                        <p class="text-gray-700">Accédez à votre espace membre pour générer votre QR Code de réduction</p>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</div>
-                        <p class="text-gray-700">Présentez votre QR Code en caisse pour bénéficier de vos avantages</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bouton d'accès à l'espace membre -->
-            <button onclick="goToMemberArea()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 card-shine">
-                🚀 Accéder à mon Espace Membre
-            </button>
-        </div>
-    </div>
-
-    <!-- ÉCRAN DE LA CARTE MEMBRE -->
-    <div id="card-screen" class="hidden min-h-screen p-6">
-        <div class="max-w-md mx-auto space-y-6 pt-4">
-            <!-- Carte de membre virtuelle -->
-            <div class="glass-effect rounded-2xl p-6 card-shine">
-                <div class="text-center space-y-4">
-                    <div class="flex items-center justify-center space-x-2 mb-4">
-                        <svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <h2 class="text-2xl font-bold" style="color: #22a8dc;">Carte Membre VIP</h2>
-                        <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
-                        </svg>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
-                        <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
-                        <p class="text-sm opacity-90" id="member-email">email@example.com</p>
-                        <div class="mt-3 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs opacity-75">Niveau</p>
-                                <p class="font-bold" id="member-tier">Bronze</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs opacity-75">Membre depuis</p>
-                                <p class="font-bold text-sm" id="member-since">2024</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Solde de points -->
-            <div class="glass-effect rounded-2xl p-6">
-                <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #22a8dc;">💰 Vos Points</h3>
-                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white">
-                        <div class="text-4xl font-black points-counter" id="points-balance">0</div>
-                        <p class="text-sm opacity-90 mt-1">Points disponibles</p>
-                    </div>
-                    
-                    <!-- Barre de progression niveau -->
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm font-semibold text-gray-600">
-                            <span>Niveau: <span id="current-level">Bronze</span></span>
-                            <span>Prochain: <span id="next-level">Argent</span></span>
-                        </div>
-                        <div class="bg-gray-200 rounded-full h-3 overflow-hidden">
-                            <div class="bg-gradient-to-r from-blue-500 to-yellow-500 h-full rounded-full transition-all duration-1000" 
-                                 id="level-progress" style="width: 0%"></div>
-                        </div>
-                        <p class="text-xs text-gray-600 text-center" id="points-to-next">50 points pour le niveau suivant</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- QR Code personnel -->
-            <div class="glass-effect rounded-2xl p-6">
-                <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #22a8dc;">📱 Votre QR Code Personnel</h3>
-                    <p id="qr-status" class="text-sm text-gray-600">Entrez un N° de ticket valide pour générer votre code.</p>
-                    
-                    <!-- Formulaire de validation ticket -->
-                    <div id="ticket-validation-form" class="space-y-4">
-                        <div class="space-y-3">
-                            <input type="text" id="new-ticket-number" placeholder="N° de facture (ex: S01032 ou 00000-003-0012)" 
-                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
-                                   pattern="^(S\d{5}|\d{5}-\d{3}-\d{4})$">
-                            <button onclick="validateTicketAndShowQR()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                                🎫 Valider et obtenir mon QR Code
-                            </button>
-                        </div>
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                            <p class="text-xs text-yellow-800 font-medium">
-                                ⚠️ Chaque numéro de facture ne peut être utilisé qu'une seule fois. Votre QR Code sera valable 24h après validation.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- CONTENEUR DU QR CODE - CORRECTION CRUCIALE -->
-                    <div class="qr-container rounded-xl p-4 mx-auto w-fit">
-                        <!-- Cet élément DOIT être un DIV et avoir cet ID exact -->
-                        <div id="qrcode-container" class="mx-auto"></div>
-                    </div>
-                    
-                    <!-- QR Code (masqué par défaut) -->
-                    <div id="qr-code-section" class="hidden space-y-4">
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                            <p class="text-xs text-green-800 font-medium">
-                                🔒 QR Code valable jusqu'à <span id="qr-expiry"></span>
-                            </p>
-                        </div>
-                        
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <p class="text-xs text-blue-800 font-medium">
-                                💡 Ce code est unique et sécurisé. Il permet au personnel de vous identifier et d'appliquer votre réduction de 5%.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions rapides -->
-            <div class="space-y-3">
-                <button onclick="refreshData()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all">
-                    🔄 Actualiser mes données
-                </button>
-                
-                <button onclick="shareApp()" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all">
-                    👥 Partager l'application
-                </button>
-            </div>
-
-            <!-- Historique récent -->
-            <div class="glass-effect rounded-2xl p-6">
-                <h3 class="text-lg font-bold mb-4" style="color: #22a8dc;">📊 Activité Récente</h3>
-                <div id="recent-activity" class="space-y-2">
-                    <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span class="text-sm font-medium">Inscription</span>
-                        </div>
-                        <span class="text-sm text-gray-600">+50 pts</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- ======================= SECTION SCRIPTS ======================= -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+    <!-- UN SEUL ET UNIQUE SCRIPT POUR TOUTE L'APPLICATION -->
     <script>
-        // Configuration Firebase
+        // --- 1. CONFIGURATION ET INITIALISATION DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
             authDomain: "clubavantage-52aed.firebaseapp.com",
             projectId: "clubavantage-52aed",
             storageBucket: "clubavantage-52aed.appspot.com",
             messagingSenderId: "655040433691",
-            appId: "1:655040433691:web:e3492b4fb64333ff01b2be",
-            measurementId: "G-Y0187YGWCT"
+            appId: "1:655040433691:web:e3492b4fb64333ff01b2be"
         };
-
-        // Initialiser Firebase
         firebase.initializeApp(firebaseConfig);
-        
-        // Maintenant on peut initialiser auth et db
+
+        // --- 2. VARIABLES GLOBALES (maintenant que firebase est prêt) ---
         const auth = firebase.auth();
         const db = firebase.firestore();
-
-        // Variables globales - déclarées mais pas encore assignées
+        
         let currentUser = null;
         let userDataListener = null;
-        let loadingScreen;
-        let authScreen;
-        let cardScreen;
-        let logoutBtn;
-        let signupForm;
-        let signinForm;
-        let authMessage;
 
-        // Point d'entrée unique - Attendre que TOUT soit chargé (HTML, CSS, Firebase, images)
-        window.onload = function() {
-            console.log('🚀 Page complètement chargée, initialisation de l\'application...');
+        // --- 3. POINT D'ENTRÉE PRINCIPAL (attend que le HTML soit prêt) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attacher les gestionnaires d'événements
+            document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
+            document.getElementById('signin-form')?.addEventListener('submit', handleSignin);
+            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+            document.getElementById('signup-tab')?.addEventListener('click', () => switchTab('signup'));
+            document.getElementById('signin-tab')?.addEventListener('click', () => switchTab('signin'));
             
-            try {
-                // 1. ASSIGNATION DES VARIABLES DOM (maintenant qu'elles existent)
-                loadingScreen = document.getElementById('loading-screen');
-                authScreen = document.getElementById('auth-screen');
-                cardScreen = document.getElementById('card-screen');
-                logoutBtn = document.getElementById('logout-btn');
-                signupForm = document.getElementById('signup-form');
-                signinForm = document.getElementById('signin-form');
-                authMessage = document.getElementById('auth-message');
-                
-                // Vérifications de sécurité
-                if (!loadingScreen || !authScreen || !cardScreen) {
-                    console.error('❌ Éléments DOM critiques manquants');
-                    return;
-                }
-                
-                console.log('✅ Tous les éléments DOM trouvés');
-                
-                // 2. AFFICHAGE DE L'ÉCRAN DE CHARGEMENT
-                showLoadingScreen();
-                
-                // 3. ATTACHEMENT DES ÉVÉNEMENTS
-                attachEventListeners();
-                
-                // 4. DÉMARRAGE DE L'ÉCOUTEUR D'AUTHENTIFICATION FIREBASE
-                console.log('🔥 Démarrage de l\'écouteur Firebase...');
-                startAuthListener();
-                
-            } catch (error) {
-                console.error('❌ Erreur lors de l\'initialisation:', error);
-                hideLoadingScreen();
-                showMessage('Erreur de chargement. Veuillez actualiser la page.', 'error');
-            }
-        };
+            // Démarrer l'écouteur d'authentification
+            auth.onAuthStateChanged(handleAuthStateChange);
+        });
 
-        // Fonction pour attacher tous les événements
-        function attachEventListeners() {
-            console.log('🔗 Attachement des événements...');
-            
-            // Formulaires
-            if (signupForm) {
-                signupForm.addEventListener('submit', handleSignup);
-                console.log('✅ Événement inscription attaché');
-            }
-            
-            if (signinForm) {
-                signinForm.addEventListener('submit', handleSignin);
-                console.log('✅ Événement connexion attaché');
-            }
-            
-            // Bouton de déconnexion
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', logout);
-                console.log('✅ Événement déconnexion attaché');
-            }
-            
-            // Formatage du téléphone
-            const phoneInput = document.getElementById('signup-telephone');
-            const countrySelect = document.getElementById('country-code');
-            if (phoneInput) {
-                phoneInput.addEventListener('input', formatPhoneNumber);
-                console.log('✅ Formatage téléphone attaché');
-            }
-            if (countrySelect) {
-                countrySelect.addEventListener('change', updatePhonePlaceholder);
-                console.log('✅ Sélecteur pays attaché');
-            }
-        }
+        // --- 4. LOGIQUE PRINCIPALE ---
+        function handleAuthStateChange(user) {
+            hideLoadingScreen();
+            const logoutBtn = document.getElementById('logout-btn');
 
-        // Écouteur d'état d'authentification - Optimisé
-        function startAuthListener() {
-            auth.onAuthStateChanged((user) => {
-                console.log('🔐 Changement d\'état d\'authentification:', user ? 'Utilisateur connecté' : 'Utilisateur déconnecté');
-                
-                // Masquer l'écran de chargement dans tous les cas
-                hideLoadingScreen();
-                
-                if (user) {
-                    console.log('👤 Utilisateur connecté:', user.email);
-                    currentUser = user;
-                    
-                    // Séquence d'affichage pour utilisateur connecté
-                    showCardScreen();
-                    showLogoutButton();
-                    loadUserData(user);
-                    
-                } else {
-                    console.log('👋 Aucun utilisateur connecté');
-                    currentUser = null;
-                    
-                    // Nettoyer les données utilisateur
-                    if (userDataListener) {
-                        userDataListener();
-                        userDataListener = null;
-                    }
-                    
-                    // Séquence d'affichage pour utilisateur déconnecté
-                    showAuthScreen();
-                    hideLogoutButton();
-                }
-            });
-        }
-
-        // Fonctions d'affichage/masquage du bouton de déconnexion
-        function showLogoutButton() {
-            if (logoutBtn) {
-                logoutBtn.style.display = 'flex';
-                console.log('✅ Bouton de déconnexion affiché');
-            }
-        }
-
-        function hideLogoutButton() {
-            if (logoutBtn) {
-                logoutBtn.style.display = 'none';
-                console.log('✅ Bouton de déconnexion masqué');
-            }
-        }
-
-        // Gestion des onglets
-        function switchTab(tab) {
-            const signupTab = document.getElementById('signup-tab');
-            const signinTab = document.getElementById('signin-tab');
-            const signupForm = document.getElementById('signup-form');
-            const signinForm = document.getElementById('signin-form');
-            
-            if (tab === 'signup') {
-                signupTab.classList.add('bg-blue-500', 'text-white');
-                signupTab.classList.remove('text-gray-600');
-                signinTab.classList.remove('bg-blue-500', 'text-white');
-                signinTab.classList.add('text-gray-600');
-                signupForm.classList.remove('hidden');
-                signinForm.classList.add('hidden');
+            if (user) {
+                currentUser = user;
+                showCardScreen();
+                loadUserData(user); // Charger les données ET le QR Code
+                if(logoutBtn) logoutBtn.style.display = 'flex';
             } else {
-                signinTab.classList.add('bg-blue-500', 'text-white');
-                signinTab.classList.remove('text-gray-600');
-                signupTab.classList.remove('bg-blue-500', 'text-white');
-                signupTab.classList.add('text-gray-600');
-                signinForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
+                if (userDataListener) userDataListener(); // Détache l'écouteur si l'utilisateur se déconnecte
+                currentUser = null;
+                showAuthScreen();
+                if(logoutBtn) logoutBtn.style.display = 'none';
             }
         }
 
-        // Fonction d'inscription avec ID membre atomique
+        // --- 5. GESTION DES FORMULAIRES ---
         async function handleSignup(e) {
             e.preventDefault();
-            
             const prenom = document.getElementById('signup-prenom').value.trim();
             const nom = document.getElementById('signup-nom').value.trim();
             const email = document.getElementById('signup-email').value.trim();
-            const countryCode = document.getElementById('country-code').value;
-            const phoneNumber = document.getElementById('signup-telephone').value.trim().replace(/\s/g, '');
-            const telephone = countryCode + phoneNumber; // Numéro complet avec indicatif
-            const ticketNumber = document.getElementById('signup-ticket').value.trim();
+            const telephone = document.getElementById('signup-telephone').value.trim();
             const password = document.getElementById('signup-password').value;
-            const terms = document.getElementById('signup-terms').checked;
-            
-            if (!terms) {
-                showAuthMessage('Veuillez accepter les conditions.', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showAuthMessage('Le mot de passe doit contenir au moins 6 caractères.', 'error');
-                return;
-            }
-            
-            // --- BLOC DE VALIDATION DU TÉLÉPHONE ---
-            // 1. On retire tous les espaces pour la vérification
-            const telephoneSansEspaces = phoneNumber.replace(/\s/g, ''); 
-
-            // Validation du format téléphone selon le pays
-            if (countryCode === '+221') {
-                // 2. On définit le format attendu (RegExp)
-                // Commence par 70, 75, 76, 77 ou 78, suivi de 7 chiffres. Total de 9 chiffres.
-                const senegalPhoneFormat = /^(70|75|76|77|78)\d{7}$/;
-                
-                // 3. On teste le format
-                if (!senegalPhoneFormat.test(telephoneSansEspaces)) {
-                    showAuthMessage('Format du téléphone invalide. Ex: 77 123 45 67', 'error');
-                    return; // On arrête la fonction si le format est mauvais
-                }
-            } else if (countryCode === '+33') {
-                const frenchPhoneFormat = /^0[1-9]\d{8}$/;
-                if (!frenchPhoneFormat.test(telephoneSansEspaces)) {
-                    showAuthMessage('Format téléphone français invalide. Doit commencer par 0 et avoir 10 chiffres (ex: 01 23 45 67 89)', 'error');
-                    return;
-                }
-            } else {
-                if (!/^\d{7,15}$/.test(telephoneSansEspaces)) {
-                    showAuthMessage('Format téléphone invalide. Entre 7 et 15 chiffres requis.', 'error');
-                    return;
-                }
-            }
-            // --- FIN DU BLOC DE VALIDATION ---
-            
-            // --- BLOC DE VALIDATION DU TICKET ---
-            const formatS = /^S\d{5}$/i; // Commence par S (insensible à la casse), suivi par EXACTEMENT 5 chiffres.
-            const formatLong = /^\d{5}-\d{3}-\d{4}$/; // Format 00000-003-0012
-
-            if (!formatS.test(ticketNumber) && !formatLong.test(ticketNumber)) {
-                showAuthMessage('Format du N° de facture invalide. Ex: S01234 ou 00000-003-0012', 'error');
-                return; // Arrête la fonction si le format est incorrect
-            }
-            // --- FIN DU BLOC DE VALIDATION ---
-            
-            // Vérifier si le ticket existe déjà
-            const ticketExists = await checkTicketExists(ticketNumber);
-            if (ticketExists) {
-                showAuthMessage('Ce numéro de facture a déjà été utilisé.', 'error');
-                return;
-            }
-            
-            showAuthMessage('Création de votre compte...', 'info');
 
             try {
-                // --- 1. Création du compte d'authentification ---
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
+                
+                // Mettre à jour le profil d'authentification est crucial
                 await user.updateProfile({ displayName: `${prenom} ${nom}` });
 
-                // --- 2. Transaction pour obtenir un nouvel ID Membre ---
-                const counterRef = db.collection('counters').doc('userCounter');
-                let newMemberId;
-
-                await db.runTransaction(async (transaction) => {
-                    const counterDoc = await transaction.get(counterRef);
-                    if (!counterDoc.exists) {
-                        throw "Le document compteur est introuvable !";
-                    }
-                    
-                    const newIdNumber = (counterDoc.data().lastId || 0) + 1;
-                    // Formater le numéro en chaîne de 4 chiffres avec des zéros devant (ex: 0001, 0058, 1234)
-                    const formattedId = String(newIdNumber).padStart(4, '0');
-                    newMemberId = `CE-${formattedId}`;
-                    
-                    // Mettre à jour le compteur dans la même transaction
-                    transaction.update(counterRef, { lastId: newIdNumber });
+                await db.collection('users').doc(user.uid).set({
+                    prenom, nom, email, telephone,
+                    points: 50, // Points de bienvenue
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
-                // --- 3. Création du profil utilisateur avec le nouvel ID ---
-                const userProfile = {
-                    memberId: newMemberId, // <-- Le nouvel ID est ajouté ici
-                    nom: nom,
-                    prenom: prenom,
-                    email: email,
-                    telephone: telephone,
-                    points: 50,
-                    lastTicket: ticketNumber,
-                    tier: 'Bronze',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
-                    qrCodeExpiry: null,
-                    lastQRGeneration: null
-                };
-                await db.collection('users').doc(user.uid).set(userProfile);
-
-                // Enregistrer le ticket comme utilisé
-                await db.collection('usedTickets').doc(ticketNumber).set({
-                    userId: user.uid,
-                    usedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    type: 'inscription'
-                });
-                
-                // Ajouter l'événement d'inscription à l'historique
-                await db.collection('users').doc(user.uid).collection('history').add({
-                    type: 'inscription',
-                    points: 50,
-                    description: 'Inscription au Club Avantage CE',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                // --- 4. Affichage de la confirmation ---
-                showConfirmationPage(prenom, nom, newMemberId); // Passer le nouvel ID à la page de confirmation
-
             } catch (error) {
-                console.error('Erreur inscription détaillée:', error);
-                let message = 'Erreur lors de l\'inscription.';
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    message = 'Cette adresse email est déjà utilisée.';
-                } else if (error.code === 'auth/weak-password') {
-                    message = 'Le mot de passe est trop faible.';
-                } else if (error.code === 'auth/invalid-email') {
-                    message = 'Adresse email invalide.';
-                } else if (error.message) {
-                    message = error.message;
-                }
-                
-                showAuthMessage(message, 'error');
+                console.error("Erreur d'inscription:", error);
+                // Gérer l'affichage des erreurs à l'utilisateur
             }
         }
 
-        // Fonction de connexion
         async function handleSignin(e) {
             e.preventDefault();
-            
             const email = document.getElementById('signin-email').value.trim();
             const password = document.getElementById('signin-password').value;
-            
             try {
-                showAuthMessage('Connexion en cours...', 'info');
-                
                 await auth.signInWithEmailAndPassword(email, password);
-                
-                // Mettre à jour la dernière activité
-                if (auth.currentUser) {
-                    await db.collection('users').doc(auth.currentUser.uid).update({
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                
-                showAuthMessage('Connexion réussie !', 'success');
-                
             } catch (error) {
-                console.error('Erreur connexion:', error);
-                let message = 'Erreur lors de la connexion.';
-                
-                if (error.code === 'auth/user-not-found') {
-                    message = 'Aucun compte trouvé avec cette adresse email.';
-                } else if (error.code === 'auth/wrong-password') {
-                    message = 'Mot de passe incorrect.';
-                } else if (error.code === 'auth/invalid-email') {
-                    message = 'Adresse email invalide.';
-                }
-                
-                showAuthMessage(message, 'error');
+                console.error("Erreur de connexion:", error);
             }
         }
 
-        // Charger les données utilisateur - Version avec gestion des permissions
-        async function loadUserData(user) {
-            if (!user) {
-                console.error('❌ Aucun utilisateur fourni pour loadUserData');
-                return;
-            }
-            
-            console.log('📊 Chargement des données utilisateur pour:', user.email);
-            
-            // Nettoyer l'ancien écouteur s'il existe
-            if (userDataListener) {
-                userDataListener();
-                userDataListener = null;
-            }
-            
-            try {
-                // D'abord, essayer de lire le document une seule fois pour tester les permissions
-                console.log('🔍 Test de lecture du document utilisateur...');
-                const docRef = db.collection('users').doc(user.uid);
-                const docSnapshot = await docRef.get();
-                
-                if (!docSnapshot.exists) {
-                    console.log('📝 Document utilisateur inexistant, création en cours...');
-                    
-                    // Créer le document utilisateur
-                    const displayName = user.displayName || 'Membre CE';
-                    const nameParts = displayName.split(' ');
-                    
-                    const newUserData = {
-                        nom: nameParts[1] || 'CE',
-                        prenom: nameParts[0] || 'Membre',
-                        email: user.email,
-                        telephone: '', // Champ téléphone inclus par défaut
-                        points: 50,
-                        lastTicket: '',
-                        tier: 'Bronze',
-                        welcomeCode: 'CE' + Math.floor(Math.random() * 900 + 100),
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
-                        qrCodeExpiry: null,
-                        lastQRGeneration: null
-                    };
-                    
-                    await docRef.set(newUserData);
-                    console.log('✅ Document utilisateur créé avec succès');
-                    
-                    // Mettre à jour l'interface avec les nouvelles données
-                    updateUserInterface({
-                        ...newUserData,
-                        createdAt: new Date() // Pour l'affichage immédiat
-                    });
-                    
-                    // Ajouter l'événement d'inscription à l'historique
-                    try {
-                        await docRef.collection('history').add({
-                            type: 'inscription',
-                            points: 50,
-                            description: 'Inscription au Club Avantage CE',
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        console.log('✅ Historique d\'inscription ajouté');
-                    } catch (historyError) {
-                        console.error('⚠️ Erreur ajout historique:', historyError);
-                        // Ne pas bloquer pour l'historique
-                    }
-                    
-                } else {
-                    console.log('✅ Document utilisateur trouvé');
-                    const userData = docSnapshot.data();
-                    updateUserInterface(userData);
-                }
-                
-                // Maintenant configurer l'écouteur en temps réel
-                console.log('👂 Configuration de l\'écouteur temps réel...');
-                userDataListener = docRef.onSnapshot((doc) => {
-                    if (doc.exists) {
-                        console.log('🔄 Mise à jour temps réel reçue');
-                        const userData = doc.data();
-                        updateUserInterface(userData);
-                    }
-                }, (error) => {
-                    console.error('❌ Erreur écouteur temps réel:', error);
-                    // Ne pas afficher d'erreur pour l'écouteur, les données sont déjà chargées
-                });
-                
-                // Charger l'activité récente
-                loadRecentActivity();
-                
-                // Vérifier l'état du QR Code
-                checkQRCodeStatus();
-                
-                showMessage('✅ Données chargées avec succès !', 'success');
-                
-            } catch (error) {
-                console.error('❌ Erreur lors du chargement des données:', error);
-                
-                let errorMessage = 'Erreur de chargement des données';
-                
-                if (error.code === 'permission-denied') {
-                    errorMessage = 'Permissions insuffisantes. Veuillez vous reconnecter.';
-                    console.log('🔄 Tentative de reconnexion automatique...');
-                    
-                    // Essayer de se reconnecter
-                    setTimeout(() => {
-                        auth.signOut().then(() => {
-                            showMessage('Reconnexion nécessaire, veuillez vous connecter à nouveau.', 'info');
-                        });
-                    }, 2000);
-                    
-                } else if (error.code === 'unavailable') {
-                    errorMessage = 'Service temporairement indisponible. Réessayez dans quelques instants.';
-                } else {
-                    errorMessage = `Erreur: ${error.message}`;
-                }
-                
-                showMessage(errorMessage, 'error');
-                
-                // Afficher des données par défaut pour ne pas laisser l'interface vide
-                updateUserInterface({
-                    nom: 'Membre',
-                    prenom: 'CE',
-                    email: user.email || 'email@example.com',
-                    points: 0,
-                    tier: 'Bronze',
-                    createdAt: new Date()
-                });
-            }
+        function handleLogout() {
+            auth.signOut();
         }
 
-        // Mettre à jour l'interface utilisateur
-        function updateUserInterface(userData) {
-            console.log('🎨 Mise à jour de l\'interface avec:', userData);
+        // --- 6. FONCTIONS UTILITAIRES ---
+        function loadUserData(user) {
+            if (!user) return;
+
+            // Appeler la génération du QR Code immédiatement avec l'ID de l'utilisateur
+            generateQRCode(user.uid);
+
+            if (userDataListener) userDataListener(); // Détache l'ancien écouteur
             
-            // Vérifier que les éléments existent avant de les modifier
-            const memberName = document.getElementById('member-name');
-            const memberEmail = document.getElementById('member-email');
-            const memberTier = document.getElementById('member-tier');
+            userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
+                if (doc.exists) {
+                    updateUserInterface(user, doc.data()); // Passer l'objet 'user' et les données
+                } else {
+                     console.log("Le document n'existe pas encore, il sera créé.");
+                }
+            });
+        }
+        
+        function updateUserInterface(user, userData) {
+            // CORRECTION : Utiliser le displayName du profil d'authentification comme source fiable
+            const displayName = user.displayName || `${userData.prenom} ${userData.nom}`;
+            document.getElementById('member-name').textContent = displayName;
+            document.getElementById('member-email').textContent = user.email;
+            
+            // CORRECTION : Logique de la date d'inscription fiabilisée
             const memberSince = document.getElementById('member-since');
-            const pointsBalance = document.getElementById('points-balance');
-            
-            if (memberName) {
-                const displayName = userData.memberId ? 
-                    `${userData.prenom || 'Membre'} ${userData.nom || 'CE'} (${userData.memberId})` :
-                    `${userData.prenom || 'Membre'} ${userData.nom || 'CE'}`;
-                memberName.textContent = displayName;
-                console.log('✅ Nom mis à jour:', memberName.textContent);
+            if (userData.createdAt && userData.createdAt.toDate) {
+                const date = userData.createdAt.toDate();
+                memberSince.textContent = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+            } else {
+                 memberSince.textContent = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
             }
-            
-            if (memberEmail) {
-                memberEmail.textContent = userData.email || 'email@example.com';
-                console.log('✅ Email mis à jour:', memberEmail.textContent);
-            }
-            
-            if (memberTier) {
-                memberTier.textContent = userData.tier || 'Bronze';
-                console.log('✅ Niveau mis à jour:', memberTier.textContent);
-            }
-            
-            // Date d'inscription avec gestion améliorée
-            if (memberSince) {
-                if (userData.createdAt && userData.createdAt.toDate) {
-                    try {
-                        const date = userData.createdAt.toDate();
-                        const options = { year: 'numeric', month: 'short' };
-                        memberSince.textContent = date.toLocaleDateString('fr-FR', options);
-                        console.log('✅ Date d\'inscription mise à jour:', memberSince.textContent);
-                    } catch (error) {
-                        console.error('❌ Erreur conversion date:', error);
-                        memberSince.textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
-                    }
-                } else {
-                    // Fallback pour les nouveaux comptes ou dates manquantes
-                    memberSince.textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' });
-                    console.log('⚠️ Date fallback utilisée:', memberSince.textContent);
-                }
-            }
-            
-            // Points avec animation
-            if (pointsBalance) {
-                const currentPoints = parseInt(pointsBalance.textContent) || 0;
-                const newPoints = userData.points || 0;
-                console.log('💰 Animation points:', currentPoints, '->', newPoints);
-                animateNumber('points-balance', currentPoints, newPoints, 1000);
-            }
-            
-            // Progression du niveau
-            updateLevelProgress(userData.points || 0);
-            
-            console.log('✅ Interface utilisateur mise à jour complètement');
+
+            document.getElementById('points-balance').textContent = userData.points || 0;
+            // ... Mettre à jour le reste de l'interface (niveaux, etc.)
         }
 
-        // Charger l'activité récente avec gestion des permissions
-        async function loadRecentActivity() {
-            if (!currentUser) {
-                console.log('⚠️ Aucun utilisateur connecté pour charger l\'activité');
-                return;
-            }
-            
-            console.log('📊 Chargement de l\'activité récente...');
-            
-            const activityContainer = document.getElementById('recent-activity');
-            if (!activityContainer) {
-                console.error('❌ Container d\'activité non trouvé');
-                return;
-            }
-            
-            try {
-                const querySnapshot = await db.collection('users').doc(currentUser.uid).collection('history')
-                    .orderBy('timestamp', 'desc')
-                    .limit(5)
-                    .get();
-                
-                activityContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    console.log('📝 Aucune activité trouvée, affichage du message par défaut');
-                    activityContainer.innerHTML = `
-                        <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                <span class="text-sm font-medium">Bienvenue dans le Club !</span>
-                            </div>
-                            <span class="text-sm text-gray-600">+50 pts</span>
-                        </div>
-                    `;
-                } else {
-                    console.log('✅ Activités trouvées:', querySnapshot.size);
-                    querySnapshot.forEach((doc) => {
-                        const activity = doc.data();
-                        const activityElement = createActivityElement(activity);
-                        activityContainer.appendChild(activityElement);
-                    });
-                }
-                
-            } catch (error) {
-                console.error('❌ Erreur chargement activité:', error);
-                
-                // Afficher un message par défaut même en cas d'erreur
-                activityContainer.innerHTML = `
-                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span class="text-sm font-medium">Membre du Club Avantage CE</span>
-                        </div>
-                        <span class="text-sm text-gray-600">🎉</span>
-                    </div>
-                `;
-                
-                // Ne pas afficher d'erreur à l'utilisateur pour l'historique
-                console.log('ℹ️ Historique non disponible, affichage du message par défaut');
-            }
-        }
-
-        // Créer un élément d'activité
-        function createActivityElement(activity) {
-            const div = document.createElement('div');
-            div.className = 'flex justify-between items-center p-2 bg-gray-50 rounded-lg';
-            
-            const typeColors = {
-                'inscription': 'bg-green-500',
-                'achat': 'bg-blue-500',
-                'bonus': 'bg-yellow-500',
-                'reduction': 'bg-purple-500'
-            };
-            
-            const color = typeColors[activity.type] || 'bg-gray-500';
-            
-            div.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 ${color} rounded-full"></div>
-                    <span class="text-sm font-medium">${activity.description}</span>
-                </div>
-                <span class="text-sm text-gray-600">${activity.points > 0 ? '+' : ''}${activity.points} pts</span>
-            `;
-            
-            return div;
-        }
-
-        // Valider le format du ticket
-        function validateTicketFormat(ticket) {
-            const pattern1 = /^S\d{5}$/; // S suivi de 5 chiffres
-            const pattern2 = /^\d{5}-\d{3}-\d{4}$/; // 00000-003-0012
-            return pattern1.test(ticket) || pattern2.test(ticket);
-        }
-        
-        // Vérifier si un ticket existe déjà
-        async function checkTicketExists(ticketNumber) {
-            try {
-                const doc = await db.collection('usedTickets').doc(ticketNumber).get();
-                return doc.exists;
-            } catch (error) {
-                console.error('Erreur vérification ticket:', error);
-                return false;
-            }
-        }
-        
-        // Vérifier l'état du QR Code
-        async function checkQRCodeStatus() {
-            if (!currentUser) return;
-            
-            try {
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                const userData = userDoc.data();
-                
-                const ticketForm = document.getElementById('ticket-validation-form');
-                const qrSection = document.getElementById('qr-code-section');
-                
-                if (userData.qrCodeExpiry && userData.qrCodeExpiry.toDate() > new Date()) {
-                    // QR Code encore valide
-                    ticketForm.classList.add('hidden');
-                    qrSection.classList.remove('hidden');
-                    
-                    const expiryDate = userData.qrCodeExpiry.toDate();
-                    document.getElementById('qr-expiry').textContent = expiryDate.toLocaleString('fr-FR');
-                    
-                    generateQRCode(currentUser.uid);
-                } else {
-                    // QR Code expiré ou inexistant
-                    ticketForm.classList.remove('hidden');
-                    qrSection.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Erreur vérification QR Code:', error);
-            }
-        }
-        
-        // Valider le ticket et afficher le QR Code
-        async function validateTicketAndShowQR() {
-            const ticketNumber = document.getElementById('new-ticket-number').value.trim();
-            
-            if (!ticketNumber) {
-                showMessage('Veuillez saisir un numéro de facture.', 'error');
-                return;
-            }
-            
-            if (!validateTicketFormat(ticketNumber)) {
-                showMessage('Format invalide. Utilisez: S suivi de 5 chiffres (ex: S01032) ou format 00000-003-0012', 'error');
-                return;
-            }
-            
-            // Vérifier si le ticket existe déjà
-            const ticketExists = await checkTicketExists(ticketNumber);
-            if (ticketExists) {
-                showMessage('Ce numéro de facture a déjà été utilisé.', 'error');
-                return;
-            }
-            
-            try {
-                showMessage('Validation du ticket en cours...', 'info');
-                
-                // Calculer l'expiration (24h)
-                const expiry = new Date();
-                expiry.setHours(expiry.getHours() + 24);
-                
-                // Mettre à jour l'utilisateur
-                await db.collection('users').doc(currentUser.uid).update({
-                    lastTicket: ticketNumber,
-                    qrCodeExpiry: expiry,
-                    lastQRGeneration: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Enregistrer le ticket comme utilisé
-                await db.collection('usedTickets').doc(ticketNumber).set({
-                    userId: currentUser.uid,
-                    usedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    type: 'reduction'
-                });
-                
-                // Ajouter à l'historique
-                await db.collection('users').doc(currentUser.uid).collection('history').add({
-                    type: 'reduction',
-                    points: 0,
-                    description: `Réduction 5% - Ticket ${ticketNumber}`,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Afficher le QR Code
-                const ticketForm = document.getElementById('ticket-validation-form');
-                const qrSection = document.getElementById('qr-code-section');
-                
-                ticketForm.classList.add('hidden');
-                qrSection.classList.remove('hidden');
-                
-                document.getElementById('qr-expiry').textContent = expiry.toLocaleString('fr-FR');
-                
-                generateQRCode(currentUser.uid);
-                
-                showMessage('✅ Ticket validé ! Votre QR Code est prêt.', 'success');
-                
-            } catch (error) {
-                console.error('Erreur validation ticket:', error);
-                showMessage('Erreur lors de la validation du ticket.', 'error');
-            }
-        }
-        
-        // Générer le QR Code personnel - Version robuste
         function generateQRCode(userId) {
             const qrcodeContainer = document.getElementById('qrcode-container');
-            
-            // Sécurité : si le conteneur n'est pas trouvé, on arrête
             if (!qrcodeContainer) {
-                console.error("L'élément 'qrcode-container' est introuvable dans le HTML.");
+                console.error("ERREUR: Le conteneur '#qrcode-container' est introuvable dans le HTML !");
                 return;
             }
-
-            // Vider l'ancien QR code pour éviter les doublons
-            qrcodeContainer.innerHTML = '';
-
-            // Utiliser la librairie pour générer le QR Code
+            qrcodeContainer.innerHTML = ''; // Vider avant de générer
             new QRCode(qrcodeContainer, {
-                text: userId, // Le QR code contient l'ID unique de l'utilisateur
+                text: userId,
                 width: 180,
                 height: 180,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
             });
-            console.log("QR Code généré pour l'utilisateur :", userId);
-
-            // Mettre à jour le statut
-            const qrStatus = document.getElementById('qr-status');
-            if (qrStatus) {
-                qrStatus.textContent = "✅ Ticket validé ! Présentez ce code en caisse.";
-                qrStatus.classList.add('text-green-600', 'font-bold');
-            }
-        }
-
-        // Mettre à jour la progression du niveau
-        function updateLevelProgress(points) {
-            let currentLevel, nextLevel, progress, pointsToNext;
-            
-            if (points < 50) {
-                currentLevel = 'Bronze';
-                nextLevel = 'Argent';
-                progress = (points / 50) * 100;
-                pointsToNext = 50 - points;
-            } else if (points < 100) {
-                currentLevel = 'Argent';
-                nextLevel = 'Or';
-                progress = ((points - 50) / 50) * 100;
-                pointsToNext = 100 - points;
-            } else {
-                currentLevel = 'Or';
-                nextLevel = 'VIP';
-                progress = 100;
-                pointsToNext = 0;
-            }
-            
-            document.getElementById('current-level').textContent = currentLevel;
-            document.getElementById('next-level').textContent = nextLevel;
-            document.getElementById('level-progress').style.width = `${Math.min(progress, 100)}%`;
-            document.getElementById('points-to-next').textContent = 
-                pointsToNext > 0 ? `${pointsToNext} points pour le niveau suivant` : 'Niveau maximum atteint !';
-        }
-
-        // Animation des nombres
-        function animateNumber(elementId, start, end, duration) {
-            const element = document.getElementById(elementId);
-            const range = end - start;
-            const increment = range / (duration / 16);
-            let current = start;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                    current = end;
-                    clearInterval(timer);
-                }
-                element.textContent = Math.floor(current);
-            }, 16);
-        }
-
-        // Actualiser les données - Version optimisée
-        function refreshData() {
-            if (!currentUser) {
-                console.error('❌ Aucun utilisateur connecté pour actualiser');
-                showMessage('Erreur: Aucun utilisateur connecté', 'error');
-                return;
-            }
-            
-            console.log('🔄 Actualisation des données utilisateur...');
-            showMessage('🔄 Actualisation des données...', 'info');
-            
-            // Recharger les données utilisateur
-            loadUserData(currentUser);
-            
-            setTimeout(() => {
-                showMessage('✅ Données actualisées !', 'success');
-                console.log('✅ Actualisation terminée');
-            }, 1500);
-        }
-
-        // Partager l'application
-        function shareApp() {
-            const shareText = `🎉 Rejoignez-moi dans le Club Avantage CE ! Points de fidélité, réductions exclusives et bien plus. Inscrivez-vous : ${window.location.href}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Club Avantage CE',
-                    text: shareText,
-                    url: window.location.href
-                });
-            } else {
-                navigator.clipboard.writeText(shareText).then(() => {
-                    showMessage('📋 Lien copié ! Partagez-le avec vos amis.', 'success');
-                });
-            }
-        }
-
-        // Déconnexion - Version optimisée
-        function logout() {
-            console.log('🚪 Déconnexion en cours...');
-            
-            // Afficher l'écran de chargement pendant la déconnexion
-            showLoadingScreen();
-            
-            auth.signOut().then(() => {
-                console.log('✅ Déconnexion réussie');
-                
-                // Nettoyer les écouteurs
-                if (userDataListener) {
-                    userDataListener();
-                    userDataListener = null;
-                }
-                
-                // Réinitialiser les variables
-                currentUser = null;
-                
-                showMessage('👋 À bientôt !', 'info');
-                
-            }).catch((error) => {
-                console.error('❌ Erreur lors de la déconnexion:', error);
-                hideLoadingScreen();
-                showMessage('Erreur lors de la déconnexion', 'error');
-            });
-        }
-
-        // Fonctions d'affichage/masquage des écrans - Version optimisée
-        function showLoadingScreen() {
-            console.log('⏳ Affichage de l\'écran de chargement');
-            if (loadingScreen) {
-                loadingScreen.classList.remove('hidden');
-                loadingScreen.style.display = 'flex';
-            }
-            if (authScreen) {
-                authScreen.classList.add('hidden');
-                authScreen.style.display = 'none';
-            }
-            if (cardScreen) {
-                cardScreen.classList.add('hidden');
-                cardScreen.style.display = 'none';
-            }
+            console.log("QR Code généré pour l'ID:", userId);
         }
 
         function hideLoadingScreen() {
-            console.log('✅ Masquage de l\'écran de chargement');
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-                loadingScreen.style.display = 'none';
-            }
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) loadingScreen.style.display = 'none';
+            document.getElementById('app-header')?.classList.remove('hidden');
+            document.getElementById('app-content')?.classList.remove('hidden');
         }
 
-        function showAuthScreen() {
-            console.log('🔐 Affichage de l\'écran d\'authentification');
-            if (authScreen) {
-                authScreen.classList.remove('hidden');
-                authScreen.style.display = 'block';
-            }
-            if (cardScreen) {
-                cardScreen.classList.add('hidden');
-                cardScreen.style.display = 'none';
-            }
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-                loadingScreen.style.display = 'none';
-            }
-        }
-
-        function showCardScreen() {
-            console.log('💳 Affichage de l\'écran de la carte membre');
-            if (cardScreen) {
-                cardScreen.classList.remove('hidden');
-                cardScreen.style.display = 'block';
-            }
-            if (authScreen) {
-                authScreen.classList.add('hidden');
-                authScreen.style.display = 'none';
-            }
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-                loadingScreen.style.display = 'none';
-            }
-        }
-
-        // Afficher les messages d'authentification
-        function showAuthMessage(message, type = 'info') {
-            const messageDiv = document.getElementById('auth-message');
-            let className = 'p-2 rounded-lg font-medium ';
-            
-            switch(type) {
-                case 'success':
-                    className += 'bg-green-100 text-green-700 border border-green-300';
-                    break;
-                case 'error':
-                    className += 'bg-red-100 text-red-700 border border-red-300';
-                    break;
-                case 'info':
-                    className += 'bg-blue-100 text-blue-700 border border-blue-300';
-                    break;
-                default:
-                    className += 'bg-gray-100 text-gray-700 border border-gray-300';
-            }
-            
-            messageDiv.innerHTML = `<div class="${className}">${message}</div>`;
-            
-            if (type === 'success' || type === 'info') {
-                setTimeout(() => {
-                    messageDiv.innerHTML = '';
-                }, 4000);
-            }
-        }
-
-        // Afficher les messages généraux
-        function showMessage(message, type = 'info') {
-            const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-            toast.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 4000);
-        }
-
-        // Afficher la page de confirmation d'inscription
-        function showConfirmationPage(prenom, nom, memberId) {
-            console.log('🎉 Affichage de la page de confirmation pour:', prenom, nom, memberId);
-            
-            // Masquer tous les autres écrans
-            hideAllScreens();
-            
-            // Afficher l'écran de confirmation
-            const confirmationScreen = document.getElementById('confirmation-screen');
-            if (confirmationScreen) {
-                confirmationScreen.classList.remove('hidden');
-                confirmationScreen.style.display = 'block';
-            }
-            
-            // Mettre à jour les informations
-            const memberIdDisplay = document.getElementById('confirmation-member-id');
-            const memberIdCopy = document.getElementById('confirmation-member-id-copy');
-            const confirmationName = document.getElementById('confirmation-name');
-            
-            if (memberIdDisplay) {
-                memberIdDisplay.textContent = memberId;
-            }
-            if (memberIdCopy) {
-                memberIdCopy.textContent = memberId;
-            }
-            if (confirmationName) {
-                confirmationName.textContent = `${prenom} ${nom}`;
-            }
-            
-            console.log('✅ Page de confirmation affichée avec succès');
-        }
-
-        // Aller vers l'espace membre depuis la confirmation
-        function goToMemberArea() {
-            console.log('🚀 Redirection vers l\'espace membre...');
-            
-            // L'utilisateur est déjà connecté grâce à l'inscription
-            // On peut directement afficher l'écran de la carte
-            showCardScreen();
-            
-            // Charger les données utilisateur si pas déjà fait
-            if (currentUser) {
-                loadUserData(currentUser);
-            }
-        }
-
-        // Masquer tous les écrans
-        function hideAllScreens() {
-            const screens = ['loading-screen', 'auth-screen', 'confirmation-screen', 'card-screen'];
-            screens.forEach(screenId => {
-                const screen = document.getElementById(screenId);
-                if (screen) {
-                    screen.classList.add('hidden');
-                    screen.style.display = 'none';
-                }
-            });
-        }
-
-        // Fonction de formatage du téléphone avec validation sénégalaise
-        function formatPhoneNumber(e) {
-            const countryCode = document.getElementById('country-code').value;
-            let value = e.target.value.replace(/[^0-9]/g, '');
-            
-            if (countryCode === '+221') {
-                // Format sénégalais: 7X XXX XX XX (9 chiffres: 70/75/76/77/78 + 7 chiffres)
-                // Limiter à 9 chiffres
-                value = value.substring(0, 9);
-                
-                // Formatage visuel: 7X XXX XX XX
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + ' ' + value.substring(2);
-                }
-                if (value.length >= 7) {
-                    value = value.substring(0, 7) + ' ' + value.substring(7);
-                }
-                if (value.length >= 10) {
-                    value = value.substring(0, 10) + ' ' + value.substring(10);
-                }
-            } else if (countryCode === '+33') {
-                // Format français: 0X XX XX XX XX
-                value = value.substring(0, 10);
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + ' ' + value.substring(2);
-                }
-                if (value.length >= 6) {
-                    value = value.substring(0, 6) + ' ' + value.substring(6);
-                }
-                if (value.length >= 9) {
-                    value = value.substring(0, 9) + ' ' + value.substring(9);
-                }
-            } else {
-                // Format international générique
-                value = value.substring(0, 15);
-            }
-            
-            e.target.value = value;
-        }
-        
-        // Fonction pour changer le placeholder selon le pays
-        function updatePhonePlaceholder() {
-            const countryCode = document.getElementById('country-code').value;
-            const phoneInput = document.getElementById('signup-telephone');
-            
-            if (countryCode === '+221') {
-                phoneInput.placeholder = '77 123 45 67';
-            } else if (countryCode === '+33') {
-                phoneInput.placeholder = '01 23 45 67 89';
-            } else {
-                phoneInput.placeholder = 'Numéro de téléphone';
-            }
-            
-            // Vider le champ lors du changement de pays
-            phoneInput.value = '';
-        }
-        
-        // Formatage en temps réel du ticket
-        function formatTicketInput(e) {
-            let value = e.target.value.toUpperCase();
-            
-            // Supprimer les caractères non autorisés
-            value = value.replace(/[^S0-9-]/g, '');
-            
-            // Limiter la longueur selon le format
-            if (value.startsWith('S')) {
-                // Format S00000
-                value = value.substring(0, 6);
-            } else {
-                // Format 00000-003-0000
-                value = value.substring(0, 14);
-            }
-            
-            e.target.value = value;
-        }
-        
-        // Attacher le formatage aux champs ticket
-        document.addEventListener('DOMContentLoaded', function() {
-            const signupTicket = document.getElementById('signup-ticket');
-            const newTicket = document.getElementById('new-ticket-number');
-            
-            if (signupTicket) {
-                signupTicket.addEventListener('input', formatTicketInput);
-            }
-            if (newTicket) {
-                newTicket.addEventListener('input', formatTicketInput);
-            }
-        });
-
-
+        // ... Collez ici le reste de vos fonctions (showAuthScreen, showCardScreen, switchTab, etc.) ...
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773eba1855c785f',t:'MTc1NjU1MzA1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
