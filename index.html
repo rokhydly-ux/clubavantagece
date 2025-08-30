@@ -3,49 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Avantage CE</title>
+    <title>Club Avantage CE - Central Equipements</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <style> .hidden { display: none; } </style>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .hidden { display: none; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .loading-spinner { animation: spin 1s linear infinite; }
+        /* ... Collez ici le reste de vos styles @keyframes ... */
+    </style>
 </head>
-<body class="min-h-screen bg-gray-200">
+<body class="min-h-screen">
 
     <!-- Écran de chargement -->
-    <div id="loading-screen" class="fixed inset-0 bg-blue-600 flex items-center justify-center z-50">
-        <p class="text-white text-xl">Chargement...</p>
+    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center z-50">
+        <div class="text-center text-white">
+            <div class="loading-spinner w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold mb-2">Club Avantage CE</h2>
+            <p class="text-blue-200">Chargement de votre espace membre...</p>
+        </div>
     </div>
 
     <!-- Header -->
-    <header id="app-header" class="bg-white p-4 text-center hidden">
-        <h1 class="text-lg font-bold">Club Avantage CE</h1>
-        <button id="logout-btn" class="text-sm text-red-500" style="display: none;">Déconnexion</button>
+    <header id="app-header" class="bg-white shadow-lg p-4 text-center hidden">
+        <div class="flex items-center justify-between max-w-4xl mx-auto">
+            <div class="w-24 md:w-32"></div>
+            <div class="text-center">
+                <h2 class="text-lg font-bold text-black">Club Avantage CE</h2>
+                <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
+            </div>
+            <button id="logout-btn" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm" style="display: none;">Déconnexion</button>
+        </div>
     </header>
 
     <!-- Contenu Principal -->
-    <main id="app-content" class="hidden p-4">
-        <!-- Écran d'authentification -->
+    <main id="app-content" class="hidden min-h-screen" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://deegreez.fr/wp-content/uploads/2023/10/quel-budget-pour-une-cuisine-professionnelle-scaled.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;">
+        
+        <!-- ÉCRAN D'AUTHENTIFICATION -->
         <div id="auth-screen">
-            <h2 class="text-2xl font-bold mb-4">Inscription / Connexion</h2>
-            <form id="signup-form">
-                <input type="email" id="signup-email" placeholder="Email" required class="border p-2 w-full mb-2">
-                <input type="password" id="signup-password" placeholder="Mot de passe" required class="border p-2 w-full mb-2">
-                <button type="submit" class="bg-green-500 text-white p-2 w-full">S'inscrire</button>
-            </form>
-            <hr class="my-4">
-            <form id="signin-form">
-                <input type="email" id="signin-email" placeholder="Email" required class="border p-2 w-full mb-2">
-                <input type="password" id="signin-password" placeholder="Mot de passe" required class="border p-2 w-full mb-2">
-                <button type="submit" class="bg-blue-500 text-white p-2 w-full">Se Connecter</button>
-            </form>
+            <div class="min-h-screen p-6">
+                <div class="max-w-md mx-auto space-y-6 pt-8">
+                    <div class="text-center space-y-4 fade-in">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h2 class="text-3xl font-black text-white">Rejoignez le Club Avantage CE !</h2>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                            <button id="signup-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all bg-blue-500 text-white">Inscription</button>
+                            <button id="signin-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all text-gray-600">Connexion</button>
+                        </div>
+                        <form id="signup-form" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="text" id="signup-prenom" placeholder="Prénom" required class="px-4 py-3 rounded-xl border">
+                                <input type="text" id="signup-nom" placeholder="Nom" required class="px-4 py-3 rounded-xl border">
+                            </div>
+                            <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" required class="w-full px-4 py-3 rounded-xl border">
+                            <input type="tel" id="signup-telephone" placeholder="Téléphone" required class="w-full px-4 py-3 rounded-xl border">
+                            <input type="password" id="signup-password" placeholder="Mot de passe (min. 6 caractères)" required class="w-full px-4 py-3 rounded-xl border">
+                            <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg">🎁 M'inscrire</button>
+                        </form>
+                        <form id="signin-form" class="space-y-4 hidden">
+                            <input type="email" id="signin-email" placeholder="Email" required class="w-full px-3 py-2 rounded-lg border">
+                            <input type="password" id="signin-password" placeholder="Mot de passe" required class="w-full px-3 py-2 rounded-lg border">
+                            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">🔑 Me connecter</button>
+                        </form>
+                        <div id="auth-message" class="mt-4 text-center text-sm"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Écran de la carte membre -->
+        <!-- ÉCRAN DE LA CARTE MEMBRE -->
         <div id="card-screen" class="hidden">
-            <h2 class="text-2xl font-bold">Bienvenue, <span id="member-name"></span>!</h2>
-            <p>Email: <span id="member-email"></span></p>
-            <p>Points: <span id="points-balance"></span></p>
-            <p>Membre depuis: <span id="member-since"></span></p>
-            <div id="qrcode-container" class="mt-4"></div>
+            <div class="min-h-screen p-6">
+                <div class="max-w-md mx-auto space-y-6 pt-4">
+                    <div class="glass-effect rounded-2xl p-6 card-shine">
+                        <div class="text-center space-y-4">
+                            <h2 class="text-2xl font-bold" style="color: #22a8dc;">Carte Membre VIP</h2>
+                            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
+                                <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
+                                <p class="text-sm opacity-90" id="member-email"></p>
+                                <div class="mt-3 flex justify-between items-center">
+                                    <div><p class="text-xs opacity-75">Niveau</p><p class="font-bold" id="member-tier"></p></div>
+                                    <div class="text-right"><p class="text-xs opacity-75">Membre depuis</p><p class="font-bold text-sm" id="member-since"></p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="text-center space-y-4">
+                            <h3 class="text-xl font-bold" style="color: #22a8dc;">💰 Vos Points</h3>
+                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white">
+                                <div class="text-4xl font-black points-counter" id="points-balance">0</div>
+                                <p class="text-sm opacity-90 mt-1">Points disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="text-center space-y-4">
+                            <h3 class="text-xl font-bold" style="color: #22a8dc;">📱 Votre QR Code Personnel</h3>
+                            <div class="qr-container rounded-xl p-4 mx-auto w-fit">
+                                <div id="qrcode-container" class="mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -73,57 +138,77 @@
 
         // --- C. POINT D'ENTRÉE ---
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Prêt. Attachement des événements.");
-            
             const signupForm = document.getElementById('signup-form');
-            if(signupForm) signupForm.addEventListener('submit', handleSignup);
+            if (signupForm) signupForm.addEventListener('submit', handleSignup);
             
             const signinForm = document.getElementById('signin-form');
-            if(signinForm) signinForm.addEventListener('submit', handleSignin);
-
+            if (signinForm) signinForm.addEventListener('submit', handleSignin);
+            
             const logoutBtn = document.getElementById('logout-btn');
-            if(logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            
+            document.getElementById('signup-tab')?.addEventListener('click', () => switchTab('signup'));
+            document.getElementById('signin-tab')?.addEventListener('click', () => switchTab('signin'));
 
             auth.onAuthStateChanged(handleAuthStateChange);
         });
 
         // --- D. LOGIQUE PRINCIPALE ---
         function handleAuthStateChange(user) {
-            console.log("État d'authentification changé. Utilisateur:", user ? user.uid : "aucun");
             hideLoadingScreen();
+            const logoutBtn = document.getElementById('logout-btn');
             if (user) {
                 currentUser = user;
                 showCardScreen();
                 loadUserData(user);
+                if (logoutBtn) logoutBtn.style.display = 'block';
             } else {
                 if (userDataListener) userDataListener();
                 currentUser = null;
                 showAuthScreen();
+                if (logoutBtn) logoutBtn.style.display = 'none';
             }
         }
         
         // --- E. GESTION DES FORMULAIRES ---
         async function handleSignup(e) {
             e.preventDefault();
-            const email = document.getElementById('signup-email').value;
+            const prenom = document.getElementById('signup-prenom').value.trim();
+            const nom = document.getElementById('signup-nom').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const telephone = document.getElementById('signup-telephone').value.trim();
             const password = document.getElementById('signup-password').value;
+
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({
+                const user = userCredential.user;
+                
+                await user.updateProfile({ displayName: `${prenom} ${nom}` });
+
+                await db.collection('users').doc(user.uid).set({
+                    prenom: prenom,
+                    nom: nom,
                     email: email,
+                    telephone: telephone,
                     points: 50,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-            } catch (error) { console.error("Erreur Inscription:", error); }
+            } catch (error) {
+                console.error("Erreur d'inscription:", error);
+                document.getElementById('auth-message').textContent = error.message;
+            }
         }
 
         async function handleSignin(e) {
             e.preventDefault();
-            const email = document.getElementById('signin-email').value;
+            const email = document.getElementById('signin-email').value.trim();
             const password = document.getElementById('signin-password').value;
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) { console.error("Erreur Connexion:", error); }
+            } catch (error) {
+                console.error("Erreur de connexion:", error);
+                document.getElementById('auth-message').textContent = "Email ou mot de passe incorrect.";
+            }
         }
 
         function handleLogout() {
@@ -135,32 +220,41 @@
             if (!user) return;
             generateQRCode(user.uid);
             if (userDataListener) userDataListener();
-            userDataListener = db.collection('users').doc(user.uid).onSnapshot(doc => {
+            userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
                 if (doc.exists) {
                     updateUserInterface(user, doc.data());
                 }
+            }, (error) => {
+                console.error("Erreur Firestore onSnapshot:", error);
             });
         }
         
         function updateUserInterface(user, userData) {
-            document.getElementById('member-name').textContent = user.displayName || userData.prenom || 'Membre';
+            document.getElementById('member-name').textContent = user.displayName || `${userData.prenom} ${userData.nom}`;
             document.getElementById('member-email').textContent = user.email;
-            document.getElementById('points-balance').textContent = userData.points || 0;
-            if(userData.createdAt) {
-                document.getElementById('member-since').textContent = userData.createdAt.toDate().toLocaleDateString('fr-FR');
+            
+            const memberSince = document.getElementById('member-since');
+            if (userData.createdAt && userData.createdAt.toDate) {
+                const date = userData.createdAt.toDate();
+                memberSince.textContent = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+            } else {
+                 memberSince.textContent = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
             }
+            
+            document.getElementById('member-tier').textContent = userData.tier || 'Bronze';
+            document.getElementById('points-balance').textContent = userData.points || 0;
         }
 
         function generateQRCode(userId) {
-            const container = document.getElementById('qrcode-container');
-            if (!container) return;
-            container.innerHTML = '';
-            new QRCode(container, { text: userId, width: 128, height: 128 });
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            if (!qrcodeContainer) return;
+            qrcodeContainer.innerHTML = '';
+            new QRCode(qrcodeContainer, { text: userId, width: 180, height: 180 });
         }
 
         function hideLoadingScreen() {
-            const screen = document.getElementById('loading-screen');
-            if(screen) screen.style.display = 'none';
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) loadingScreen.style.display = 'none';
             document.getElementById('app-header')?.classList.remove('hidden');
             document.getElementById('app-content')?.classList.remove('hidden');
         }
@@ -173,6 +267,29 @@
         function showCardScreen() {
             document.getElementById('card-screen')?.classList.remove('hidden');
             document.getElementById('auth-screen')?.classList.add('hidden');
+        }
+        
+        function switchTab(tab) {
+            const signupTab = document.getElementById('signup-tab');
+            const signinTab = document.getElementById('signin-tab');
+            const signupForm = document.getElementById('signup-form');
+            const signinForm = document.getElementById('signin-form');
+            
+            if (tab === 'signup') {
+                signupTab.classList.add('bg-blue-500', 'text-white');
+                signupTab.classList.remove('text-gray-600');
+                signinTab.classList.remove('bg-blue-500', 'text-white');
+                signinTab.classList.add('text-gray-600');
+                signupForm.classList.remove('hidden');
+                signinForm.classList.add('hidden');
+            } else {
+                signinTab.classList.add('bg-blue-500', 'text-white');
+                signinTab.classList.remove('text-gray-600');
+                signupTab.classList.remove('bg-blue-500', 'text-white');
+                signupTab.classList.add('text-gray-600');
+                signinForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            }
         }
     </script>
 </body>
