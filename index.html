@@ -10,23 +10,127 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .hidden { display: none; }
-        /* ... Collez ici tous vos styles @keyframes ... */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .loading-spinner { animation: spin 1s linear infinite; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse-glow { animation: pulseGlow 2s ease-in-out infinite alternate; }
+        @keyframes pulseGlow { from { box-shadow: 0 0 20px rgba(34, 168, 220, 0.3); } to { box-shadow: 0 0 40px rgba(34, 168, 220, 0.6), 0 0 60px rgba(253, 216, 53, 0.3); } }
+        .card-shine { position: relative; overflow: hidden; }
+        .card-shine::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shine 3s infinite; }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+        .points-counter { animation: pointsGlow 2s ease-in-out infinite alternate; }
+        @keyframes pointsGlow { from { text-shadow: 0 0 10px #fdd835; } to { text-shadow: 0 0 20px #fdd835, 0 0 30px #fbc02d; } }
+        .qr-container { background: linear-gradient(45deg, #ffffff, #f8f9fa); border: 3px solid #22a8dc; animation: qrPulse 3s ease-in-out infinite; }
+        @keyframes qrPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- ... Votre HTML pour loading-screen, header, auth-screen et card-screen reste EXACTEMENT le même ... -->
-    <!-- ... Assurez-vous que le conteneur du QR Code est un DIV vide : <div id="qrcode-container"></div> ... -->
+
+    <!-- Écran de chargement -->
+    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center z-50">
+        <div class="text-center text-white">
+            <div class="loading-spinner w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold mb-2">Club Avantage CE</h2>
+            <p class="text-blue-200">Chargement de votre espace membre...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="app-header" class="bg-white shadow-lg p-4 text-center hidden">
+        <div class="flex items-center justify-between max-w-4xl mx-auto">
+            <div class="w-24 md:w-32"></div>
+            <div class="text-center">
+                <h2 class="text-lg font-bold text-black">Club Avantage CE</h2>
+                <p class="text-xs text-gray-600">Votre fidélité récompensée</p>
+            </div>
+            <button id="logout-btn" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm" style="display: none;">Déconnexion</button>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main id="app-content" class="hidden min-h-screen" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://deegreez.fr/wp-content/uploads/2023/10/quel-budget-pour-une-cuisine-professionnelle-scaled.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;">
+        
+        <!-- ÉCRAN D'AUTHENTIFICATION -->
+        <div id="auth-screen">
+            <div class="min-h-screen p-6">
+                <div class="max-w-md mx-auto space-y-6 pt-8">
+                    <div class="text-center space-y-4 fade-in">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h2 class="text-3xl font-black text-white">Rejoignez le Club Avantage CE !</h2>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                            <button id="signup-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all bg-blue-500 text-white">Inscription</button>
+                            <button id="signin-tab" class="flex-1 py-2 px-4 rounded-md font-semibold transition-all text-gray-600">Connexion</button>
+                        </div>
+                        <form id="signup-form" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="text" id="signup-prenom" placeholder="Prénom" required class="px-4 py-3 rounded-xl border">
+                                <input type="text" id="signup-nom" placeholder="Nom" required class="px-4 py-3 rounded-xl border">
+                            </div>
+                            <input type="email" id="signup-email" placeholder="Email (pour vous connecter)" required class="w-full px-4 py-3 rounded-xl border">
+                            <input type="tel" id="signup-telephone" placeholder="Téléphone" required class="w-full px-4 py-3 rounded-xl border">
+                            <input type="password" id="signup-password" placeholder="Mot de passe (min. 6 caractères)" required class="w-full px-4 py-3 rounded-xl border">
+                            <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg">🎁 M'inscrire</button>
+                        </form>
+                        <form id="signin-form" class="space-y-4 hidden">
+                            <input type="email" id="signin-email" placeholder="Email" required class="w-full px-3 py-2 rounded-lg border">
+                            <input type="password" id="signin-password" placeholder="Mot de passe" required class="w-full px-3 py-2 rounded-lg border">
+                            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">🔑 Me connecter</button>
+                        </form>
+                        <div id="auth-message" class="mt-4 text-center text-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN DE LA CARTE MEMBRE -->
+        <div id="card-screen" class="hidden">
+            <div class="min-h-screen p-6">
+                <div class="max-w-md mx-auto space-y-6 pt-4">
+                    <div class="glass-effect rounded-2xl p-6 card-shine">
+                        <div class="text-center space-y-4">
+                            <h2 class="text-2xl font-bold" style="color: #22a8dc;">Carte Membre VIP</h2>
+                            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
+                                <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
+                                <p class="text-sm opacity-90" id="member-email">email@example.com</p>
+                                <div class="mt-3 flex justify-between items-center">
+                                    <div><p class="text-xs opacity-75">Niveau</p><p class="font-bold" id="member-tier">Bronze</p></div>
+                                    <div class="text-right"><p class="text-xs opacity-75">Membre depuis</p><p class="font-bold text-sm" id="member-since"></p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="text-center space-y-4">
+                            <h3 class="text-xl font-bold" style="color: #22a8dc;">💰 Vos Points</h3>
+                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white">
+                                <div class="text-4xl font-black points-counter" id="points-balance">0</div>
+                                <p class="text-sm opacity-90 mt-1">Points disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6">
+                        <div class="text-center space-y-4">
+                            <h3 class="text-xl font-bold" style="color: #22a8dc;">📱 Votre QR Code Personnel</h3>
+                            <p class="text-sm text-gray-600">Présentez ce code en caisse</p>
+                            <div class="qr-container rounded-xl p-4 mx-auto w-fit">
+                                <div id="qrcode-container" class="mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- ======================= SECTION SCRIPTS ======================= -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- UN SEUL ET UNIQUE SCRIPT POUR TOUTE L'APPLICATION -->
     <script>
-        // --- 1. CONFIGURATION ET INITIALISATION DE FIREBASE ---
+        // --- A. CONFIGURATION FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDFuZRS1M_ATwTRxsbW8Jlv0m7H9dnjxjY",
             authDomain: "clubavantage-52aed.firebaseapp.com",
@@ -37,45 +141,47 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        // --- 2. VARIABLES GLOBALES (maintenant que firebase est prêt) ---
+        // --- B. VARIABLES GLOBALES ---
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
         let currentUser = null;
         let userDataListener = null;
 
-        // --- 3. POINT D'ENTRÉE PRINCIPAL (attend que le HTML soit prêt) ---
+        // --- C. POINT D'ENTRÉE ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Attacher les gestionnaires d'événements
-            document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
-            document.getElementById('signin-form')?.addEventListener('submit', handleSignin);
-            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) signupForm.addEventListener('submit', handleSignup);
+            
+            const signinForm = document.getElementById('signin-form');
+            if (signinForm) signinForm.addEventListener('submit', handleSignin);
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            
             document.getElementById('signup-tab')?.addEventListener('click', () => switchTab('signup'));
             document.getElementById('signin-tab')?.addEventListener('click', () => switchTab('signin'));
-            
-            // Démarrer l'écouteur d'authentification
+
             auth.onAuthStateChanged(handleAuthStateChange);
         });
 
-        // --- 4. LOGIQUE PRINCIPALE ---
+        // --- D. LOGIQUE PRINCIPALE ---
         function handleAuthStateChange(user) {
             hideLoadingScreen();
             const logoutBtn = document.getElementById('logout-btn');
-
             if (user) {
                 currentUser = user;
                 showCardScreen();
-                loadUserData(user); // Charger les données ET le QR Code
-                if(logoutBtn) logoutBtn.style.display = 'flex';
+                loadUserData(user);
+                if (logoutBtn) logoutBtn.style.display = 'block';
             } else {
-                if (userDataListener) userDataListener(); // Détache l'écouteur si l'utilisateur se déconnecte
+                if (userDataListener) userDataListener();
                 currentUser = null;
                 showAuthScreen();
-                if(logoutBtn) logoutBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
             }
         }
-
-        // --- 5. GESTION DES FORMULAIRES ---
+        
+        // --- E. GESTION DES FORMULAIRES ---
         async function handleSignup(e) {
             e.preventDefault();
             const prenom = document.getElementById('signup-prenom').value.trim();
@@ -88,17 +194,19 @@
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
-                // Mettre à jour le profil d'authentification est crucial
                 await user.updateProfile({ displayName: `${prenom} ${nom}` });
 
                 await db.collection('users').doc(user.uid).set({
-                    prenom, nom, email, telephone,
-                    points: 50, // Points de bienvenue
+                    prenom: prenom,
+                    nom: nom,
+                    email: email,
+                    telephone: telephone,
+                    points: 50,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             } catch (error) {
                 console.error("Erreur d'inscription:", error);
-                // Gérer l'affichage des erreurs à l'utilisateur
+                document.getElementById('auth-message').textContent = error.message;
             }
         }
 
@@ -110,6 +218,7 @@
                 await auth.signInWithEmailAndPassword(email, password);
             } catch (error) {
                 console.error("Erreur de connexion:", error);
+                document.getElementById('auth-message').textContent = "Email ou mot de passe incorrect.";
             }
         }
 
@@ -117,31 +226,24 @@
             auth.signOut();
         }
 
-        // --- 6. FONCTIONS UTILITAIRES ---
+        // --- F. FONCTIONS UTILITAIRES ---
         function loadUserData(user) {
             if (!user) return;
-
-            // Appeler la génération du QR Code immédiatement avec l'ID de l'utilisateur
             generateQRCode(user.uid);
-
-            if (userDataListener) userDataListener(); // Détache l'ancien écouteur
-            
+            if (userDataListener) userDataListener();
             userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
                 if (doc.exists) {
-                    updateUserInterface(user, doc.data()); // Passer l'objet 'user' et les données
-                } else {
-                     console.log("Le document n'existe pas encore, il sera créé.");
+                    updateUserInterface(user, doc.data());
                 }
+            }, (error) => {
+                console.error("Erreur Firestore onSnapshot:", error);
             });
         }
         
         function updateUserInterface(user, userData) {
-            // CORRECTION : Utiliser le displayName du profil d'authentification comme source fiable
-            const displayName = user.displayName || `${userData.prenom} ${userData.nom}`;
-            document.getElementById('member-name').textContent = displayName;
+            document.getElementById('member-name').textContent = user.displayName || `${userData.prenom} ${userData.nom}`;
             document.getElementById('member-email').textContent = user.email;
             
-            // CORRECTION : Logique de la date d'inscription fiabilisée
             const memberSince = document.getElementById('member-since');
             if (userData.createdAt && userData.createdAt.toDate) {
                 const date = userData.createdAt.toDate();
@@ -151,22 +253,14 @@
             }
 
             document.getElementById('points-balance').textContent = userData.points || 0;
-            // ... Mettre à jour le reste de l'interface (niveaux, etc.)
+            // Mettre à jour le reste de l'interface
         }
 
         function generateQRCode(userId) {
             const qrcodeContainer = document.getElementById('qrcode-container');
-            if (!qrcodeContainer) {
-                console.error("ERREUR: Le conteneur '#qrcode-container' est introuvable dans le HTML !");
-                return;
-            }
-            qrcodeContainer.innerHTML = ''; // Vider avant de générer
-            new QRCode(qrcodeContainer, {
-                text: userId,
-                width: 180,
-                height: 180,
-            });
-            console.log("QR Code généré pour l'ID:", userId);
+            if (!qrcodeContainer) return;
+            qrcodeContainer.innerHTML = '';
+            new QRCode(qrcodeContainer, { text: userId, width: 180, height: 180 });
         }
 
         function hideLoadingScreen() {
@@ -175,8 +269,39 @@
             document.getElementById('app-header')?.classList.remove('hidden');
             document.getElementById('app-content')?.classList.remove('hidden');
         }
+        
+        function showAuthScreen() {
+            document.getElementById('auth-screen')?.classList.remove('hidden');
+            document.getElementById('card-screen')?.classList.add('hidden');
+        }
 
-        // ... Collez ici le reste de vos fonctions (showAuthScreen, showCardScreen, switchTab, etc.) ...
+        function showCardScreen() {
+            document.getElementById('card-screen')?.classList.remove('hidden');
+            document.getElementById('auth-screen')?.classList.add('hidden');
+        }
+        
+        function switchTab(tab) {
+            const signupTab = document.getElementById('signup-tab');
+            const signinTab = document.getElementById('signin-tab');
+            const signupForm = document.getElementById('signup-form');
+            const signinForm = document.getElementById('signin-form');
+            
+            if (tab === 'signup') {
+                signupTab.classList.add('bg-blue-500', 'text-white');
+                signupTab.classList.remove('text-gray-600');
+                signinTab.classList.remove('bg-blue-500', 'text-white');
+                signinTab.classList.add('text-gray-600');
+                signupForm.classList.remove('hidden');
+                signinForm.classList.add('hidden');
+            } else {
+                signinTab.classList.add('bg-blue-500', 'text-white');
+                signinTab.classList.remove('text-gray-600');
+                signupTab.classList.remove('bg-blue-500', 'text-white');
+                signupTab.classList.add('text-gray-600');
+                signinForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>
