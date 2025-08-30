@@ -487,18 +487,20 @@
                         </svg>
                     </div>
                     
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
-                        <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
-                        <p class="text-sm opacity-90" id="member-email">email@example.com</p>
-                        <p class="text-xs opacity-75 mt-1">N° Membre: <span class="font-bold" id="member-id-display">CE-0000</span></p>
-                        <div class="mt-3 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs opacity-75">Niveau</p>
-                                <p class="font-bold" id="member-tier">Bronze</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs opacity-75">Membre depuis</p>
-                                <p class="font-bold text-sm" id="member-since">2024</p>
+                    <div id="member-card-bg" class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white relative overflow-hidden" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://atlas-content-cdn.pixelsquid.com/stock-images/bronze-icon-trophy-cup-logo-YeemkE0-600.jpg'); background-size: cover; background-position: center;">
+                        <div class="relative z-10">
+                            <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
+                            <p class="text-sm opacity-90" id="member-email">email@example.com</p>
+                            <p class="text-xs opacity-75 mt-1">N° Membre: <span class="font-bold" id="member-id-display">CE-0000</span></p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs opacity-75">Niveau</p>
+                                    <p class="font-bold" id="member-tier">Bronze</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs opacity-75">Membre depuis</p>
+                                    <p class="font-bold text-sm" id="member-since">2024</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1298,6 +1300,12 @@
                 if (cardMemberName) {
                     cardMemberName.textContent = displayName;
                 }
+                
+                // Mettre à jour le nom dans la confirmation si visible
+                const confirmationName = document.getElementById('confirmation-name');
+                if (confirmationName) {
+                    confirmationName.textContent = displayName;
+                }
             }
             
             // Afficher le numéro de membre séparément s'il existe
@@ -1312,10 +1320,43 @@
                 memberEmail.textContent = userData.email || (currentUser ? currentUser.email : 'email@example.com');
             }
             
-            // Niveau/Tier
+            // Niveau/Tier avec mise à jour de l'image de fond
             const memberTier = document.getElementById('member-tier');
             if (memberTier) {
-                memberTier.textContent = userData.tier || 'Bronze';
+                const tier = userData.tier || 'Bronze';
+                memberTier.textContent = tier;
+                
+                // Mettre à jour l'image de fond de la carte selon le niveau
+                const memberCardBg = document.getElementById('member-card-bg');
+                if (memberCardBg) {
+                    let backgroundImage = '';
+                    let gradientColor = '';
+                    
+                    switch(tier) {
+                        case 'Bronze':
+                            backgroundImage = 'https://atlas-content-cdn.pixelsquid.com/stock-images/bronze-icon-trophy-cup-logo-YeemkE0-600.jpg';
+                            gradientColor = 'from-amber-700 to-amber-800';
+                            break;
+                        case 'Argent':
+                        case 'Silver':
+                            backgroundImage = 'https://elements-resized.envatousercontent.com/elements-cover-images/8e2e9767-5fe7-4cb5-8de7-12ac5737035d?w=433&cf_fit=scale-down&q=85&format=auto&s=dccd6a8bf3bd8b92eb6ac512dc788b6a3cdfc6db4f4556c2ce06249eadcb8df2';
+                            gradientColor = 'from-gray-400 to-gray-600';
+                            break;
+                        case 'Or':
+                        case 'Gold':
+                            backgroundImage = 'https://atlas-content-cdn.pixelsquid.com/stock-images/bronze-icon-trophy-cup-logo-YeemkE0-600.jpg';
+                            gradientColor = 'from-yellow-500 to-yellow-700';
+                            break;
+                        default:
+                            backgroundImage = 'https://atlas-content-cdn.pixelsquid.com/stock-images/bronze-icon-trophy-cup-logo-YeemkE0-600.jpg';
+                            gradientColor = 'from-blue-600 to-blue-700';
+                    }
+                    
+                    memberCardBg.className = `bg-gradient-to-r ${gradientColor} rounded-xl p-4 text-white relative overflow-hidden`;
+                    memberCardBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${backgroundImage}')`;
+                    memberCardBg.style.backgroundSize = 'cover';
+                    memberCardBg.style.backgroundPosition = 'center';
+                }
             }
             
             // Date d'inscription
@@ -1598,10 +1639,20 @@
             if (!currentUser) return;
             
             // Récupérer les données depuis l'interface principale
-            const memberName = document.getElementById('member-name')?.textContent || 'Membre CE';
+            let memberName = document.getElementById('member-name')?.textContent || 'Membre CE';
             const memberId = document.getElementById('member-id-display')?.textContent || 'CE-0000';
             const memberTier = document.getElementById('member-tier')?.textContent || 'Bronze';
             const pointsBalance = document.getElementById('points-balance')?.textContent || '0';
+            
+            // Si le nom est encore générique, essayer de le récupérer depuis les données utilisateur
+            if (memberName === 'Membre CE' && currentUser) {
+                // Essayer de récupérer depuis Firebase Auth
+                if (currentUser.displayName) {
+                    memberName = currentUser.displayName;
+                } else if (currentUser.email) {
+                    memberName = currentUser.email.split('@')[0];
+                }
+            }
             
             // Mettre à jour la page carte
             const cardMemberName = document.getElementById('card-member-name');
@@ -2381,5 +2432,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97750a59e7f1785f',t:'MTc1NjU2NDc5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97751e8880220171',t:'MTc1NjU2NTYyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
