@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Avantage CE - Connexion Commercial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 2s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(250px); }
+        }
+        
+        .success-animation {
+            animation: successPulse 0.6s ease-in-out;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background-color: #ef4444; width: 25%; }
+        .strength-medium { background-color: #f59e0b; width: 50%; }
+        .strength-good { background-color: #10b981; width: 75%; }
+        .strength-strong { background-color: #059669; width: 100%; }
+    </style>
+</head>
+<body class="bg-gray-800 text-white min-h-screen" style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://agrinnovators.org/wp-content/uploads/2023/10/iStock-1150882713-scaled.jpg'); background-size: cover; background-attachment: fixed;">
+
+    <!-- PAGE DE CONNEXION -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white/10 backdrop-blur-lg p-8 rounded-lg w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">Club Avantage CE</h1>
+                <p class="text-gray-300">Connexion Commercial</p>
+            </div>
+
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Identifiant Commercial</label>
+                    <input type="text" id="login-username" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none" placeholder="Votre identifiant">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Mot de passe</label>
+                    <div class="relative">
+                        <input type="password" id="login-password" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none pr-12" placeholder="Votre mot de passe">
+                        <button type="button" id="toggle-password" class="absolute right-3 top-3 text-gray-400 hover:text-white">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="remember-me" class="mr-2">
+                        <span class="text-sm">Rester connecté</span>
+                    </label>
+                    <button type="button" id="forgot-password-btn" class="text-blue-400 hover:text-blue-300 text-sm">Mot de passe oublié ?</button>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold transition-colors">Se connecter</button>
+            </form>
+
+            <!-- Générateur de mot de passe sécurisé -->
+            <div id="password-generator" class="mt-6 p-4 bg-gray-900 rounded hidden">
+                <h3 class="font-semibold mb-3">🔐 Générateur de mot de passe sécurisé</h3>
+                <div class="space-y-3">
+                    <div class="flex gap-2">
+                        <input type="text" id="generated-password" readonly class="flex-1 p-2 bg-gray-700 rounded text-sm">
+                        <button id="generate-password-btn" class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded text-sm">Générer</button>
+                        <button id="copy-password-btn" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-sm">Copier</button>
+                    </div>
+                    <div class="password-strength bg-gray-700 rounded"></div>
+                    <p class="text-xs text-gray-400">Mot de passe sécurisé généré automatiquement - Aucune mémorisation requise</p>
+                </div>
+            </div>
+
+            <!-- Récupération mot de passe -->
+            <div id="forgot-password-section" class="mt-6 p-4 bg-gray-900 rounded hidden">
+                <h3 class="font-semibold mb-3">🔑 Récupération de mot de passe</h3>
+                <div class="space-y-3">
+                    <input type="email" id="recovery-email" placeholder="Votre email professionnel" class="w-full p-2 bg-gray-700 rounded text-sm">
+                    <button id="send-recovery-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 p-2 rounded text-sm">Envoyer le lien de récupération</button>
+                    <p class="text-xs text-gray-400">Un lien de récupération sera envoyé à votre email professionnel</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE PRINCIPALE (cachée initialement) -->
+    <div id="main-app" class="hidden">
+        <div class="container mx-auto p-8">
+            
+            <!-- EN-TÊTE -->
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold">Programme de Validation - Club Avantage CE</h1>
+                    <p class="text-gray-300">Validez les achats, créditez les points et assistez les nouveaux membres.</p>
+                    <p class="text-sm text-blue-400">Connecté en tant que: <span id="current-user"></span></p>
+                </div>
+                <button id="admin-logout-btn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition-colors">Déconnexion</button>
+            </header>
+
+            <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- SECTION 1 : VALIDATION D'ACHAT -->
+                <section id="validation-section" class="bg-white/10 backdrop-blur-lg p-6 rounded-lg">
+                    <h2 class="text-2xl font-semibold mb-4">✅ Validation d'Achat</h2>
+                    
+                    <!-- Méthodes d'identification client -->
+                    <div class="mb-6 space-y-4">
+                        <h3 class="text-lg font-medium">Identification du Client</h3>
+                        
+                        <!-- Saisie manuelle du code client -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Code Client (saisie manuelle)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="manual-client-code" placeholder="Ex: CLT001" class="flex-1 p-2 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none">
+                                <button id="verify-client-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">Vérifier</button>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-gray-400">OU</div>
+
+                        <!-- Scanner QR -->
+                        <button id="scan-qr-btn" class="w-full bg-green-600 hover:bg-green-700 p-3 rounded transition-colors">📱 Scanner le QR Code Client</button>
+                        
+                        <div id="scanner-container" class="w-full h-64 bg-gray-900 rounded hidden relative overflow-hidden border-2 border-green-500">
+                            <div class="absolute inset-4 border-2 border-green-400 rounded">
+                                <div class="scanner-line"></div>
+                            </div>
+                            <div class="absolute bottom-4 left-4 right-4 text-center">
+                                <p class="text-green-400 text-sm">Positionnez le QR code dans le cadre</p>
+                                <button id="simulate-scan-btn" class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm transition-colors">Simuler un scan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Infos client -->
+                    <div id="client-info" class="hidden mb-6 p-4 bg-gray-900 rounded border-l-4 border-green-500">
+                        <p>Client : <span id="client-name" class="font-bold text-green-400"></span></p>
+                        <p>Solde actuel : <span id="client-points" class="font-bold text-yellow-400"></span> points</p>
+                        <p class="text-xs text-gray-400 mt-2">ID Client : <span id="client-id"></span></p>
+                    </div>
+
+                    <!-- Validation du ticket -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">N° de Ticket/Facture</label>
+                            <input type="text" id="ticket-number" placeholder="Ex: TK240315001, FAC2024001" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none">
+                            <div id="ticket-validation" class="mt-2 text-sm hidden"></div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Montant de l'Achat (FCFA)</label>
+                            <input type="number" id="purchase-amount" placeholder="Montant en FCFA" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none">
+                        </div>
+
+                        <!-- Calcul automatique -->
+                        <div id="calculation-display" class="hidden p-4 bg-blue-900 rounded">
+                            <h4 class="font-semibold mb-2">💰 Calcul des Avantages</h4>
+                            <p>Remise 5% : <span id="discount-amount" class="font-bold text-green-400"></span> FCFA</p>
+                            <p>Points à créditer : <span id="points-to-add" class="font-bold text-yellow-400"></span> points</p>
+                            <p class="text-xs text-gray-400 mt-2">Règle: 10 points par tranche de 1000 FCFA</p>
+                        </div>
+
+                        <button id="validate-purchase-btn" class="w-full bg-green-600 hover:bg-green-700 p-4 rounded transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed font-semibold" disabled>
+                            Valider et Créditer les Points
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECTION 2 : AIDE À L'INSCRIPTION -->
+                <section id="inscription-section" class="bg-white/10 backdrop-blur-lg p-6 rounded-lg">
+                    <h2 class="text-2xl font-semibold mb-4">✍️ Aide à l'Inscription</h2>
+                    <p class="text-gray-300 mb-4">Créez un compte pour les clients qui ne peuvent pas s'inscrire eux-mêmes.</p>
+                    
+                    <form id="admin-signup-form" class="space-y-4">
+                        <input type="text" id="admin-signup-prenom" placeholder="Prénom" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-yellow-500 focus:outline-none">
+                        <input type="text" id="admin-signup-nom" placeholder="Nom" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-yellow-500 focus:outline-none">
+                        <input type="email" id="admin-signup-email" placeholder="Email du client" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-yellow-500 focus:outline-none">
+                        <input type="tel" id="admin-signup-telephone" placeholder="Téléphone du client" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-yellow-500 focus:outline-none">
+                        <input type="text" id="admin-signup-ticket" placeholder="N° de ticket pour l'inscription" required class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:border-yellow-500 focus:outline-none">
+                        <p class="text-xs text-gray-400">Un mot de passe temporaire sera généré automatiquement.</p>
+                        <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black p-4 rounded transition-colors font-semibold">Créer le Compte Membre</button>
+                    </form>
+                </section>
+            
+            </main>
+            
+            <!-- Zone de messages -->
+            <div id="admin-message-area" class="mt-8 text-center"></div>
+
+            <!-- Statistiques du jour -->
+            <section class="mt-8 bg-white/10 backdrop-blur-lg p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4">📊 Statistiques du Jour</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-900 p-4 rounded text-center">
+                        <p class="text-2xl font-bold text-green-400" id="daily-validations">0</p>
+                        <p class="text-sm text-gray-400">Validations</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded text-center">
+                        <p class="text-2xl font-bold text-yellow-400" id="daily-points">0</p>
+                        <p class="text-sm text-gray-400">Points Crédités</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded text-center">
+                        <p class="text-2xl font-bold text-blue-400" id="daily-signups">0</p>
+                        <p class="text-sm text-gray-400">Inscriptions</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded text-center">
+                        <p class="text-2xl font-bold text-purple-400" id="daily-discount">0</p>
+                        <p class="text-sm text-gray-400">Remises (FCFA)</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Base de données des commerciaux
+        const commercialsDatabase = {
+            'COM001': { username: 'marie.commercial', password: 'SecurePass123!', name: 'Marie Kouassi', email: 'marie@clubavantage.com' },
+            'COM002': { username: 'jean.commercial', password: 'SafeKey456@', name: 'Jean Baptiste', email: 'jean@clubavantage.com' },
+            'COM003': { username: 'admin', password: 'AdminSecure789#', name: 'Administrateur', email: 'admin@clubavantage.com' }
+        };
+
+        // Base de données des clients
+        const clientsDatabase = {
+            'CLT001': { name: 'Marie Kouassi', points: 1250, email: 'marie.kouassi@email.com' },
+            'CLT002': { name: 'Jean Baptiste', points: 890, email: 'jean.baptiste@email.com' },
+            'CLT003': { name: 'Fatou Diallo', points: 2100, email: 'fatou.diallo@email.com' },
+            'CLT004': { name: 'Kofi Asante', points: 450, email: 'kofi.asante@email.com' }
+        };
+
+        // Base de données des tickets valides (simulation)
+        const validTickets = [
+            'TK240315001', 'TK240315002', 'TK240315003', 'TK240315004', 'TK240315005',
+            'FAC2024001', 'FAC2024002', 'FAC2024003', 'FAC2024004', 'FAC2024005',
+            'REC240001', 'REC240002', 'REC240003', 'BON240001', 'BON240002'
+        ];
+
+        // Variables globales
+        let currentUser = null;
+        let currentClientId = null;
+        let dailyStats = {
+            validations: 0,
+            points: 0,
+            signups: 0,
+            discount: 0
+        };
+
+        // Éléments DOM
+        const loginPage = document.getElementById('login-page');
+        const mainApp = document.getElementById('main-app');
+        const loginForm = document.getElementById('login-form');
+        const togglePassword = document.getElementById('toggle-password');
+        const forgotPasswordBtn = document.getElementById('forgot-password-btn');
+        const passwordGenerator = document.getElementById('password-generator');
+        const forgotPasswordSection = document.getElementById('forgot-password-section');
+        const messageArea = document.getElementById('admin-message-area');
+
+        // Fonction pour afficher les messages
+        function showMessage(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500',
+                warning: 'bg-yellow-500'
+            };
+            
+            messageArea.innerHTML = `
+                <div class="${colors[type]} text-white p-4 rounded mb-4">
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 6000);
+        }
+
+        // Générateur de mot de passe sécurisé
+        function generateSecurePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        // Évaluation de la force du mot de passe
+        function evaluatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            return strength;
+        }
+
+        // Validation du ticket
+        function validateTicket(ticketNumber) {
+            if (!ticketNumber) return { valid: false, message: 'Numéro de ticket requis' };
+            
+            // Vérification du format
+            const ticketFormats = [
+                /^TK\d{9}$/,  // TK240315001
+                /^FAC\d{7}$/,  // FAC2024001
+                /^REC\d{6}$/,  // REC240001
+                /^BON\d{6}$/   // BON240001
+            ];
+            
+            const isValidFormat = ticketFormats.some(format => format.test(ticketNumber));
+            if (!isValidFormat) {
+                return { valid: false, message: 'Format de ticket invalide' };
+            }
+            
+            // Vérification dans la base de données
+            if (!validTickets.includes(ticketNumber)) {
+                return { valid: false, message: 'Ticket non trouvé dans la base de données' };
+            }
+            
+            return { valid: true, message: 'Ticket valide - Vous pouvez accorder la remise de 5%' };
+        }
+
+        // Calcul des points et remise
+        function calculateBenefits(amount) {
+            const discount = Math.round(amount * 0.05); // 5% de remise
+            const points = Math.floor(amount / 1000) * 10; // 10 points par 1000 FCFA
+            return { discount, points };
+        }
+
+        // Mise à jour des statistiques
+        function updateStats() {
+            document.getElementById('daily-validations').textContent = dailyStats.validations;
+            document.getElementById('daily-points').textContent = dailyStats.points.toLocaleString();
+            document.getElementById('daily-signups').textContent = dailyStats.signups;
+            document.getElementById('daily-discount').textContent = dailyStats.discount.toLocaleString();
+        }
+
+        // Vérification de la session
+        function checkSession() {
+            const savedSession = localStorage.getItem('clubAvantageSession');
+            if (savedSession) {
+                const session = JSON.parse(savedSession);
+                if (session.expiry > Date.now()) {
+                    currentUser = session.user;
+                    showMainApp();
+                    return true;
+                }
+                localStorage.removeItem('clubAvantageSession');
+            }
+            return false;
+        }
+
+        // Affichage de l'application principale
+        function showMainApp() {
+            loginPage.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            document.getElementById('current-user').textContent = currentUser.name;
+            updateStats();
+        }
+
+        // Événements de connexion
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            // Vérification des identifiants
+            const commercial = Object.values(commercialsDatabase).find(c => 
+                c.username === username && c.password === password
+            );
+            
+            if (commercial) {
+                currentUser = commercial;
+                
+                // Sauvegarde de la session si "rester connecté"
+                if (rememberMe) {
+                    const session = {
+                        user: commercial,
+                        expiry: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 jours
+                    };
+                    localStorage.setItem('clubAvantageSession', JSON.stringify(session));
+                }
+                
+                showMainApp();
+            } else {
+                showMessage('Identifiants incorrects. Veuillez réessayer.', 'error');
+            }
+        });
+
+        // Basculer la visibilité du mot de passe
+        togglePassword.addEventListener('click', () => {
+            const passwordInput = document.getElementById('login-password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Mot de passe oublié
+        forgotPasswordBtn.addEventListener('click', () => {
+            forgotPasswordSection.classList.toggle('hidden');
+            passwordGenerator.classList.toggle('hidden');
+        });
+
+        // Générateur de mot de passe
+        document.getElementById('generate-password-btn').addEventListener('click', () => {
+            const password = generateSecurePassword();
+            document.getElementById('generated-password').value = password;
+            
+            const strength = evaluatePasswordStrength(password);
+            const strengthBar = document.querySelector('.password-strength');
+            const strengthClasses = ['strength-weak', 'strength-medium', 'strength-good', 'strength-strong'];
+            strengthBar.className = 'password-strength ' + strengthClasses[strength - 1];
+        });
+
+        // Copier le mot de passe
+        document.getElementById('copy-password-btn').addEventListener('click', () => {
+            const passwordField = document.getElementById('generated-password');
+            passwordField.select();
+            document.execCommand('copy');
+            showMessage('Mot de passe copié dans le presse-papiers!', 'success');
+        });
+
+        // Récupération de mot de passe
+        document.getElementById('send-recovery-btn').addEventListener('click', () => {
+            const email = document.getElementById('recovery-email').value;
+            if (email) {
+                showMessage('Un lien de récupération a été envoyé à votre email.', 'success');
+                forgotPasswordSection.classList.add('hidden');
+            } else {
+                showMessage('Veuillez saisir votre email.', 'error');
+            }
+        });
+
+        // Vérification manuelle du client
+        document.getElementById('verify-client-btn').addEventListener('click', () => {
+            const clientCode = document.getElementById('manual-client-code').value.trim().toUpperCase();
+            
+            if (!clientCode) {
+                showMessage('Veuillez saisir un code client.', 'error');
+                return;
+            }
+            
+            if (clientsDatabase[clientCode]) {
+                currentClientId = clientCode;
+                const client = clientsDatabase[clientCode];
+                
+                document.getElementById('client-name').textContent = client.name;
+                document.getElementById('client-points').textContent = client.points.toLocaleString();
+                document.getElementById('client-id').textContent = clientCode;
+                document.getElementById('client-info').classList.remove('hidden');
+                
+                showMessage(`Client ${client.name} identifié avec succès!`, 'success');
+            } else {
+                showMessage('Code client non trouvé. Vérifiez le code saisi.', 'error');
+            }
+        });
+
+        // Scanner QR
+        document.getElementById('scan-qr-btn').addEventListener('click', () => {
+            const scannerContainer = document.getElementById('scanner-container');
+            scannerContainer.classList.toggle('hidden');
+        });
+
+        // Simulation de scan
+        document.getElementById('simulate-scan-btn').addEventListener('click', () => {
+            const clientIds = Object.keys(clientsDatabase);
+            const randomClientId = clientIds[Math.floor(Math.random() * clientIds.length)];
+            const client = clientsDatabase[randomClientId];
+            
+            setTimeout(() => {
+                currentClientId = randomClientId;
+                document.getElementById('client-name').textContent = client.name;
+                document.getElementById('client-points').textContent = client.points.toLocaleString();
+                document.getElementById('client-id').textContent = randomClientId;
+                document.getElementById('client-info').classList.remove('hidden');
+                document.getElementById('scanner-container').classList.add('hidden');
+                
+                showMessage(`Client ${client.name} scanné avec succès!`, 'success');
+            }, 1500);
+        });
+
+        // Validation du ticket en temps réel
+        document.getElementById('ticket-number').addEventListener('input', (e) => {
+            const ticketNumber = e.target.value.trim();
+            const validationDiv = document.getElementById('ticket-validation');
+            
+            if (ticketNumber) {
+                const validation = validateTicket(ticketNumber);
+                validationDiv.classList.remove('hidden');
+                
+                if (validation.valid) {
+                    validationDiv.innerHTML = `<span class="text-green-400">✅ ${validation.message}</span>`;
+                } else {
+                    validationDiv.innerHTML = `<span class="text-red-400">❌ ${validation.message}</span>`;
+                }
+            } else {
+                validationDiv.classList.add('hidden');
+            }
+        });
+
+        // Calcul automatique des avantages
+        document.getElementById('purchase-amount').addEventListener('input', (e) => {
+            const amount = parseFloat(e.target.value);
+            const calculationDiv = document.getElementById('calculation-display');
+            
+            if (amount && amount > 0) {
+                const benefits = calculateBenefits(amount);
+                
+                document.getElementById('discount-amount').textContent = benefits.discount.toLocaleString();
+                document.getElementById('points-to-add').textContent = benefits.points;
+                calculationDiv.classList.remove('hidden');
+                
+                // Activer le bouton de validation si toutes les conditions sont remplies
+                const ticketNumber = document.getElementById('ticket-number').value.trim();
+                const ticketValid = validateTicket(ticketNumber).valid;
+                
+                document.getElementById('validate-purchase-btn').disabled = !(currentClientId && ticketValid && amount > 0);
+            } else {
+                calculationDiv.classList.add('hidden');
+                document.getElementById('validate-purchase-btn').disabled = true;
+            }
+        });
+
+        // Validation d'achat
+        document.getElementById('validate-purchase-btn').addEventListener('click', () => {
+            const ticketNumber = document.getElementById('ticket-number').value.trim();
+            const amount = parseFloat(document.getElementById('purchase-amount').value);
+            
+            const ticketValidation = validateTicket(ticketNumber);
+            if (!ticketValidation.valid) {
+                showMessage('Ticket invalide. Impossible de valider l\'achat.', 'error');
+                return;
+            }
+            
+            const benefits = calculateBenefits(amount);
+            
+            // Mettre à jour les points du client
+            clientsDatabase[currentClientId].points += benefits.points;
+            
+            // Mettre à jour l'affichage
+            document.getElementById('client-points').textContent = clientsDatabase[currentClientId].points.toLocaleString();
+            
+            // Mettre à jour les statistiques
+            dailyStats.validations++;
+            dailyStats.points += benefits.points;
+            dailyStats.discount += benefits.discount;
+            updateStats();
+            
+            // Réinitialiser le formulaire
+            document.getElementById('ticket-number').value = '';
+            document.getElementById('purchase-amount').value = '';
+            document.getElementById('ticket-validation').classList.add('hidden');
+            document.getElementById('calculation-display').classList.add('hidden');
+            document.getElementById('validate-purchase-btn').disabled = true;
+            
+            showMessage(`✅ Achat validé!<br>
+                        • Remise accordée: ${benefits.discount.toLocaleString()} FCFA (5%)<br>
+                        • Points crédités: ${benefits.points}<br>
+                        • Client: ${clientsDatabase[currentClientId].name}<br>
+                        • Ticket: ${ticketNumber}`, 'success');
+        });
+
+        // Inscription assistée
+        document.getElementById('admin-signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const prenom = document.getElementById('admin-signup-prenom').value.trim();
+            const nom = document.getElementById('admin-signup-nom').value.trim();
+            const email = document.getElementById('admin-signup-email').value.trim();
+            const telephone = document.getElementById('admin-signup-telephone').value.trim();
+            const ticket = document.getElementById('admin-signup-ticket').value.trim();
+            
+            // Validation du ticket d'inscription
+            const ticketValidation = validateTicket(ticket);
+            if (!ticketValidation.valid) {
+                showMessage('Ticket d\'inscription invalide.', 'error');
+                return;
+            }
+            
+            // Générer un ID client unique
+            const newClientId = 'CLT' + String(Object.keys(clientsDatabase).length + 1).padStart(3, '0');
+            const tempPassword = generateSecurePassword();
+            
+            // Ajouter le nouveau client
+            clientsDatabase[newClientId] = {
+                name: `${prenom} ${nom}`,
+                points: 100, // Points de bienvenue
+                email: email,
+                telephone: telephone,
+                tempPassword: tempPassword
+            };
+            
+            // Mettre à jour les statistiques
+            dailyStats.signups++;
+            dailyStats.points += 100;
+            updateStats();
+            
+            // Réinitialiser le formulaire
+            document.getElementById('admin-signup-form').reset();
+            
+            showMessage(`✅ Compte créé avec succès!<br>
+                        • ID Client: ${newClientId}<br>
+                        • Mot de passe temporaire: ${tempPassword}<br>
+                        • 100 points de bienvenue crédités<br>
+                        <small>Communiquez ces informations au client.</small>`, 'success');
+        });
+
+        // Déconnexion
+        document.getElementById('admin-logout-btn').addEventListener('click', () => {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+                localStorage.removeItem('clubAvantageSession');
+                currentUser = null;
+                currentClientId = null;
+                loginPage.classList.remove('hidden');
+                mainApp.classList.add('hidden');
+                showMessage('Déconnexion réussie.', 'info');
+            }
+        });
+
+        // Initialisation
+        if (!checkSession()) {
+            // Générer un mot de passe par défaut
+            document.getElementById('generate-password-btn').click();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9776877c15f5d0ab',t:'MTc1NjU4MDQwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
