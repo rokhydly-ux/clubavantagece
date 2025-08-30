@@ -25,6 +25,12 @@
             min-height: 100vh;
         }
         
+        body.logged-in {
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url("https://www.dropbox.com/scl/fi/ryqj30cw33fpgh43p68l2/Google_AI_Studio_2025-07-25T15_37_34.518Z.png?rlkey=0l99j8w4ufhwwzw605awtry6y&st=6wglbn73&dl=0");
+        }
+        
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -166,7 +172,7 @@
             
             <!-- Logo responsive -->
             <div class="flex items-center space-x-3">
-                <img src="https://www.dropbox.com/scl/fi/oqga476z2lnio05z32j75/CE-KM-CARTE-DE-FIDELITE.png?rlkey=erdsd0tbf71bsojqwx7joyba9&st=vhx4mpmp&dl=0" 
+                <img src="https://www.dropbox.com/scl/fi/oqga476z2lnio05z32j75/CE-KM-CARTE-DE-FIDELITE.png?rlkey=erdsd0tbf71bsojqwx7joyba9&st=vhx4mpmp&dl=1" 
                      alt="Club Avantage CE" 
                      class="h-16 w-auto object-contain sm:h-20 lg:h-28 xl:h-32"
                      style="max-width: 350px; min-width: 120px; aspect-ratio: 350/250;"
@@ -511,73 +517,80 @@
         </div>
     </div>
 
-    <!-- ÉCRAN DE FÉLICITATIONS INSCRIPTION -->
-    <div id="success-screen" class="hidden min-h-screen p-6">
-        <div class="max-w-md mx-auto space-y-6 pt-8">
+    <!-- POP-UP DE FÉLICITATIONS -->
+    <div id="success-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center animate-slide-up relative">
+            <!-- Bouton fermer -->
+            <button onclick="closeSuccessPopup()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-all">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            
             <!-- Animation de succès -->
             <div class="text-center space-y-4 fade-in">
-                <div class="text-8xl mb-4">🎉</div>
-                <h2 class="text-3xl font-black text-white">Félicitations !</h2>
-                <p class="text-xl text-white/90 font-semibold">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 class="text-2xl font-black text-gray-800">Félicitations !</h2>
+                <p class="text-lg text-gray-600 font-semibold">
                     Vous êtes maintenant membre du Club Avantage CE !
                 </p>
             </div>
 
-            <!-- Carte de bienvenue -->
-            <div class="glass-effect rounded-2xl p-6 card-shine">
-                <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🏆 Bienvenue dans le Club !</h3>
-                    
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
-                        <div class="text-4xl mb-2">✨</div>
-                        <h4 class="font-bold text-lg mb-2">Votre inscription est confirmée !</h4>
-                        <p class="text-sm opacity-90">Vous avez rejoint le programme de fidélité le plus avantageux</p>
+            <!-- Avantages -->
+            <div class="space-y-3 my-6">
+                <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                    <div class="bg-blue-500 rounded-full p-2">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
                     </div>
-                    
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                            <div class="bg-blue-500 rounded-full p-2">
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800">50 points de bienvenue</p>
-                                <p class="text-sm text-gray-600">Déjà crédités sur votre compte</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                            <div class="bg-green-500 rounded-full p-2">
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800">Réductions exclusives</p>
-                                <p class="text-sm text-gray-600">Accès aux offres membres</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                            <div class="bg-purple-500 rounded-full p-2">
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800">Carte virtuelle</p>
-                                <p class="text-sm text-gray-600">Accessible depuis votre espace</p>
-                            </div>
-                        </div>
+                    <div class="text-left">
+                        <p class="font-semibold text-gray-800 text-sm">50 points de bienvenue</p>
+                        <p class="text-xs text-gray-600">Déjà crédités sur votre compte</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                    <div class="bg-green-500 rounded-full p-2">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <p class="font-semibold text-gray-800 text-sm">Réductions exclusives</p>
+                        <p class="text-xs text-gray-600">Accès aux offres membres</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                    <div class="bg-purple-500 rounded-full p-2">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <p class="font-semibold text-gray-800 text-sm">Carte virtuelle</p>
+                        <p class="text-xs text-gray-600">Accessible depuis votre espace</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Checkbox ne plus afficher -->
+            <div class="flex items-center space-x-2 mb-6 justify-center">
+                <input type="checkbox" id="never-show-again" class="rounded border-gray-300 text-blue-600">
+                <label for="never-show-again" class="text-xs text-gray-600">
+                    Ne plus jamais afficher cette fenêtre
+                </label>
+            </div>
+
             <!-- Bouton d'accès -->
-            <button onclick="goToMemberArea()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 card-shine">
+            <button onclick="goToMemberArea()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105">
                 🚀 Accéder à mon Espace Membre
             </button>
+            
+            <p class="text-xs text-gray-500 mt-4">
+                Cliquez n'importe où en dehors de cette fenêtre pour la fermer
+            </p>
         </div>
     </div>
 
@@ -1011,14 +1024,28 @@
                             <h4 class="font-semibold text-gray-800">Central Equipements Saly</h4>
                             <p class="text-sm text-gray-600">Saly, Sénégal</p>
                         </div>
-                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20souhaite%20avoir%20des%20informations%20sur%20vos%20équipements%20professionnels." 
-                           target="_blank"
-                           class="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
-                            </svg>
-                            <span class="font-semibold">+221 76 223 74 40</span>
-                        </a>
+                        <div class="space-y-2">
+                            <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20suis%20intéressé%20par%20vos%20équipements%20de%20cuisine%20professionnelle%2C%20matériel%20de%20transformation%20de%20produits%20agricoles%20et%20solutions%20de%20packaging%20jetable.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
+                               target="_blank"
+                               class="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                                </svg>
+                                <span class="font-semibold">+221 76 223 74 40</span>
+                            </a>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20souhaite%20des%20informations%20sur%20Central%20Equipements%20Keur%20Massar.%20Merci." 
+                                   target="_blank"
+                                   class="text-center bg-blue-500 hover:bg-blue-600 text-white p-2 rounded text-xs transition-all">
+                                    📍 Keur Massar
+                                </a>
+                                <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20souhaite%20des%20informations%20sur%20Central%20Equipements%20Pikine.%20Merci." 
+                                   target="_blank"
+                                   class="text-center bg-blue-500 hover:bg-blue-600 text-white p-2 rounded text-xs transition-all">
+                                    📍 Pikine
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1049,20 +1076,20 @@
                 <div class="space-y-4">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">⚙️ Nos Services</h3>
                     <div class="space-y-2">
-                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20vos%20équipements%20de%20cuisine%20professionnelle." 
+                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20suis%20intéressé%20par%20vos%20équipements%20de%20cuisine%20professionnelle.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
                            target="_blank"
                            class="block bg-white hover:bg-gray-50 p-3 rounded-lg shadow-sm transition-all">
-                            <span class="font-medium text-gray-800">🍳 Équipements de Cuisine</span>
+                            <span class="font-medium text-gray-800">🍳 Équipements de Cuisine Pro</span>
                         </a>
-                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20vos%20services%20de%20maintenance." 
+                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20suis%20intéressé%20par%20vos%20équipements%20de%20transformation%20de%20produits%20agricoles.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
                            target="_blank"
                            class="block bg-white hover:bg-gray-50 p-3 rounded-lg shadow-sm transition-all">
-                            <span class="font-medium text-gray-800">🔧 Maintenance & Réparation</span>
+                            <span class="font-medium text-gray-800">🌾 Transformation Agricole</span>
                         </a>
-                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20vos%20services%20d'installation." 
+                        <a href="https://wa.me/221762237440?text=Bonjour%2C%20je%20vous%20contacte%20via%20votre%20site%20web.%20Je%20suis%20intéressé%20par%20vos%20solutions%20de%20packaging%20jetable%20et%20emballages.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
                            target="_blank"
                            class="block bg-white hover:bg-gray-50 p-3 rounded-lg shadow-sm transition-all">
-                            <span class="font-medium text-gray-800">⚡ Installation & Conseil</span>
+                            <span class="font-medium text-gray-800">📦 Packaging & Jetable</span>
                         </a>
                     </div>
                 </div>
@@ -1071,10 +1098,10 @@
             <!-- Copyright -->
             <div class="border-t border-gray-300 mt-8 pt-6 text-center">
                 <p class="text-sm text-gray-600">
-                    © 2024 Central Equipements - Club Avantage CE. Tous droits réservés.
+                    © 2025 Central Equipements - Club Avantage CE. Tous droits réservés.
                 </p>
                 <p class="text-xs text-gray-500 mt-2">
-                    Programme de fidélité exclusif pour les professionnels de la restauration
+                    Programme de fidélité pour tous les clients : professionnels de la restauration, transformation de produits agricoles, packaging et emballages jetables
                 </p>
             </div>
         </div>
@@ -1572,8 +1599,7 @@
                 });
                 await batch.commit();
 
-                // 6. Afficher l'écran de félicitations
-                showSuccessScreen();
+                // 6. L'écran de félicitations sera affiché automatiquement lors de la première connexion
 
             } catch (error) {
                 console.error("Erreur d'inscription:", error);
@@ -1642,11 +1668,6 @@
                 }
                 
                 showAuthMessage('Connexion réussie ! Redirection...', 'success');
-                
-                // Afficher l'écran de félicitations pour première connexion
-                setTimeout(() => {
-                    showSuccessScreen();
-                }, 1000);
                 
             } catch (error) {
                 console.error('❌ Erreur connexion détaillée:', error);
@@ -3475,6 +3496,9 @@
                 confirmationScreen.classList.add('hidden');
                 confirmationScreen.style.display = 'none';
             }
+            
+            // Retirer le background des utilisateurs connectés
+            document.body.classList.remove('logged-in');
         }
 
         function showCardScreen() {
@@ -3500,6 +3524,14 @@
                 confirmationScreen.classList.add('hidden');
                 confirmationScreen.style.display = 'none';
             }
+            
+            // Changer le background pour les utilisateurs connectés
+            document.body.classList.add('logged-in');
+            
+            // Afficher le pop-up de félicitations si c'est la première fois
+            setTimeout(() => {
+                showSuccessPopup();
+            }, 1000);
         }
 
         // Afficher les messages d'authentification
@@ -3543,21 +3575,76 @@
             }, 4000);
         }
 
-        // Afficher l'écran de félicitations
-        function showSuccessScreen() {
-            console.log('🎉 Affichage de l\'écran de félicitations');
+        // Afficher le pop-up de félicitations (première connexion uniquement)
+        async function showSuccessPopup() {
+            console.log('🎉 Vérification affichage pop-up de félicitations...');
             
-            // Masquer tous les autres écrans
-            hideAllScreens();
-            
-            // Afficher l'écran de félicitations
-            const successScreen = document.getElementById('success-screen');
-            if (successScreen) {
-                successScreen.classList.remove('hidden');
-                successScreen.style.display = 'block';
+            if (!currentUser) {
+                console.log('❌ Aucun utilisateur connecté pour le pop-up');
+                return;
             }
             
-            console.log('✅ Écran de félicitations affiché avec succès');
+            try {
+                // Vérifier si l'utilisateur a déjà vu le pop-up
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+                
+                if (userData && userData.hasSeenWelcomePopup) {
+                    console.log('ℹ️ Pop-up déjà vu par l\'utilisateur, pas d\'affichage');
+                    return;
+                }
+                
+                // Afficher le pop-up
+                const successPopup = document.getElementById('success-popup');
+                if (successPopup) {
+                    successPopup.classList.remove('hidden');
+                    successPopup.style.display = 'flex';
+                    
+                    // Ajouter l'événement pour fermer en cliquant à l'extérieur
+                    successPopup.addEventListener('click', (e) => {
+                        if (e.target === successPopup) {
+                            closeSuccessPopup();
+                        }
+                    });
+                    
+                    console.log('✅ Pop-up de félicitations affiché');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erreur vérification pop-up:', error);
+            }
+        }
+        
+        // Fermer le pop-up de félicitations
+        async function closeSuccessPopup() {
+            console.log('🔒 Fermeture du pop-up de félicitations...');
+            
+            const successPopup = document.getElementById('success-popup');
+            const neverShowAgain = document.getElementById('never-show-again');
+            
+            if (successPopup) {
+                successPopup.classList.add('hidden');
+                successPopup.style.display = 'none';
+            }
+            
+            // Marquer comme vu dans Firestore
+            if (currentUser) {
+                try {
+                    const updateData = { hasSeenWelcomePopup: true };
+                    
+                    // Si la checkbox est cochée, marquer pour ne plus jamais afficher
+                    if (neverShowAgain && neverShowAgain.checked) {
+                        updateData.neverShowWelcomePopup = true;
+                        console.log('✅ Marqué pour ne plus jamais afficher');
+                    }
+                    
+                    await db.collection('users').doc(currentUser.uid).update(updateData);
+                    console.log('✅ Statut pop-up sauvegardé');
+                    
+                } catch (error) {
+                    console.error('❌ Erreur sauvegarde statut pop-up:', error);
+                }
+            }
         }
 
         // Afficher la page de confirmation d'inscription
@@ -3592,9 +3679,12 @@
             console.log('✅ Page de confirmation affichée avec succès');
         }
 
-        // Aller vers l'espace membre depuis la confirmation
+        // Aller vers l'espace membre depuis le pop-up
         function goToMemberArea() {
             console.log('🚀 Redirection vers l\'espace membre...');
+            
+            // Fermer le pop-up d'abord
+            closeSuccessPopup();
             
             // L'utilisateur est déjà connecté grâce à l'inscription
             // On peut directement afficher l'écran de la carte
@@ -3766,5 +3856,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9775fbd0200bd886',t:'MTc1NjU3NDY4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9776172d725c6f66',t:'MTc1NjU3NTgwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
