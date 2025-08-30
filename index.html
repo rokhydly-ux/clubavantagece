@@ -256,6 +256,106 @@
         </div>
     </div>
 
+    <!-- ÉCRAN DE CONFIRMATION D'INSCRIPTION -->
+    <div id="confirmation-screen" class="hidden min-h-screen p-6">
+        <div class="max-w-md mx-auto space-y-6 pt-8">
+            <!-- Animation de succès -->
+            <div class="text-center space-y-4 fade-in">
+                <div class="text-8xl mb-4">🎉</div>
+                <h2 class="text-3xl font-black text-white">Félicitations !</h2>
+                <p class="text-xl text-white/90 font-semibold">
+                    Votre inscription au Club Avantage CE est confirmée !
+                </p>
+            </div>
+
+            <!-- Carte d'ID membre -->
+            <div class="glass-effect rounded-2xl p-6 card-shine">
+                <div class="text-center space-y-4">
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🏆 Votre Carte Membre Officielle</h3>
+                    
+                    <!-- Numéro de membre -->
+                    <div class="bg-blue-600 rounded-2xl p-6 text-white mb-6">
+                        <p class="text-lg font-semibold mb-2">Votre Numéro de Membre Officiel :</p>
+                        <div class="text-4xl font-black tracking-widest" id="confirmation-member-id">CE-0000</div>
+                        <p class="text-sm mt-2 opacity-90">Conservez-le précieusement et présentez-le en magasin.</p>
+                    </div>
+
+                    <!-- Informations membre -->
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
+                        <h4 class="font-bold text-lg" id="confirmation-name">Membre CE</h4>
+                        <p class="text-sm opacity-90">Niveau Bronze • 50 points de bienvenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avantages immédiats -->
+            <div class="glass-effect rounded-2xl p-6">
+                <h3 class="text-xl font-bold mb-4" style="color: #22a8dc;">🎁 Vos Avantages Immédiats</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                        <div class="bg-green-500 rounded-full p-2">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">50 points de bienvenue</p>
+                            <p class="text-sm text-gray-600">Déjà crédités sur votre compte</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                        <div class="bg-blue-500 rounded-full p-2">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">Réduction de 5% disponible</p>
+                            <p class="text-sm text-gray-600">Utilisable dès maintenant en magasin</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                        <div class="bg-purple-500 rounded-full p-2">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">Carte de fidélité virtuelle</p>
+                            <p class="text-sm text-gray-600">Accessible depuis votre espace membre</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass-effect rounded-2xl p-6">
+                <h3 class="text-xl font-bold mb-4" style="color: #22a8dc;">📋 Prochaines Étapes</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start space-x-3">
+                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</div>
+                        <p class="text-gray-700">Notez votre numéro de membre <strong id="confirmation-member-id-copy">CE-0000</strong> dans un endroit sûr</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</div>
+                        <p class="text-gray-700">Accédez à votre espace membre pour générer votre QR Code de réduction</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</div>
+                        <p class="text-gray-700">Présentez votre QR Code en caisse pour bénéficier de vos avantages</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton d'accès à l'espace membre -->
+            <button onclick="goToMemberArea()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 card-shine">
+                🚀 Accéder à mon Espace Membre
+            </button>
+        </div>
+    </div>
+
     <!-- ÉCRAN DE LA CARTE MEMBRE -->
     <div id="card-screen" class="hidden min-h-screen p-6">
         <div class="max-w-md mx-auto space-y-6 pt-4">
@@ -567,7 +667,7 @@
             }
         }
 
-        // Fonction d'inscription
+        // Fonction d'inscription avec ID membre atomique
         async function handleSignup(e) {
             e.preventDefault();
             
@@ -637,20 +737,36 @@
                 return;
             }
             
+            showAuthMessage('Création de votre compte...', 'info');
+
             try {
-                showAuthMessage('Création de votre compte...', 'info');
-                
-                // Créer le compte utilisateur
+                // --- 1. Création du compte d'authentification ---
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
-                
-                // Mettre à jour le profil
-                await user.updateProfile({
-                    displayName: `${prenom} ${nom}`
+                await user.updateProfile({ displayName: `${prenom} ${nom}` });
+
+                // --- 2. Transaction pour obtenir un nouvel ID Membre ---
+                const counterRef = db.collection('counters').doc('userCounter');
+                let newMemberId;
+
+                await db.runTransaction(async (transaction) => {
+                    const counterDoc = await transaction.get(counterRef);
+                    if (!counterDoc.exists) {
+                        throw "Le document compteur est introuvable !";
+                    }
+                    
+                    const newIdNumber = (counterDoc.data().lastId || 0) + 1;
+                    // Formater le numéro en chaîne de 4 chiffres avec des zéros devant (ex: 0001, 0058, 1234)
+                    const formattedId = String(newIdNumber).padStart(4, '0');
+                    newMemberId = `CE-${formattedId}`;
+                    
+                    // Mettre à jour le compteur dans la même transaction
+                    transaction.update(counterRef, { lastId: newIdNumber });
                 });
-                
-                // Créer le document utilisateur dans Firestore
-                await db.collection('users').doc(user.uid).set({
+
+                // --- 3. Création du profil utilisateur avec le nouvel ID ---
+                const userProfile = {
+                    memberId: newMemberId, // <-- Le nouvel ID est ajouté ici
                     nom: nom,
                     prenom: prenom,
                     email: email,
@@ -658,13 +774,13 @@
                     points: 50,
                     lastTicket: ticketNumber,
                     tier: 'Bronze',
-                    welcomeCode: 'CE' + Math.floor(Math.random() * 900 + 100),
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
                     qrCodeExpiry: null,
                     lastQRGeneration: null
-                });
-                
+                };
+                await db.collection('users').doc(user.uid).set(userProfile);
+
                 // Enregistrer le ticket comme utilisé
                 await db.collection('usedTickets').doc(ticketNumber).set({
                     userId: user.uid,
@@ -679,11 +795,12 @@
                     description: 'Inscription au Club Avantage CE',
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
-                showAuthMessage('🎉 Compte créé avec succès ! Bienvenue dans le Club Avantage CE !', 'success');
-                
+
+                // --- 4. Affichage de la confirmation ---
+                showConfirmationPage(prenom, nom, newMemberId); // Passer le nouvel ID à la page de confirmation
+
             } catch (error) {
-                console.error('Erreur inscription:', error);
+                console.error('Erreur inscription détaillée:', error);
                 let message = 'Erreur lors de l\'inscription.';
                 
                 if (error.code === 'auth/email-already-in-use') {
@@ -692,6 +809,8 @@
                     message = 'Le mot de passe est trop faible.';
                 } else if (error.code === 'auth/invalid-email') {
                     message = 'Adresse email invalide.';
+                } else if (error.message) {
+                    message = error.message;
                 }
                 
                 showAuthMessage(message, 'error');
@@ -876,7 +995,10 @@
             const pointsBalance = document.getElementById('points-balance');
             
             if (memberName) {
-                memberName.textContent = `${userData.prenom || 'Membre'} ${userData.nom || 'CE'}`;
+                const displayName = userData.memberId ? 
+                    `${userData.prenom || 'Membre'} ${userData.nom || 'CE'} (${userData.memberId})` :
+                    `${userData.prenom || 'Membre'} ${userData.nom || 'CE'}`;
+                memberName.textContent = displayName;
                 console.log('✅ Nom mis à jour:', memberName.textContent);
             }
             
@@ -1367,6 +1489,64 @@
             }, 4000);
         }
 
+        // Afficher la page de confirmation d'inscription
+        function showConfirmationPage(prenom, nom, memberId) {
+            console.log('🎉 Affichage de la page de confirmation pour:', prenom, nom, memberId);
+            
+            // Masquer tous les autres écrans
+            hideAllScreens();
+            
+            // Afficher l'écran de confirmation
+            const confirmationScreen = document.getElementById('confirmation-screen');
+            if (confirmationScreen) {
+                confirmationScreen.classList.remove('hidden');
+                confirmationScreen.style.display = 'block';
+            }
+            
+            // Mettre à jour les informations
+            const memberIdDisplay = document.getElementById('confirmation-member-id');
+            const memberIdCopy = document.getElementById('confirmation-member-id-copy');
+            const confirmationName = document.getElementById('confirmation-name');
+            
+            if (memberIdDisplay) {
+                memberIdDisplay.textContent = memberId;
+            }
+            if (memberIdCopy) {
+                memberIdCopy.textContent = memberId;
+            }
+            if (confirmationName) {
+                confirmationName.textContent = `${prenom} ${nom}`;
+            }
+            
+            console.log('✅ Page de confirmation affichée avec succès');
+        }
+
+        // Aller vers l'espace membre depuis la confirmation
+        function goToMemberArea() {
+            console.log('🚀 Redirection vers l\'espace membre...');
+            
+            // L'utilisateur est déjà connecté grâce à l'inscription
+            // On peut directement afficher l'écran de la carte
+            showCardScreen();
+            
+            // Charger les données utilisateur si pas déjà fait
+            if (currentUser) {
+                loadUserData(currentUser);
+            }
+        }
+
+        // Masquer tous les écrans
+        function hideAllScreens() {
+            const screens = ['loading-screen', 'auth-screen', 'confirmation-screen', 'card-screen'];
+            screens.forEach(screenId => {
+                const screen = document.getElementById(screenId);
+                if (screen) {
+                    screen.classList.add('hidden');
+                    screen.style.display = 'none';
+                }
+            });
+        }
+
         // Fonction de formatage du téléphone avec validation sénégalaise
         function formatPhoneNumber(e) {
             const countryCode = document.getElementById('country-code').value;
@@ -1458,5 +1638,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773ddb451d415de',t:'MTc1NjU1MjQ4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773eba1855c785f',t:'MTc1NjU1MzA1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
