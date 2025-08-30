@@ -375,6 +375,7 @@
                     <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
                         <h3 class="text-lg font-bold" id="member-name">Membre CE</h3>
                         <p class="text-sm opacity-90" id="member-email">email@example.com</p>
+                        <p class="text-xs opacity-75 mt-1">N° Membre: <span class="font-bold" id="member-id-display">CE-0000</span></p>
                         <div class="mt-3 flex justify-between items-center">
                             <div>
                                 <p class="text-xs opacity-75">Niveau</p>
@@ -413,46 +414,18 @@
                 </div>
             </div>
 
-            <!-- QR Code personnel -->
+            <!-- QR Code personnel (Version Simplifiée) -->
             <div class="glass-effect rounded-2xl p-6">
                 <div class="text-center space-y-4">
                     <h3 class="text-xl font-bold" style="color: #22a8dc;">📱 Votre QR Code Personnel</h3>
-                    <p id="qr-status" class="text-sm text-gray-600">Entrez un N° de ticket valide pour générer votre code.</p>
+                    <p class="text-sm text-gray-600">Présentez ce code en caisse pour appliquer vos avantages.</p>
                     
-                    <!-- Formulaire de validation ticket -->
-                    <div id="ticket-validation-form" class="space-y-4">
-                        <div class="space-y-3">
-                            <input type="text" id="new-ticket-number" placeholder="N° de facture (ex: S01032 ou 00000-003-0012)" 
-                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
-                                   pattern="^(S\d{5}|\d{5}-\d{3}-\d{4})$">
-                            <button onclick="validateTicketAndShowQR()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                                🎫 Valider et obtenir mon QR Code
-                            </button>
-                        </div>
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                            <p class="text-xs text-yellow-800 font-medium">
-                                ⚠️ Chaque numéro de facture ne peut être utilisé qu'une seule fois. Votre QR Code sera valable 24h après validation.
-                            </p>
-                        </div>
-                    </div>
+                    <div id="qrcode-container" class="mx-auto"></div>
                     
-                    <!-- QR Code (masqué par défaut) -->
-                    <div id="qr-code-section" class="hidden space-y-4">
-                        <div class="qr-container rounded-xl p-4 mx-auto w-fit">
-                            <div id="qrcode"></div>
-                        </div>
-                        
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                            <p class="text-xs text-green-800 font-medium">
-                                🔒 QR Code valable jusqu'à <span id="qr-expiry"></span>
-                            </p>
-                        </div>
-                        
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <p class="text-xs text-blue-800 font-medium">
-                                💡 Ce code est unique et sécurisé. Il permet au personnel de vous identifier et d'appliquer votre réduction de 5%.
-                            </p>
-                        </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                        <p class="text-xs text-blue-800 font-medium">
+                            🔒 Ce code est unique et vous identifie en tant que membre du Club.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -656,7 +629,7 @@
             }
         }
 
-        // Fonction d'inscription avec ID membre atomique
+        // Fonction d'inscription avec ID membre séquentiel corrigé
         async function handleSignup(e) {
             e.preventDefault();
             
@@ -665,7 +638,7 @@
             const email = document.getElementById('signup-email').value.trim();
             const countryCode = document.getElementById('country-code').value;
             const phoneNumber = document.getElementById('signup-telephone').value.trim().replace(/\s/g, '');
-            const telephone = countryCode + phoneNumber; // Numéro complet avec indicatif
+            const telephone = countryCode + phoneNumber;
             const ticketNumber = document.getElementById('signup-ticket').value.trim();
             const password = document.getElementById('signup-password').value;
             const terms = document.getElementById('signup-terms').checked;
@@ -680,20 +653,13 @@
                 return;
             }
             
-            // --- BLOC DE VALIDATION DU TÉLÉPHONE ---
-            // 1. On retire tous les espaces pour la vérification
+            // Validation du téléphone
             const telephoneSansEspaces = phoneNumber.replace(/\s/g, ''); 
-
-            // Validation du format téléphone selon le pays
             if (countryCode === '+221') {
-                // 2. On définit le format attendu (RegExp)
-                // Commence par 70, 75, 76, 77 ou 78, suivi de 7 chiffres. Total de 9 chiffres.
                 const senegalPhoneFormat = /^(70|75|76|77|78)\d{7}$/;
-                
-                // 3. On teste le format
                 if (!senegalPhoneFormat.test(telephoneSansEspaces)) {
                     showAuthMessage('Format du téléphone invalide. Ex: 77 123 45 67', 'error');
-                    return; // On arrête la fonction si le format est mauvais
+                    return;
                 }
             } else if (countryCode === '+33') {
                 const frenchPhoneFormat = /^0[1-9]\d{8}$/;
@@ -707,17 +673,14 @@
                     return;
                 }
             }
-            // --- FIN DU BLOC DE VALIDATION ---
             
-            // --- BLOC DE VALIDATION DU TICKET ---
-            const formatS = /^S\d{5}$/i; // Commence par S (insensible à la casse), suivi par EXACTEMENT 5 chiffres.
-            const formatLong = /^\d{5}-\d{3}-\d{4}$/; // Format 00000-003-0012
-
+            // Validation du ticket
+            const formatS = /^S\d{5}$/i;
+            const formatLong = /^\d{5}-\d{3}-\d{4}$/;
             if (!formatS.test(ticketNumber) && !formatLong.test(ticketNumber)) {
                 showAuthMessage('Format du N° de facture invalide. Ex: S01234 ou 00000-003-0012', 'error');
-                return; // Arrête la fonction si le format est incorrect
+                return;
             }
-            // --- FIN DU BLOC DE VALIDATION ---
             
             // Vérifier si le ticket existe déjà
             const ticketExists = await checkTicketExists(ticketNumber);
@@ -725,39 +688,39 @@
                 showAuthMessage('Ce numéro de facture a déjà été utilisé.', 'error');
                 return;
             }
-            
-            showAuthMessage('Création de votre compte...', 'info');
 
             try {
-                // --- 1. Création du compte d'authentification ---
+                showAuthMessage('Création de votre compte...', 'info');
+                
+                // 1. Créer le compte d'authentification
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 await user.updateProfile({ displayName: `${prenom} ${nom}` });
 
-                // --- 2. Transaction pour obtenir un nouvel ID Membre ---
+                // 2. Transaction pour obtenir un ID membre séquentiel
                 const counterRef = db.collection('counters').doc('userCounter');
                 let newMemberId;
 
                 await db.runTransaction(async (transaction) => {
                     const counterDoc = await transaction.get(counterRef);
                     if (!counterDoc.exists) {
-                        throw "Le document compteur est introuvable !";
+                        // Si le compteur n'existe pas, on le crée à 1
+                        transaction.set(counterRef, { lastId: 1 });
+                        newMemberId = 'CE-0001';
+                    } else {
+                        const newIdNumber = counterDoc.data().lastId + 1;
+                        transaction.update(counterRef, { lastId: newIdNumber });
+                        // Formater le numéro en chaîne de 4 chiffres
+                        const formattedId = String(newIdNumber).padStart(4, '0');
+                        newMemberId = `CE-${formattedId}`;
                     }
-                    
-                    const newIdNumber = (counterDoc.data().lastId || 0) + 1;
-                    // Formater le numéro en chaîne de 4 chiffres avec des zéros devant (ex: 0001, 0058, 1234)
-                    const formattedId = String(newIdNumber).padStart(4, '0');
-                    newMemberId = `CE-${formattedId}`;
-                    
-                    // Mettre à jour le compteur dans la même transaction
-                    transaction.update(counterRef, { lastId: newIdNumber });
                 });
 
-                // --- 3. Création du profil utilisateur avec le nouvel ID ---
+                // 3. Créer le profil utilisateur avec le nouvel ID
                 const userProfile = {
-                    memberId: newMemberId, // <-- Le nouvel ID est ajouté ici
-                    nom: nom,
+                    memberId: newMemberId,
                     prenom: prenom,
+                    nom: nom,
                     email: email,
                     telephone: telephone,
                     points: 50,
@@ -770,26 +733,26 @@
                 };
                 await db.collection('users').doc(user.uid).set(userProfile);
 
-                // Enregistrer le ticket comme utilisé
+                // 4. Enregistrer le ticket comme utilisé
                 await db.collection('usedTickets').doc(ticketNumber).set({
                     userId: user.uid,
                     usedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     type: 'inscription'
                 });
                 
-                // Ajouter l'événement d'inscription à l'historique
+                // 5. Ajouter à l'historique
                 await db.collection('users').doc(user.uid).collection('history').add({
                     type: 'inscription',
+                    description: 'Bienvenue au Club Avantage !',
                     points: 50,
-                    description: 'Inscription au Club Avantage CE',
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // --- 4. Affichage de la confirmation ---
-                showConfirmationPage(prenom, nom, newMemberId); // Passer le nouvel ID à la page de confirmation
+                // 6. Afficher la confirmation avec les bonnes données
+                showConfirmationPage(prenom, nom, newMemberId);
 
             } catch (error) {
-                console.error('Erreur inscription détaillée:', error);
+                console.error("Erreur d'inscription:", error);
                 let message = 'Erreur lors de l\'inscription.';
                 
                 if (error.code === 'auth/email-already-in-use') {
@@ -813,30 +776,73 @@
             const email = document.getElementById('signin-email').value.trim();
             const password = document.getElementById('signin-password').value;
             
+            // Validation côté client
+            if (!email) {
+                showAuthMessage('Veuillez saisir votre adresse email.', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showAuthMessage('Veuillez saisir votre mot de passe.', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAuthMessage('Le mot de passe doit contenir au moins 6 caractères.', 'error');
+                return;
+            }
+            
             try {
                 showAuthMessage('Connexion en cours...', 'info');
+                console.log('🔐 Tentative de connexion pour:', email);
                 
-                await auth.signInWithEmailAndPassword(email, password);
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                console.log('✅ Connexion réussie pour:', userCredential.user.email);
                 
                 // Mettre à jour la dernière activité
-                if (auth.currentUser) {
-                    await db.collection('users').doc(auth.currentUser.uid).update({
+                try {
+                    await db.collection('users').doc(userCredential.user.uid).update({
                         lastActivity: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    console.log('✅ Dernière activité mise à jour');
+                } catch (updateError) {
+                    console.warn('⚠️ Erreur mise à jour activité (non bloquant):', updateError);
                 }
                 
-                showAuthMessage('Connexion réussie !', 'success');
+                showAuthMessage('Connexion réussie ! Redirection...', 'success');
                 
             } catch (error) {
-                console.error('Erreur connexion:', error);
+                console.error('❌ Erreur connexion détaillée:', error);
+                console.error('❌ Code d\'erreur:', error.code);
+                console.error('❌ Message d\'erreur:', error.message);
+                
                 let message = 'Erreur lors de la connexion.';
                 
-                if (error.code === 'auth/user-not-found') {
-                    message = 'Aucun compte trouvé avec cette adresse email.';
-                } else if (error.code === 'auth/wrong-password') {
-                    message = 'Mot de passe incorrect.';
-                } else if (error.code === 'auth/invalid-email') {
-                    message = 'Adresse email invalide.';
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        message = 'Aucun compte trouvé avec cette adresse email. Vérifiez votre email ou inscrivez-vous.';
+                        break;
+                    case 'auth/wrong-password':
+                        message = 'Mot de passe incorrect. Vérifiez votre mot de passe.';
+                        break;
+                    case 'auth/invalid-email':
+                        message = 'Format d\'adresse email invalide.';
+                        break;
+                    case 'auth/user-disabled':
+                        message = 'Ce compte a été désactivé. Contactez le support.';
+                        break;
+                    case 'auth/too-many-requests':
+                        message = 'Trop de tentatives de connexion. Attendez quelques minutes avant de réessayer.';
+                        break;
+                    case 'auth/network-request-failed':
+                        message = 'Erreur de connexion réseau. Vérifiez votre connexion internet.';
+                        break;
+                    case 'auth/invalid-credential':
+                        message = 'Email ou mot de passe incorrect. Vérifiez vos informations.';
+                        break;
+                    default:
+                        message = `Erreur de connexion: ${error.message}`;
+                        break;
                 }
                 
                 showAuthMessage(message, 'error');
@@ -875,7 +881,7 @@
                     let newMemberId = 'CE-0001'; // Valeur par défaut
                     
                     try {
-                        // Transaction pour obtenir un nouvel ID Membre
+                        // Transaction pour obtenir un nouvel ID Membre séquentiel
                         const counterRef = db.collection('counters').doc('userCounter');
                         
                         await db.runTransaction(async (transaction) => {
@@ -883,15 +889,16 @@
                             let newIdNumber;
                             
                             if (!counterDoc.exists) {
-                                // Créer le compteur s'il n'existe pas
+                                // Créer le compteur s'il n'existe pas, en commençant à 1
                                 newIdNumber = 1;
                                 transaction.set(counterRef, { lastId: newIdNumber });
                             } else {
+                                // Incrémenter le compteur existant
                                 newIdNumber = (counterDoc.data().lastId || 0) + 1;
                                 transaction.update(counterRef, { lastId: newIdNumber });
                             }
                             
-                            // Formater le numéro en chaîne de 4 chiffres
+                            // Formater le numéro en chaîne de 4 chiffres avec des zéros devant (ex: 0001, 0002, 0003)
                             const formattedId = String(newIdNumber).padStart(4, '0');
                             newMemberId = `CE-${formattedId}`;
                         });
@@ -973,11 +980,12 @@
                 
                 // Générer le QR Code immédiatement si l'utilisateur est connecté
                 if (user && user.uid) {
-                    generateQRCode(user.uid);
+                    console.log('🔄 Génération du QR Code après chargement des données...');
+                    // Attendre un peu pour que les données soient bien chargées
+                    setTimeout(() => {
+                        generateQRCode(user.uid);
+                    }, 1000);
                 }
-                
-                // Vérifier l'état du QR Code
-                checkQRCodeStatus();
                 
                 showMessage('✅ Données chargées avec succès !', 'success');
                 
@@ -1044,12 +1052,13 @@
                     displayName = 'Membre CE';
                 }
                 
-                // Ajouter le numéro de membre si disponible
-                if (userData.memberId) {
-                    displayName += ` (${userData.memberId})`;
-                }
-                
                 memberName.textContent = displayName;
+            }
+            
+            // Afficher le numéro de membre séparément s'il existe
+            const memberIdDisplay = document.getElementById('member-id-display');
+            if (memberIdDisplay && userData.memberId) {
+                memberIdDisplay.textContent = userData.memberId;
             }
             
             // Email
@@ -1202,10 +1211,10 @@
             }
         }
 
-        // Créer un élément d'activité
+        // Créer un élément d'activité avec date
         function createActivityElement(activity) {
             const div = document.createElement('div');
-            div.className = 'flex justify-between items-center p-2 bg-gray-50 rounded-lg';
+            div.className = 'p-3 bg-gray-50 rounded-lg space-y-1';
             
             const typeColors = {
                 'inscription': 'bg-green-500',
@@ -1216,12 +1225,36 @@
             
             const color = typeColors[activity.type] || 'bg-gray-500';
             
+            // Formater la date
+            let dateText = '';
+            if (activity.timestamp) {
+                try {
+                    const date = activity.timestamp.toDate ? activity.timestamp.toDate() : new Date(activity.timestamp);
+                    dateText = date.toLocaleDateString('fr-FR', { 
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (error) {
+                    dateText = 'Date inconnue';
+                }
+            } else {
+                dateText = 'Aujourd\'hui';
+            }
+            
             div.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 ${color} rounded-full"></div>
-                    <span class="text-sm font-medium">${activity.description}</span>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 ${color} rounded-full"></div>
+                        <span class="text-sm font-medium">${activity.description}</span>
+                    </div>
+                    <span class="text-sm text-gray-600 font-semibold">${activity.points > 0 ? '+' : ''}${activity.points} pts</span>
                 </div>
-                <span class="text-sm text-gray-600">${activity.points > 0 ? '+' : ''}${activity.points} pts</span>
+                <div class="text-xs text-gray-500 ml-4">
+                    ${dateText}
+                </div>
             `;
             
             return div;
@@ -1245,131 +1278,72 @@
             }
         }
         
-        // Vérifier l'état du QR Code
-        async function checkQRCodeStatus() {
-            if (!currentUser) return;
-            
-            try {
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                const userData = userDoc.data();
-                
-                const ticketForm = document.getElementById('ticket-validation-form');
-                const qrSection = document.getElementById('qr-code-section');
-                
-                if (userData.qrCodeExpiry && userData.qrCodeExpiry.toDate() > new Date()) {
-                    // QR Code encore valide
-                    ticketForm.classList.add('hidden');
-                    qrSection.classList.remove('hidden');
-                    
-                    const expiryDate = userData.qrCodeExpiry.toDate();
-                    document.getElementById('qr-expiry').textContent = expiryDate.toLocaleString('fr-FR');
-                    
-                    generateQRCode(currentUser.uid);
-                } else {
-                    // QR Code expiré ou inexistant
-                    ticketForm.classList.remove('hidden');
-                    qrSection.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Erreur vérification QR Code:', error);
-            }
-        }
+
         
-        // Valider le ticket et afficher le QR Code
-        async function validateTicketAndShowQR() {
-            const ticketNumber = document.getElementById('new-ticket-number').value.trim();
-            
-            if (!ticketNumber) {
-                showMessage('Veuillez saisir un numéro de facture.', 'error');
+        // Générer le QR Code personnel avec l'ID membre (Version Corrigée)
+        async function generateQRCode(userId) {
+            console.log('🔄 Génération du QR Code pour userId:', userId);
+            const qrcodeDiv = document.getElementById('qrcode-container');
+            if (!qrcodeDiv) {
+                console.error('❌ Container QR Code non trouvé');
                 return;
             }
-            
-            if (!validateTicketFormat(ticketNumber)) {
-                showMessage('Format invalide. Utilisez: S suivi de 5 chiffres (ex: S01032) ou format 00000-003-0012', 'error');
-                return;
-            }
-            
-            // Vérifier si le ticket existe déjà
-            const ticketExists = await checkTicketExists(ticketNumber);
-            if (ticketExists) {
-                showMessage('Ce numéro de facture a déjà été utilisé.', 'error');
-                return;
-            }
-            
-            try {
-                showMessage('Validation du ticket en cours...', 'info');
-                
-                // Calculer l'expiration (24h)
-                const expiry = new Date();
-                expiry.setHours(expiry.getHours() + 24);
-                
-                // Mettre à jour l'utilisateur
-                await db.collection('users').doc(currentUser.uid).update({
-                    lastTicket: ticketNumber,
-                    qrCodeExpiry: expiry,
-                    lastQRGeneration: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Enregistrer le ticket comme utilisé
-                await db.collection('usedTickets').doc(ticketNumber).set({
-                    userId: currentUser.uid,
-                    usedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    type: 'reduction'
-                });
-                
-                // Ajouter à l'historique
-                await db.collection('users').doc(currentUser.uid).collection('history').add({
-                    type: 'reduction',
-                    points: 0,
-                    description: `Réduction 5% - Ticket ${ticketNumber}`,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Afficher le QR Code
-                const ticketForm = document.getElementById('ticket-validation-form');
-                const qrSection = document.getElementById('qr-code-section');
-                
-                ticketForm.classList.add('hidden');
-                qrSection.classList.remove('hidden');
-                
-                document.getElementById('qr-expiry').textContent = expiry.toLocaleString('fr-FR');
-                
-                generateQRCode(currentUser.uid);
-                
-                showMessage('✅ Ticket validé ! Votre QR Code est prêt.', 'success');
-                
-            } catch (error) {
-                console.error('Erreur validation ticket:', error);
-                showMessage('Erreur lors de la validation du ticket.', 'error');
-            }
-        }
-        
-        // Générer le QR Code personnel
-        function generateQRCode(userId) {
-            const qrcodeDiv = document.getElementById('qrcode');
-            if (!qrcodeDiv) return;
             
             // Vider l'ancien QR code
             qrcodeDiv.innerHTML = '';
             
             try {
-                new QRCode(qrcodeDiv, {
-                    text: userId,
-                    width: 180,
-                    height: 180,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
+                // Récupérer l'ID membre depuis Firestore
+                console.log('📊 Récupération des données utilisateur...');
+                const userDoc = await db.collection('users').doc(userId).get();
                 
-                // Mettre à jour le statut
-                const qrStatus = document.getElementById('qr-status');
-                if (qrStatus) {
-                    qrStatus.textContent = "✅ Votre QR Code personnel est prêt !";
-                    qrStatus.classList.add('text-green-600', 'font-bold');
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    const memberId = userData?.memberId || `CE-${userId.slice(-4)}`;
+                    
+                    console.log('✅ Données utilisateur récupérées, memberId:', memberId);
+                    
+                    // Créer le QR Code avec l'ID membre
+                    new QRCode(qrcodeDiv, {
+                        text: memberId,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    
+                    console.log('✅ QR Code généré avec succès pour:', memberId);
+                } else {
+                    console.warn('⚠️ Document utilisateur non trouvé, génération avec userId');
+                    // Fallback avec l'userId si le document n'existe pas
+                    new QRCode(qrcodeDiv, {
+                        text: `CE-${userId.slice(-4)}`,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
                 }
+                
             } catch (error) {
-                console.error('Erreur génération QR Code:', error);
+                console.error('❌ Erreur génération QR Code:', error);
+                // Fallback avec l'userId si erreur
+                try {
+                    new QRCode(qrcodeDiv, {
+                        text: `CE-${userId.slice(-4)}`,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    console.log('✅ QR Code de fallback généré');
+                } catch (fallbackError) {
+                    console.error('❌ Erreur génération QR Code de fallback:', fallbackError);
+                    qrcodeDiv.innerHTML = '<p class="text-red-500 text-sm">Erreur génération QR Code</p>';
+                }
             }
         }
 
@@ -1746,5 +1720,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97741ecb8071785f',t:'MTc1NjU1NTE0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97744afa8340785f',t:'MTc1NjU1Njk1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
