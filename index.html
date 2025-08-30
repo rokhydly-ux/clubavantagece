@@ -3,66 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Avantage CE - Central Equipements</title>
+    <title>Club Avantage CE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .hidden { display: none; }
-        /* ... Collez ici tous vos styles @keyframes ... */
-    </style>
+    <style> .hidden { display: none; } </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen bg-gray-200">
 
-    <!-- ... Votre HTML pour loading-screen et header ... -->
+    <!-- Écran de chargement -->
+    <div id="loading-screen" class="fixed inset-0 bg-blue-600 flex items-center justify-center z-50">
+        <p class="text-white text-xl">Chargement...</p>
+    </div>
 
-    <main id="app-content" class="hidden min-h-screen" style="...">
+    <!-- Header -->
+    <header id="app-header" class="bg-white p-4 text-center hidden">
+        <h1 class="text-lg font-bold">Club Avantage CE</h1>
+        <button id="logout-btn" class="text-sm text-red-500" style="display: none;">Déconnexion</button>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main id="app-content" class="hidden p-4">
         <!-- Écran d'authentification -->
         <div id="auth-screen">
-            <!-- ... Votre HTML pour la section #auth-screen ... -->
+            <h2 class="text-2xl font-bold mb-4">Inscription / Connexion</h2>
+            <form id="signup-form">
+                <input type="email" id="signup-email" placeholder="Email" required class="border p-2 w-full mb-2">
+                <input type="password" id="signup-password" placeholder="Mot de passe" required class="border p-2 w-full mb-2">
+                <button type="submit" class="bg-green-500 text-white p-2 w-full">S'inscrire</button>
+            </form>
+            <hr class="my-4">
+            <form id="signin-form">
+                <input type="email" id="signin-email" placeholder="Email" required class="border p-2 w-full mb-2">
+                <input type="password" id="signin-password" placeholder="Mot de passe" required class="border p-2 w-full mb-2">
+                <button type="submit" class="bg-blue-500 text-white p-2 w-full">Se Connecter</button>
+            </form>
         </div>
 
-        <!-- ÉCRAN DE LA CARTE MEMBRE (AVEC LES CORRECTIONS) -->
+        <!-- Écran de la carte membre -->
         <div id="card-screen" class="hidden">
-            <div class="min-h-screen p-6">
-                <div class="max-w-md mx-auto space-y-6 pt-4">
-                    <!-- Carte de membre virtuelle -->
-                    <div class="glass-effect rounded-2xl p-6 card-shine">
-                        <div class="text-center space-y-4">
-                             <h2 class="text-2xl font-bold" style="color: #22a8dc;">Carte Membre VIP</h2>
-                             <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 text-white">
-                                <!-- CORRECTION : Les IDs sont maintenant précis -->
-                                <h3 class="text-lg font-bold" id="card-member-name">Chargement...</h3>
-                                <p class="text-sm opacity-90" id="card-member-email"></p>
-                                <div class="mt-3 flex justify-between items-center">
-                                    <div><p class="text-xs opacity-75">Niveau</p><p class="font-bold" id="card-member-tier"></p></div>
-                                    <div class="text-right"><p class="text-xs opacity-75">Membre depuis</p><p class="font-bold text-sm" id="card-member-since"></p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Solde de points -->
-                    <div class="glass-effect rounded-2xl p-6">
-                        <!-- ... Votre HTML pour les points ... -->
-                    </div>
-                    <!-- QR Code personnel -->
-                    <div class="glass-effect rounded-2xl p-6">
-                        <div class="text-center space-y-4">
-                            <h3 class="text-xl font-bold" style="color: #22a8dc;">📱 Votre QR Code Personnel</h3>
-                            <div class="qr-container rounded-xl p-4 mx-auto w-fit">
-                                <!-- CORRECTION : Conteneur DIV pour le QR Code -->
-                                <div id="qrcode-container" class="mx-auto"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ... Votre HTML pour les actions et l'historique ... -->
-                </div>
-            </div>
+            <h2 class="text-2xl font-bold">Bienvenue, <span id="member-name"></span>!</h2>
+            <p>Email: <span id="member-email"></span></p>
+            <p>Points: <span id="points-balance"></span></p>
+            <p>Membre depuis: <span id="member-since"></span></p>
+            <div id="qrcode-container" class="mt-4"></div>
         </div>
     </main>
 
-    <!-- ======================= SECTION SCRIPTS ======================= -->
+    <!-- SECTION SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -86,95 +73,107 @@
 
         // --- C. POINT D'ENTRÉE ---
         document.addEventListener('DOMContentLoaded', () => {
-            // ... (attachement des événements - reste inchangé) ...
+            console.log("DOM Prêt. Attachement des événements.");
+            
+            const signupForm = document.getElementById('signup-form');
+            if(signupForm) signupForm.addEventListener('submit', handleSignup);
+            
+            const signinForm = document.getElementById('signin-form');
+            if(signinForm) signinForm.addEventListener('submit', handleSignin);
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if(logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+
             auth.onAuthStateChanged(handleAuthStateChange);
         });
 
         // --- D. LOGIQUE PRINCIPALE ---
         function handleAuthStateChange(user) {
+            console.log("État d'authentification changé. Utilisateur:", user ? user.uid : "aucun");
             hideLoadingScreen();
-            const logoutBtn = document.getElementById('logout-btn');
             if (user) {
                 currentUser = user;
                 showCardScreen();
                 loadUserData(user);
-                if (logoutBtn) logoutBtn.style.display = 'flex';
             } else {
                 if (userDataListener) userDataListener();
                 currentUser = null;
                 showAuthScreen();
-                if (logoutBtn) logoutBtn.style.display = 'none';
             }
         }
         
         // --- E. GESTION DES FORMULAIRES ---
         async function handleSignup(e) {
             e.preventDefault();
-            // ... (votre logique d'inscription complète avec la transaction pour le memberId) ...
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    email: email,
+                    points: 50,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) { console.error("Erreur Inscription:", error); }
         }
-        async function handleSignin(e) { /* ... */ }
-        function handleLogout() { auth.signOut(); }
 
-        // --- F. FONCTIONS UTILITAIRES (AVEC LES CORRECTIONS) ---
+        async function handleSignin(e) {
+            e.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) { console.error("Erreur Connexion:", error); }
+        }
+
+        function handleLogout() {
+            auth.signOut();
+        }
+
+        // --- F. FONCTIONS UTILITAIRES ---
         function loadUserData(user) {
             if (!user) return;
-            // On génère le QR Code immédiatement
-            generateQRCode(user.uid); 
-            
+            generateQRCode(user.uid);
             if (userDataListener) userDataListener();
-            userDataListener = db.collection('users').doc(user.uid).onSnapshot((doc) => {
+            userDataListener = db.collection('users').doc(user.uid).onSnapshot(doc => {
                 if (doc.exists) {
                     updateUserInterface(user, doc.data());
                 }
-            }, (error) => {
-                console.error("Erreur Firestore onSnapshot:", error);
             });
         }
         
-        // CORRECTION : La fonction updateUserInterface est maintenant plus précise
         function updateUserInterface(user, userData) {
-            // 1. Mise à jour du Nom et de l'ID Membre
-            const memberNameEl = document.getElementById('card-member-name');
-            if (memberNameEl) {
-                const displayName = user.displayName || `${userData.prenom} ${userData.nom}`;
-                const memberId = userData.memberId || ''; // Récupère le CE-XXXX
-                memberNameEl.textContent = `${displayName} (${memberId})`;
-            }
-
-            // 2. Mise à jour de l'Email
-            const memberEmailEl = document.getElementById('card-member-email');
-            if (memberEmailEl) memberEmailEl.textContent = user.email;
-
-            // 3. Mise à jour de la Date d'Inscription
-            const memberSinceEl = document.getElementById('card-member-since');
-            if (memberSinceEl && userData.createdAt && userData.createdAt.toDate) {
-                const date = userData.createdAt.toDate();
-                memberSinceEl.textContent = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-            }
-
-            // 4. Mise à jour des autres champs (points, niveau, etc.)
+            document.getElementById('member-name').textContent = user.displayName || userData.prenom || 'Membre';
+            document.getElementById('member-email').textContent = user.email;
             document.getElementById('points-balance').textContent = userData.points || 0;
-            document.getElementById('card-member-tier').textContent = userData.tier || 'Bronze';
-            // ... Mettre à jour le reste ...
+            if(userData.createdAt) {
+                document.getElementById('member-since').textContent = userData.createdAt.toDate().toLocaleDateString('fr-FR');
+            }
         }
 
-        // CORRECTION : La fonction generateQRCode cible maintenant le bon conteneur
         function generateQRCode(userId) {
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            if (!qrcodeContainer) {
-                console.error("ERREUR CRITIQUE: Le conteneur '#qrcode-container' est introuvable. Vérifiez votre HTML.");
-                return;
-            }
-            qrcodeContainer.innerHTML = ''; // Vider avant de générer
-            new QRCode(qrcodeContainer, {
-                text: userId,
-                width: 180,
-                height: 180,
-            });
-            console.log("QR Code généré pour l'ID:", userId);
+            const container = document.getElementById('qrcode-container');
+            if (!container) return;
+            container.innerHTML = '';
+            new QRCode(container, { text: userId, width: 128, height: 128 });
+        }
+
+        function hideLoadingScreen() {
+            const screen = document.getElementById('loading-screen');
+            if(screen) screen.style.display = 'none';
+            document.getElementById('app-header')?.classList.remove('hidden');
+            document.getElementById('app-content')?.classList.remove('hidden');
         }
         
-        // ... (le reste de vos fonctions : hideLoadingScreen, showAuthScreen, switchTab, etc.) ...
+        function showAuthScreen() {
+            document.getElementById('auth-screen')?.classList.remove('hidden');
+            document.getElementById('card-screen')?.classList.add('hidden');
+        }
+
+        function showCardScreen() {
+            document.getElementById('card-screen')?.classList.remove('hidden');
+            document.getElementById('auth-screen')?.classList.add('hidden');
+        }
     </script>
 </body>
 </html>
