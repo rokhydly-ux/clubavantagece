@@ -726,7 +726,7 @@
                         <svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
-                        <h2 class="text-2xl font-bold" style="color: #1e3a8a;">Carte Membre VIP</h2>
+                        <h2 class="text-2xl font-bold" style="color: #22a8dc;">Carte Membre VIP</h2>
                         <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
                         </svg>
@@ -777,7 +777,7 @@
             <!-- Section Flash Alertes / Promos -->
             <div class="glass-effect rounded-2xl p-6 mb-6">
                 <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #1e3a8a;">⚡ Flash Alertes / Promos</h3>
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">⚡ Flash Alertes / Promos</h3>
                     <div id="flash-promos-container" class="space-y-3">
                         <!-- Les promos seront chargées ici -->
                         <div class="text-center py-4">
@@ -791,7 +791,7 @@
             <!-- Solde de points -->
             <div class="glass-effect rounded-2xl p-6">
                 <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #1e3a8a;">💰 Vos Points</h3>
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">💰 Vos Points</h3>
                     <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white">
                         <div class="text-4xl font-black points-counter" id="points-balance">0</div>
                         <p class="text-sm opacity-90 mt-1">Points disponibles</p>
@@ -814,17 +814,32 @@
 
 
 
-            <!-- Catalogue de Récompenses -->
-            <div class="glass-effect rounded-2xl p-6">
+            <!-- Section Échange Points -->
+            <div class="glass-effect rounded-2xl p-6 mb-6">
                 <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #1e3a8a;">🎁 Catalogue de Récompenses</h3>
-                    <p class="text-sm text-gray-600">Échangez vos points contre des récompenses exclusives !</p>
+                    <div class="text-5xl mb-3">🎁</div>
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">Transformez vos Points en Cadeaux !</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        <span class="font-semibold">Ne laissez pas vos points dormir !</span><br>
+                        Découvrez notre boutique exclusive et échangez vos points contre des équipements professionnels, des bons de réduction et bien plus encore.
+                    </p>
                     
-                    <button onclick="showRewardsPage()" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center space-x-3">
+                    <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-4 text-white">
+                        <div class="flex items-center justify-center space-x-2 mb-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="font-bold text-lg" id="points-reminder">0 points</span>
+                            <span class="text-sm">vous attendent !</span>
+                        </div>
+                        <p class="text-xs opacity-90">Plus vous cumulez, plus les récompenses sont exceptionnelles</p>
+                    </div>
+                    
+                    <button onclick="showRewardsPage()" class="w-full text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center space-x-3 shadow-lg" style="background: linear-gradient(135deg, #22a8dc, #1e90ff);">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
                         </svg>
-                        <span>🛍️ Voir les Récompenses</span>
+                        <span>🛍️ Découvrir la Boutique</span>
                     </button>
                 </div>
             </div>
@@ -832,7 +847,7 @@
             <!-- Section Parrainage -->
             <div class="glass-effect rounded-2xl p-6">
                 <div class="text-center space-y-4">
-                    <h3 class="text-xl font-bold" style="color: #1e3a8a;">🎁 Parrainez vos amis</h3>
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🎁 Parrainez vos amis</h3>
                     <p class="text-sm text-gray-600">Invitez un ami et gagnez 50 points chacun !</p>
                     
                     <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-4 text-white">
@@ -859,7 +874,7 @@
 
             <!-- Historique récent -->
             <div class="glass-effect rounded-2xl p-6">
-                <h3 class="text-lg font-bold mb-4" style="color: #1e3a8a;">📊 Activité Récente</h3>
+                <h3 class="text-lg font-bold mb-4" style="color: #22a8dc;">📊 Activité Récente</h3>
                 <div id="recent-activity" class="space-y-2">
                     <div class="flex justify-between items-center p-2 bg-green-50 rounded-lg">
                         <div class="flex items-center space-x-2">
@@ -1740,6 +1755,13 @@
                 memberIdDisplay.textContent = userData.memberId;
             }
             
+            // Mettre à jour le rappel de points dans la section échange
+            const pointsReminder = document.getElementById('points-reminder');
+            if (pointsReminder) {
+                const points = parseInt(userData.points) || 0;
+                pointsReminder.textContent = `${points} points`;
+            }
+            
             // Email
             const memberEmail = document.getElementById('member-email');
             if (memberEmail) {
@@ -2149,27 +2171,23 @@
             let memberId = null;
             
             try {
-                // 1. Essayer de récupérer l'ID membre depuis l'interface d'abord
-                const memberIdElement = document.getElementById('member-id-display');
-                if (memberIdElement && memberIdElement.textContent && memberIdElement.textContent !== 'CE-0000') {
-                    memberId = memberIdElement.textContent;
-                    console.log('✅ ID membre récupéré depuis l\'interface:', memberId);
-                } else {
-                    // 2. Essayer depuis la page carte
-                    const cardMemberIdElement = document.getElementById('card-member-id');
-                    if (cardMemberIdElement && cardMemberIdElement.textContent && cardMemberIdElement.textContent !== 'CE-0000') {
-                        memberId = cardMemberIdElement.textContent;
-                        console.log('✅ ID membre récupéré depuis la carte:', memberId);
-                    } else {
-                        // 3. Récupérer depuis Firestore
-                        console.log('🔍 Récupération ID membre depuis Firestore...');
-                        const userDoc = await db.collection('users').doc(userId).get();
-                        
-                        if (userDoc.exists) {
-                            const userData = userDoc.data();
-                            memberId = userData?.memberId;
-                            console.log('📊 Données Firestore:', userData);
-                        }
+                // 1. Récupérer depuis Firestore en priorité pour avoir les vraies données
+                console.log('🔍 Récupération ID membre depuis Firestore...');
+                const userDoc = await db.collection('users').doc(userId).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    memberId = userData?.memberId;
+                    console.log('📊 Données Firestore récupérées:', userData);
+                    console.log('✅ ID membre depuis Firestore:', memberId);
+                }
+                
+                // 2. Fallback vers l'interface si Firestore échoue
+                if (!memberId || memberId === 'CE-0000') {
+                    const memberIdElement = document.getElementById('member-id-display');
+                    if (memberIdElement && memberIdElement.textContent && memberIdElement.textContent !== 'CE-0000') {
+                        memberId = memberIdElement.textContent;
+                        console.log('✅ ID membre récupéré depuis l\'interface:', memberId);
                     }
                 }
                 
@@ -2177,16 +2195,55 @@
                 console.error('❌ Erreur récupération ID membre:', error);
             }
             
-            // 4. Si toujours pas d'ID membre, générer un fallback
+            // 3. Si toujours pas d'ID membre valide, générer un ID séquentiel
             if (!memberId || memberId === 'CE-0000' || memberId === 'undefined') {
-                console.warn('⚠️ Génération d\'un ID de fallback');
-                const timestamp = Date.now().toString().slice(-4);
-                const userIdSuffix = userId.slice(-4).toUpperCase();
-                memberId = `CE-${userIdSuffix}`;
-                console.log('🆔 ID de fallback généré:', memberId);
+                console.warn('⚠️ Génération d\'un nouvel ID membre séquentiel...');
+                
+                try {
+                    // Utiliser une transaction pour générer un ID séquentiel
+                    const counterRef = db.collection('counters').doc('memberCounter');
+                    let newMemberId = 'CE-0001';
+                    
+                    await db.runTransaction(async (transaction) => {
+                        const counterDoc = await transaction.get(counterRef);
+                        let newIdNumber;
+                        
+                        if (!counterDoc.exists) {
+                            newIdNumber = 1;
+                            transaction.set(counterRef, { lastId: newIdNumber });
+                        } else {
+                            newIdNumber = (counterDoc.data().lastId || 0) + 1;
+                            transaction.update(counterRef, { lastId: newIdNumber });
+                        }
+                        
+                        const formattedId = String(newIdNumber).padStart(4, '0');
+                        newMemberId = `CE-${formattedId}`;
+                    });
+                    
+                    // Mettre à jour le document utilisateur avec le nouvel ID
+                    await db.collection('users').doc(userId).update({
+                        memberId: newMemberId
+                    });
+                    
+                    memberId = newMemberId;
+                    console.log('✅ Nouvel ID membre généré et sauvegardé:', memberId);
+                    
+                    // Mettre à jour l'interface
+                    const memberIdElement = document.getElementById('member-id-display');
+                    if (memberIdElement) {
+                        memberIdElement.textContent = memberId;
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erreur génération nouvel ID:', error);
+                    // Fallback final
+                    const timestamp = Date.now().toString().slice(-4);
+                    memberId = `CE-${timestamp}`;
+                    console.log('🆔 ID de fallback final généré:', memberId);
+                }
             }
             
-            // 5. Générer le QR Code avec Canvas (méthode alternative)
+            // 4. Générer le QR Code
             console.log('🚀 Génération du QR Code pour:', memberId);
             
             try {
@@ -2200,7 +2257,7 @@
                 `;
                 
                 // Attendre que le DOM soit mis à jour
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 200));
                 
                 const qrContainer = document.getElementById('large-qr-display');
                 if (qrContainer) {
@@ -2210,9 +2267,15 @@
                     // Vérifier que QRCode est disponible et générer
                     if (typeof QRCode !== 'undefined') {
                         try {
-                            // Créer une nouvelle instance QRCode
+                            // Créer une nouvelle instance QRCode avec les bonnes données
+                            const qrData = JSON.stringify({
+                                memberId: memberId,
+                                userId: userId,
+                                timestamp: Date.now()
+                            });
+                            
                             const qrCode = new QRCode(qrContainer, {
-                                text: memberId,
+                                text: qrData,
                                 width: 200,
                                 height: 200,
                                 colorDark: "#000000",
@@ -3510,5 +3573,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9775b488703c785f',t:'MTc1NjU3MTc2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9775cb77f19d785f',t:'MTc1NjU3MjcwNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
