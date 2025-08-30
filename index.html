@@ -227,10 +227,22 @@
                     <input type="password" id="signup-password" placeholder="Mot de passe (min. 6 caractères)" required 
                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     
+                    <!-- Code de parrainage optionnel -->
+                    <input type="text" id="signup-referral" placeholder="Code de parrainage (optionnel)" 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
+                           maxlength="10">
+                    
                     <div class="flex items-center space-x-2">
                         <input type="checkbox" id="signup-terms" required class="rounded border-gray-300 text-blue-600">
                         <label for="signup-terms" class="text-xs text-gray-700">
                             J'accepte les conditions et de recevoir les offres exclusives
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="stay-connected" class="rounded border-gray-300 text-blue-600">
+                        <label for="stay-connected" class="text-xs text-gray-700">
+                            Rester connecté sur cet appareil
                         </label>
                     </div>
                     
@@ -245,6 +257,13 @@
                            class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
                     <input type="password" id="signin-password" placeholder="Mot de passe" required 
                            class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm">
+                    
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="signin-stay-connected" class="rounded border-gray-300 text-blue-600">
+                        <label for="signin-stay-connected" class="text-xs text-gray-700">
+                            Rester connecté sur cet appareil
+                        </label>
+                    </div>
                     
                     <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105">
                         🔑 Me connecter à mon compte
@@ -427,6 +446,23 @@
                             🔒 Ce code est unique et vous identifie en tant que membre du Club.
                         </p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Section Parrainage -->
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-center space-y-4">
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🎁 Parrainez vos amis</h3>
+                    <p class="text-sm text-gray-600">Invitez un ami et gagnez 50 points chacun !</p>
+                    
+                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-4 text-white">
+                        <p class="text-sm font-medium mb-2">Votre code de parrainage :</p>
+                        <div class="text-2xl font-black tracking-widest" id="referral-code-display">LOADING...</div>
+                    </div>
+                    
+                    <button onclick="shareReferralCode()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all">
+                        📤 Partager mon code
+                    </button>
                 </div>
             </div>
 
@@ -640,8 +676,10 @@
             const phoneNumber = document.getElementById('signup-telephone').value.trim().replace(/\s/g, '');
             const telephone = countryCode + phoneNumber;
             const ticketNumber = document.getElementById('signup-ticket').value.trim();
+            const referralCode = document.getElementById('signup-referral').value.trim().toUpperCase();
             const password = document.getElementById('signup-password').value;
             const terms = document.getElementById('signup-terms').checked;
+            const stayConnected = document.getElementById('stay-connected').checked;
             
             if (!terms) {
                 showAuthMessage('Veuillez accepter les conditions.', 'error');
@@ -703,29 +741,89 @@
 
                 await db.runTransaction(async (transaction) => {
                     const counterDoc = await transaction.get(counterRef);
+                    let newIdNumber;
+                    
                     if (!counterDoc.exists) {
                         // Si le compteur n'existe pas, on le crée à 1
-                        transaction.set(counterRef, { lastId: 1 });
-                        newMemberId = 'CE-0001';
+                        newIdNumber = 1;
+                        transaction.set(counterRef, { lastId: newIdNumber });
                     } else {
-                        const newIdNumber = counterDoc.data().lastId + 1;
+                        // Incrémenter le compteur existant
+                        newIdNumber = (counterDoc.data().lastId || 0) + 1;
                         transaction.update(counterRef, { lastId: newIdNumber });
-                        // Formater le numéro en chaîne de 4 chiffres
-                        const formattedId = String(newIdNumber).padStart(4, '0');
-                        newMemberId = `CE-${formattedId}`;
                     }
+                    
+                    // Formater le numéro en chaîne de 4 chiffres
+                    const formattedId = String(newIdNumber).padStart(4, '0');
+                    newMemberId = `CE-${formattedId}`;
+                    
+                    console.log('✅ Nouvel ID membre généré:', newMemberId);
                 });
 
-                // 3. Créer le profil utilisateur avec le nouvel ID
+                // 3. Générer un code de parrainage unique
+                const generateReferralCode = () => {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    let result = '';
+                    for (let i = 0; i < 6; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
+                };
+                
+                const userReferralCode = generateReferralCode();
+                
+                // 4. Vérifier et traiter le code de parrainage si fourni
+                let bonusPoints = 50; // Points de base
+                let referredBy = null;
+                
+                if (referralCode && referralCode.length > 0) {
+                    try {
+                        // Chercher l'utilisateur qui a ce code de parrainage
+                        const referrerQuery = await db.collection('users')
+                            .where('referralCode', '==', referralCode)
+                            .limit(1)
+                            .get();
+                        
+                        if (!referrerQuery.empty) {
+                            const referrerDoc = referrerQuery.docs[0];
+                            const referrerId = referrerDoc.id;
+                            referredBy = referrerId;
+                            bonusPoints = 100; // 50 de base + 50 de parrainage
+                            
+                            // Créditer 50 points au parrain
+                            await db.collection('users').doc(referrerId).update({
+                                points: firebase.firestore.FieldValue.increment(50)
+                            });
+                            
+                            // Ajouter à l'historique du parrain
+                            await db.collection('users').doc(referrerId).collection('history').add({
+                                type: 'parrainage',
+                                description: `Parrainage de ${prenom} ${nom}`,
+                                points: 50,
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            
+                            console.log('✅ Parrainage traité avec succès');
+                        } else {
+                            console.log('⚠️ Code de parrainage invalide:', referralCode);
+                        }
+                    } catch (error) {
+                        console.error('❌ Erreur traitement parrainage:', error);
+                    }
+                }
+
+                // 5. Créer le profil utilisateur avec le nouvel ID
                 const userProfile = {
                     memberId: newMemberId,
                     prenom: prenom,
                     nom: nom,
                     email: email,
                     telephone: telephone,
-                    points: 50,
+                    points: bonusPoints,
                     lastTicket: ticketNumber,
                     tier: 'Bronze',
+                    referralCode: userReferralCode,
+                    referredBy: referredBy,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
                     qrCodeExpiry: null,
@@ -733,20 +831,45 @@
                 };
                 await db.collection('users').doc(user.uid).set(userProfile);
 
-                // 4. Enregistrer le ticket comme utilisé
+                // 6. Gérer la persistance de la connexion
+                if (stayConnected) {
+                    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                } else {
+                    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                }
+
+                // 7. Enregistrer le ticket comme utilisé
                 await db.collection('usedTickets').doc(ticketNumber).set({
                     userId: user.uid,
                     usedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     type: 'inscription'
                 });
                 
-                // 5. Ajouter à l'historique
-                await db.collection('users').doc(user.uid).collection('history').add({
+                // 8. Ajouter à l'historique
+                const historyEntries = [{
                     type: 'inscription',
                     description: 'Bienvenue au Club Avantage !',
                     points: 50,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }];
+                
+                // Ajouter l'entrée de parrainage si applicable
+                if (referredBy) {
+                    historyEntries.push({
+                        type: 'parrainage',
+                        description: 'Bonus de parrainage reçu',
+                        points: 50,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                // Ajouter toutes les entrées d'historique
+                const batch = db.batch();
+                historyEntries.forEach(entry => {
+                    const historyRef = db.collection('users').doc(user.uid).collection('history').doc();
+                    batch.set(historyRef, entry);
                 });
+                await batch.commit();
 
                 // 6. Afficher la confirmation avec les bonnes données
                 showConfirmationPage(prenom, nom, newMemberId);
@@ -775,6 +898,7 @@
             
             const email = document.getElementById('signin-email').value.trim();
             const password = document.getElementById('signin-password').value;
+            const stayConnected = document.getElementById('signin-stay-connected').checked;
             
             // Validation côté client
             if (!email) {
@@ -795,6 +919,13 @@
             try {
                 showAuthMessage('Connexion en cours...', 'info');
                 console.log('🔐 Tentative de connexion pour:', email);
+                
+                // Gérer la persistance avant la connexion
+                if (stayConnected) {
+                    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                } else {
+                    await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                }
                 
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 console.log('✅ Connexion réussie pour:', userCredential.user.email);
@@ -912,6 +1043,18 @@
                         newMemberId = `CE-${timestamp}`;
                     }
                     
+                    // Générer un code de parrainage unique pour les utilisateurs existants
+                    const generateReferralCode = () => {
+                        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                        let result = '';
+                        for (let i = 0; i < 6; i++) {
+                            result += chars.charAt(Math.floor(Math.random() * chars.length));
+                        }
+                        return result;
+                    };
+                    
+                    const userReferralCode = generateReferralCode();
+                    
                     const newUserData = {
                         memberId: newMemberId, // ID membre ajouté
                         nom: nameParts[1] || 'CE',
@@ -921,6 +1064,7 @@
                         points: 50,
                         lastTicket: '',
                         tier: 'Bronze',
+                        referralCode: userReferralCode,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
                         qrCodeExpiry: null,
@@ -1047,12 +1191,17 @@
                 else if (currentUser && currentUser.displayName) {
                     displayName = currentUser.displayName;
                 } 
-                // Fallback
+                // Fallback avec email
+                else if (userData.email) {
+                    displayName = userData.email.split('@')[0];
+                }
+                // Dernier fallback
                 else {
                     displayName = 'Membre CE';
                 }
                 
                 memberName.textContent = displayName;
+                console.log('✅ Nom affiché:', displayName);
             }
             
             // Afficher le numéro de membre séparément s'il existe
@@ -1143,6 +1292,16 @@
             const currentLevel = document.getElementById('current-level');
             if (currentLevel) {
                 currentLevel.textContent = userData.tier || 'Bronze';
+            }
+            
+            // Code de parrainage
+            const referralCodeDisplay = document.getElementById('referral-code-display');
+            if (referralCodeDisplay) {
+                if (userData.referralCode) {
+                    referralCodeDisplay.textContent = userData.referralCode;
+                } else {
+                    referralCodeDisplay.textContent = 'LOADING...';
+                }
             }
             
             // Progression du niveau
@@ -1281,69 +1440,83 @@
 
         
         // Générer le QR Code personnel avec l'ID membre (Version Corrigée)
-        async function generateQRCode(userId) {
-            console.log('🔄 Génération du QR Code pour userId:', userId);
+        async function generateQRCode(userId, retryCount = 0) {
+            console.log('🔄 Génération du QR Code pour userId:', userId, 'tentative:', retryCount + 1);
             const qrcodeDiv = document.getElementById('qrcode-container');
             if (!qrcodeDiv) {
                 console.error('❌ Container QR Code non trouvé');
                 return;
             }
             
-            // Vider l'ancien QR code
-            qrcodeDiv.innerHTML = '';
+            // Afficher un message de chargement
+            qrcodeDiv.innerHTML = '<div class="text-center p-4"><div class="loading-spinner w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div><p class="text-sm text-gray-600">Génération du QR Code...</p></div>';
             
             try {
+                // Attendre un peu plus longtemps pour s'assurer que les données sont synchronisées
+                await new Promise(resolve => setTimeout(resolve, 2000 + (retryCount * 1000)));
+                
                 // Récupérer l'ID membre depuis Firestore
                 console.log('📊 Récupération des données utilisateur...');
                 const userDoc = await db.collection('users').doc(userId).get();
                 
                 if (userDoc.exists) {
                     const userData = userDoc.data();
-                    const memberId = userData?.memberId || `CE-${userId.slice(-4)}`;
+                    const memberId = userData?.memberId;
                     
-                    console.log('✅ Données utilisateur récupérées, memberId:', memberId);
-                    
-                    // Créer le QR Code avec l'ID membre
-                    new QRCode(qrcodeDiv, {
-                        text: memberId,
-                        width: 180,
-                        height: 180,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    
-                    console.log('✅ QR Code généré avec succès pour:', memberId);
-                } else {
-                    console.warn('⚠️ Document utilisateur non trouvé, génération avec userId');
-                    // Fallback avec l'userId si le document n'existe pas
-                    new QRCode(qrcodeDiv, {
-                        text: `CE-${userId.slice(-4)}`,
-                        width: 180,
-                        height: 180,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
+                    if (memberId && memberId !== 'CE-0000') {
+                        console.log('✅ Données utilisateur récupérées, memberId:', memberId);
+                        
+                        // Vider le container avant de générer le QR Code
+                        qrcodeDiv.innerHTML = '';
+                        
+                        // Créer le QR Code avec l'ID membre
+                        new QRCode(qrcodeDiv, {
+                            text: memberId,
+                            width: 180,
+                            height: 180,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+                        
+                        console.log('✅ QR Code généré avec succès pour:', memberId);
+                        return;
+                    } else if (retryCount < 3) {
+                        // Réessayer si l'ID membre n'est pas encore disponible
+                        console.log('⏳ ID membre non disponible, nouvelle tentative...');
+                        return generateQRCode(userId, retryCount + 1);
+                    }
                 }
+                
+                // Fallback si toutes les tentatives échouent
+                console.warn('⚠️ Utilisation du fallback pour le QR Code');
+                qrcodeDiv.innerHTML = '';
+                new QRCode(qrcodeDiv, {
+                    text: `CE-${userId.slice(-4)}`,
+                    width: 180,
+                    height: 180,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
                 
             } catch (error) {
                 console.error('❌ Erreur génération QR Code:', error);
-                // Fallback avec l'userId si erreur
-                try {
-                    new QRCode(qrcodeDiv, {
-                        text: `CE-${userId.slice(-4)}`,
-                        width: 180,
-                        height: 180,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    console.log('✅ QR Code de fallback généré');
-                } catch (fallbackError) {
-                    console.error('❌ Erreur génération QR Code de fallback:', fallbackError);
-                    qrcodeDiv.innerHTML = '<p class="text-red-500 text-sm">Erreur génération QR Code</p>';
+                
+                if (retryCount < 2) {
+                    console.log('🔄 Nouvelle tentative de génération QR Code...');
+                    return generateQRCode(userId, retryCount + 1);
                 }
+                
+                // Afficher un bouton de réessai en cas d'erreur persistante
+                qrcodeDiv.innerHTML = `
+                    <div class="text-center p-4">
+                        <p class="text-red-500 text-sm mb-3">Erreur lors de la génération du QR Code</p>
+                        <button onclick="generateQRCode('${userId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                            🔄 Réessayer
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -1426,6 +1599,28 @@
                 navigator.clipboard.writeText(shareText).then(() => {
                     showMessage('📋 Lien copié ! Partagez-le avec vos amis.', 'success');
                 });
+            }
+        }
+
+        // Partager le code de parrainage
+        function shareReferralCode() {
+            const referralCode = document.getElementById('referral-code-display').textContent;
+            
+            if (referralCode && referralCode !== 'LOADING...') {
+                const shareText = `🎁 Rejoignez le Club Avantage CE avec mon code de parrainage : ${referralCode}\n\nVous recevrez 50 points bonus à l'inscription et moi aussi ! 🎉\n\nInscrivez-vous ici : ${window.location.href}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Code de Parrainage Club Avantage CE',
+                        text: shareText
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        showMessage('📋 Code de parrainage copié ! Partagez-le avec vos amis.', 'success');
+                    });
+                }
+            } else {
+                showMessage('⏳ Code de parrainage en cours de chargement...', 'info');
             }
         }
 
@@ -1720,5 +1915,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97744afa8340785f',t:'MTc1NjU1Njk1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9774b9789729eeab',t:'MTc1NjU2MTQ4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
