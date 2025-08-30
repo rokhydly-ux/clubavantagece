@@ -1556,8 +1556,16 @@
                 fullCardPage.classList.remove('hidden');
                 fullCardPage.style.display = 'block';
                 
-                // Forcer le scroll en haut de la page
-                fullCardPage.scrollTop = 0;
+                // Permettre le défilement dans la page carte
+                fullCardPage.style.overflow = 'auto';
+                fullCardPage.style.height = '100vh';
+                
+                // Forcer le scroll en haut de la page carte
+                setTimeout(() => {
+                    fullCardPage.scrollTop = 0;
+                }, 50);
+                
+                // Bloquer le défilement du body principal
                 document.body.style.overflow = 'hidden';
                 
                 // Mettre à jour les informations de la carte
@@ -1580,6 +1588,8 @@
             if (fullCardPage) {
                 fullCardPage.classList.add('hidden');
                 fullCardPage.style.display = 'none';
+                
+                // Restaurer le défilement du body principal
                 document.body.style.overflow = 'auto';
             }
         }
@@ -1637,9 +1647,9 @@
             }
         }
 
-        // Générer le QR Code grand pour la page carte - Version forcée
+        // Générer le QR Code grand pour la page carte - Version corrigée
         async function generateLargeQRCode(userId, retryCount = 0) {
-            console.log('🔄 Génération FORCÉE du QR Code grand pour userId:', userId);
+            console.log('🔄 Génération du QR Code grand pour userId:', userId);
             const qrcodeDiv = document.getElementById('large-qrcode-container');
             if (!qrcodeDiv) {
                 console.error('❌ Container QR Code grand non trouvé');
@@ -1648,7 +1658,7 @@
             
             // Afficher un message de chargement
             qrcodeDiv.innerHTML = `
-                <div class="bg-gray-100 rounded-2xl p-8">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
                     <div class="text-center">
                         <div class="loading-spinner w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
                         <p class="text-gray-600">Génération du QR Code...</p>
@@ -1687,58 +1697,69 @@
                 console.error('❌ Erreur récupération ID membre:', error);
             }
             
-            // 4. Si toujours pas d'ID membre, générer un fallback IMMÉDIATEMENT
+            // 4. Si toujours pas d'ID membre, générer un fallback
             if (!memberId || memberId === 'CE-0000' || memberId === 'undefined') {
-                console.warn('⚠️ Génération d\'un ID de fallback immédiat');
+                console.warn('⚠️ Génération d\'un ID de fallback');
                 const timestamp = Date.now().toString().slice(-4);
                 const userIdSuffix = userId.slice(-4).toUpperCase();
                 memberId = `CE-${userIdSuffix}`;
                 console.log('🆔 ID de fallback généré:', memberId);
             }
             
-            // 5. FORCER la génération du QR Code maintenant
-            console.log('🚀 GÉNÉRATION FORCÉE du QR Code pour:', memberId);
+            // 5. Générer le QR Code avec la librairie QRCode.js
+            console.log('🚀 Génération du QR Code pour:', memberId);
             
             try {
-                // Vider le container et créer le nouveau QR Code
+                // Créer le container pour le QR Code
                 qrcodeDiv.innerHTML = `
                     <div class="bg-white rounded-2xl p-6 shadow-lg">
-                        <div id="large-qr-display"></div>
+                        <div class="flex justify-center">
+                            <div id="large-qr-display" class="qr-container rounded-xl p-4"></div>
+                        </div>
                     </div>
                 `;
                 
                 // Attendre que le DOM soit mis à jour
-                await new Promise(resolve => setTimeout(resolve, 200));
+                await new Promise(resolve => setTimeout(resolve, 300));
                 
                 const qrContainer = document.getElementById('large-qr-display');
                 if (qrContainer) {
-                    // Générer le QR Code avec gestion d'erreur
-                    new QRCode(qrContainer, {
-                        text: memberId,
-                        width: 250,
-                        height: 250,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    console.log('✅ QR Code FORCÉ généré avec succès pour:', memberId);
+                    // Vider le container avant de générer le QR Code
+                    qrContainer.innerHTML = '';
                     
-                    // Mettre à jour l'ID membre dans l'interface si c'était un fallback
-                    if (memberId.includes(userId.slice(-4))) {
-                        const memberIdDisplay = document.getElementById('member-id-display');
-                        const cardMemberIdDisplay = document.getElementById('card-member-id');
-                        if (memberIdDisplay) memberIdDisplay.textContent = memberId;
-                        if (cardMemberIdDisplay) cardMemberIdDisplay.textContent = memberId;
+                    // Vérifier que QRCode est disponible
+                    if (typeof QRCode !== 'undefined') {
+                        // Générer le QR Code avec la librairie
+                        const qr = new QRCode(qrContainer, {
+                            text: memberId,
+                            width: 250,
+                            height: 250,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
                         
-                        // Sauvegarder dans Firestore
-                        if (currentUser) {
-                            db.collection('users').doc(currentUser.uid).update({
-                                memberId: memberId
-                            }).catch(error => console.error('Erreur sauvegarde ID membre:', error));
+                        console.log('✅ QR Code généré avec succès pour:', memberId);
+                        
+                        // Mettre à jour l'ID membre dans l'interface si c'était un fallback
+                        if (memberId.includes(userId.slice(-4))) {
+                            const memberIdDisplay = document.getElementById('member-id-display');
+                            const cardMemberIdDisplay = document.getElementById('card-member-id');
+                            if (memberIdDisplay) memberIdDisplay.textContent = memberId;
+                            if (cardMemberIdDisplay) cardMemberIdDisplay.textContent = memberId;
+                            
+                            // Sauvegarder dans Firestore
+                            if (currentUser) {
+                                db.collection('users').doc(currentUser.uid).update({
+                                    memberId: memberId
+                                }).catch(error => console.error('Erreur sauvegarde ID membre:', error));
+                            }
                         }
+                        
+                    } else {
+                        throw new Error('Librairie QRCode non disponible');
                     }
                     
-                    return;
                 } else {
                     throw new Error('Container QR Code non trouvé après création');
                 }
@@ -1746,25 +1767,26 @@
             } catch (qrError) {
                 console.error('❌ Erreur création QR Code:', qrError);
                 
-                // Dernière tentative avec un QR Code simple
+                // Affichage de fallback avec le code membre en grand
                 qrcodeDiv.innerHTML = `
                     <div class="bg-white rounded-2xl p-6 shadow-lg">
                         <div class="text-center space-y-4">
-                            <div class="w-64 h-64 bg-gray-200 rounded-lg flex items-center justify-center mx-auto">
+                            <div class="w-64 h-64 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-xl flex items-center justify-center mx-auto">
                                 <div class="text-center">
-                                    <div class="text-4xl font-bold text-gray-600 mb-2">${memberId}</div>
-                                    <div class="text-sm text-gray-500">Code Membre</div>
-                                    <div class="text-xs text-gray-400 mt-2">Présentez ce code en caisse</div>
+                                    <div class="text-3xl font-black text-blue-600 mb-2">${memberId}</div>
+                                    <div class="text-sm text-blue-500 font-semibold">Code Membre</div>
+                                    <div class="text-xs text-gray-500 mt-2">Présentez ce code en caisse</div>
                                 </div>
                             </div>
-                            <button onclick="generateLargeQRCode('${userId}', 0)" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-all">
-                                🔄 Générer le QR Code
+                            <button onclick="generateLargeQRCode('${userId}', ${retryCount + 1})" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-all">
+                                🔄 Réessayer le QR Code
                             </button>
+                            <p class="text-xs text-gray-500">Le QR Code n'a pas pu être généré, mais votre code membre fonctionne parfaitement</p>
                         </div>
                     </div>
                 `;
                 
-                console.log('⚠️ QR Code de fallback affiché avec le code membre');
+                console.log('⚠️ Affichage de fallback avec le code membre');
             }
         }
 
@@ -2359,5 +2381,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9774f3eaa228d6ae',t:'MTc1NjU2Mzg3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97750a59e7f1785f',t:'MTc1NjU2NDc5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
