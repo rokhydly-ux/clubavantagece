@@ -393,6 +393,38 @@
     <!-- ÉCRAN DE LA CARTE MEMBRE -->
     <div id="card-screen" class="hidden min-h-screen p-6">
         
+    <!-- PAGE DES RÉCOMPENSES -->
+    <div id="rewards-page" class="hidden fixed inset-0 bg-gradient-to-br from-purple-600 to-purple-800 z-50">
+        <div class="min-h-screen p-6">
+            <!-- Header avec bouton retour -->
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="hideRewardsPage()" class="bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-all">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 7v4H5.83l3.58-3.59L8 6l-6 6 6 6 1.41-1.41L5.83 13H19V7z"/>
+                    </svg>
+                </button>
+                <h1 class="text-2xl font-bold text-white">🎁 Catalogue de Récompenses</h1>
+                <div class="w-12"></div>
+            </div>
+
+            <!-- Solde de points en haut -->
+            <div class="max-w-md mx-auto mb-6">
+                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center">
+                    <p class="text-white/80 text-sm mb-1">Vos points disponibles</p>
+                    <div class="text-3xl font-black text-yellow-300" id="rewards-points-balance">0</div>
+                </div>
+            </div>
+
+            <div class="max-w-md mx-auto space-y-4" id="rewards-container">
+                <!-- Les récompenses seront chargées ici -->
+                <div class="text-center py-8">
+                    <div class="loading-spinner w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p class="text-white">Chargement des récompenses...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PAGE CARTE COMPLÈTE -->
     <div id="full-card-page" class="hidden fixed inset-0 bg-gradient-to-br from-blue-600 to-blue-800 z-50">
         <div class="min-h-screen p-6">
@@ -568,6 +600,21 @@
                     
                     <button onclick="shareReferralCode()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all">
                         📤 Partager mon code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Catalogue de Récompenses -->
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-center space-y-4">
+                    <h3 class="text-xl font-bold" style="color: #22a8dc;">🎁 Catalogue de Récompenses</h3>
+                    <p class="text-sm text-gray-600">Échangez vos points contre des récompenses exclusives !</p>
+                    
+                    <button onclick="showRewardsPage()" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center space-x-3">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+                        </svg>
+                        <span>🛍️ Voir les Récompenses</span>
                     </button>
                 </div>
             </div>
@@ -1270,43 +1317,42 @@
         function updateUserInterface(userData) {
             console.log('🎨 Mise à jour de l\'interface avec:', userData);
             
-            // Nom complet avec numéro de membre
-            const memberName = document.getElementById('member-name');
-            if (memberName) {
-                let displayName = '';
-                
-                // Priorité au nom complet depuis les données Firestore
-                if (userData.prenom && userData.nom) {
-                    displayName = `${userData.prenom} ${userData.nom}`;
-                } 
-                // Sinon utiliser displayName de Firebase Auth
-                else if (currentUser && currentUser.displayName) {
-                    displayName = currentUser.displayName;
-                } 
-                // Fallback avec email
-                else if (userData.email) {
-                    displayName = userData.email.split('@')[0];
-                }
-                // Dernier fallback
-                else {
-                    displayName = 'Membre CE';
-                }
-                
-                memberName.textContent = displayName;
-                console.log('✅ Nom affiché:', displayName);
-                
-                // Mettre à jour aussi le nom dans la page carte complète
-                const cardMemberName = document.getElementById('card-member-name');
-                if (cardMemberName) {
-                    cardMemberName.textContent = displayName;
-                }
-                
-                // Mettre à jour le nom dans la confirmation si visible
-                const confirmationName = document.getElementById('confirmation-name');
-                if (confirmationName) {
-                    confirmationName.textContent = displayName;
-                }
+            // Nom complet avec numéro de membre - Correction pour l'affichage
+            let displayName = '';
+            
+            // Priorité au nom complet depuis les données Firestore
+            if (userData.prenom && userData.nom) {
+                displayName = `${userData.prenom} ${userData.nom}`;
+            } 
+            // Sinon utiliser displayName de Firebase Auth
+            else if (currentUser && currentUser.displayName) {
+                displayName = currentUser.displayName;
+            } 
+            // Fallback avec email
+            else if (userData.email) {
+                displayName = userData.email.split('@')[0];
             }
+            // Dernier fallback
+            else {
+                displayName = 'Membre CE';
+            }
+            
+            console.log('✅ Nom calculé:', displayName);
+            
+            // Mettre à jour TOUS les éléments de nom
+            const memberNameElements = [
+                'member-name',
+                'card-member-name', 
+                'confirmation-name'
+            ];
+            
+            memberNameElements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = displayName;
+                    console.log(`✅ Nom mis à jour pour ${elementId}:`, displayName);
+                }
+            });
             
             // Afficher le numéro de membre séparément s'il existe
             const memberIdDisplay = document.getElementById('member-id-display');
@@ -1757,7 +1803,7 @@
                 console.log('🆔 ID de fallback généré:', memberId);
             }
             
-            // 5. Générer le QR Code avec la librairie QRCode.js
+            // 5. Générer le QR Code avec Canvas (méthode alternative)
             console.log('🚀 Génération du QR Code pour:', memberId);
             
             try {
@@ -1765,49 +1811,41 @@
                 qrcodeDiv.innerHTML = `
                     <div class="bg-white rounded-2xl p-6 shadow-lg">
                         <div class="flex justify-center">
-                            <div id="large-qr-display" class="qr-container rounded-xl p-4"></div>
+                            <div id="large-qr-display" class="qr-container rounded-xl p-4 bg-white"></div>
                         </div>
                     </div>
                 `;
                 
                 // Attendre que le DOM soit mis à jour
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 100));
                 
                 const qrContainer = document.getElementById('large-qr-display');
                 if (qrContainer) {
                     // Vider le container avant de générer le QR Code
                     qrContainer.innerHTML = '';
                     
-                    // Vérifier que QRCode est disponible
+                    // Vérifier que QRCode est disponible et générer
                     if (typeof QRCode !== 'undefined') {
-                        // Générer le QR Code avec la librairie
-                        const qr = new QRCode(qrContainer, {
-                            text: memberId,
-                            width: 250,
-                            height: 250,
-                            colorDark: "#000000",
-                            colorLight: "#ffffff",
-                            correctLevel: QRCode.CorrectLevel.H
-                        });
-                        
-                        console.log('✅ QR Code généré avec succès pour:', memberId);
-                        
-                        // Mettre à jour l'ID membre dans l'interface si c'était un fallback
-                        if (memberId.includes(userId.slice(-4))) {
-                            const memberIdDisplay = document.getElementById('member-id-display');
-                            const cardMemberIdDisplay = document.getElementById('card-member-id');
-                            if (memberIdDisplay) memberIdDisplay.textContent = memberId;
-                            if (cardMemberIdDisplay) cardMemberIdDisplay.textContent = memberId;
+                        try {
+                            // Créer une nouvelle instance QRCode
+                            const qrCode = new QRCode(qrContainer, {
+                                text: memberId,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
                             
-                            // Sauvegarder dans Firestore
-                            if (currentUser) {
-                                db.collection('users').doc(currentUser.uid).update({
-                                    memberId: memberId
-                                }).catch(error => console.error('Erreur sauvegarde ID membre:', error));
-                            }
+                            console.log('✅ QR Code généré avec succès pour:', memberId);
+                            
+                        } catch (qrLibError) {
+                            console.error('❌ Erreur librairie QRCode:', qrLibError);
+                            throw qrLibError;
                         }
                         
                     } else {
+                        console.error('❌ Librairie QRCode non disponible');
                         throw new Error('Librairie QRCode non disponible');
                     }
                     
@@ -2141,6 +2179,352 @@
             }
         }
 
+        // Fonctions pour le catalogue de récompenses
+        function showRewardsPage() {
+            console.log('🎁 Affichage de la page des récompenses...');
+            const rewardsPage = document.getElementById('rewards-page');
+            if (rewardsPage) {
+                rewardsPage.classList.remove('hidden');
+                rewardsPage.style.display = 'block';
+                
+                // Bloquer le défilement du body principal
+                document.body.style.overflow = 'hidden';
+                
+                // Charger les récompenses et mettre à jour le solde
+                loadRewards();
+                updateRewardsPointsBalance();
+            }
+        }
+
+        function hideRewardsPage() {
+            console.log('🔙 Fermeture de la page des récompenses...');
+            const rewardsPage = document.getElementById('rewards-page');
+            if (rewardsPage) {
+                rewardsPage.classList.add('hidden');
+                rewardsPage.style.display = 'none';
+                
+                // Restaurer le défilement du body principal
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function updateRewardsPointsBalance() {
+            const pointsElement = document.getElementById('points-balance');
+            const rewardsPointsElement = document.getElementById('rewards-points-balance');
+            
+            if (pointsElement && rewardsPointsElement) {
+                const currentPoints = pointsElement.textContent || '0';
+                rewardsPointsElement.textContent = currentPoints;
+            }
+        }
+
+        // Charger les récompenses depuis Firestore
+        async function loadRewards() {
+            console.log('📦 Chargement des récompenses...');
+            const rewardsContainer = document.getElementById('rewards-container');
+            
+            if (!rewardsContainer) {
+                console.error('❌ Container des récompenses non trouvé');
+                return;
+            }
+
+            try {
+                // Afficher le chargement
+                rewardsContainer.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="loading-spinner w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+                        <p class="text-white">Chargement des récompenses...</p>
+                    </div>
+                `;
+
+                // Essayer de charger depuis Firestore
+                const rewardsSnapshot = await db.collection('rewards').orderBy('cout', 'asc').get();
+                
+                rewardsContainer.innerHTML = '';
+                
+                if (rewardsSnapshot.empty) {
+                    // Si pas de récompenses dans Firestore, créer des récompenses par défaut
+                    console.log('📝 Création des récompenses par défaut...');
+                    await createDefaultRewards();
+                    // Recharger après création
+                    loadRewards();
+                    return;
+                }
+
+                // Afficher les récompenses
+                rewardsSnapshot.forEach((doc) => {
+                    const reward = doc.data();
+                    const rewardElement = createRewardElement(doc.id, reward);
+                    rewardsContainer.appendChild(rewardElement);
+                });
+
+                console.log('✅ Récompenses chargées:', rewardsSnapshot.size);
+
+            } catch (error) {
+                console.error('❌ Erreur chargement récompenses:', error);
+                
+                // Afficher des récompenses par défaut en cas d'erreur
+                rewardsContainer.innerHTML = `
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                        <p class="text-white mb-4">⚠️ Impossible de charger les récompenses</p>
+                        <button onclick="loadRewards()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-all">
+                            🔄 Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Créer des récompenses par défaut
+        async function createDefaultRewards() {
+            const defaultRewards = [
+                {
+                    nom: "Bon de réduction -5%",
+                    description: "Réduction de 5% sur votre prochain achat",
+                    cout: 100,
+                    type: "reduction",
+                    valeur: "5%",
+                    emoji: "🎫"
+                },
+                {
+                    nom: "Spatule Professionnelle",
+                    description: "Spatule en inox de qualité professionnelle",
+                    cout: 200,
+                    type: "produit",
+                    valeur: "1 unité",
+                    emoji: "🍳"
+                },
+                {
+                    nom: "Bon de réduction -10%",
+                    description: "Réduction de 10% sur votre prochain achat",
+                    cout: 300,
+                    type: "reduction",
+                    valeur: "10%",
+                    emoji: "🎟️"
+                },
+                {
+                    nom: "Set de 3 Couteaux",
+                    description: "Set de couteaux de cuisine professionnels",
+                    cout: 500,
+                    type: "produit",
+                    valeur: "1 set",
+                    emoji: "🔪"
+                },
+                {
+                    nom: "Bon de réduction -15%",
+                    description: "Réduction de 15% sur votre prochain achat",
+                    cout: 600,
+                    type: "reduction",
+                    valeur: "15%",
+                    emoji: "🎊"
+                },
+                {
+                    nom: "Tablier Professionnel CE",
+                    description: "Tablier de cuisine Central Equipements",
+                    cout: 400,
+                    type: "produit",
+                    valeur: "1 unité",
+                    emoji: "👨‍🍳"
+                }
+            ];
+
+            try {
+                const batch = db.batch();
+                defaultRewards.forEach((reward, index) => {
+                    const rewardRef = db.collection('rewards').doc(`reward_${index + 1}`);
+                    batch.set(rewardRef, {
+                        ...reward,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        active: true
+                    });
+                });
+                
+                await batch.commit();
+                console.log('✅ Récompenses par défaut créées');
+                
+            } catch (error) {
+                console.error('❌ Erreur création récompenses par défaut:', error);
+            }
+        }
+
+        // Créer un élément de récompense
+        function createRewardElement(rewardId, reward) {
+            const div = document.createElement('div');
+            div.className = 'bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20';
+            
+            const userPoints = parseInt(document.getElementById('points-balance')?.textContent || '0');
+            const canAfford = userPoints >= reward.cout;
+            const buttonClass = canAfford 
+                ? 'bg-green-500 hover:bg-green-600 text-white' 
+                : 'bg-gray-400 text-gray-200 cursor-not-allowed';
+            
+            div.innerHTML = `
+                <div class="flex items-start space-x-4">
+                    <div class="text-4xl">${reward.emoji || '🎁'}</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-white mb-1">${reward.nom}</h3>
+                        <p class="text-white/80 text-sm mb-3">${reward.description}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="text-yellow-300 font-bold text-lg">${reward.cout} points</div>
+                            <button onclick="exchangeReward('${rewardId}', '${reward.nom}', ${reward.cout})" 
+                                    class="${buttonClass} px-4 py-2 rounded-lg font-semibold transition-all text-sm"
+                                    ${!canAfford ? 'disabled' : ''}>
+                                ${canAfford ? '✨ Échanger' : '❌ Pas assez de points'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        // Échanger une récompense
+        async function exchangeReward(rewardId, rewardName, cost) {
+            if (!currentUser) {
+                showMessage('❌ Vous devez être connecté pour échanger des récompenses', 'error');
+                return;
+            }
+
+            const userPoints = parseInt(document.getElementById('points-balance')?.textContent || '0');
+            
+            if (userPoints < cost) {
+                showMessage('❌ Vous n\'avez pas assez de points pour cette récompense', 'error');
+                return;
+            }
+
+            // Confirmation
+            const confirmed = confirm(`Voulez-vous échanger ${cost} points contre "${rewardName}" ?`);
+            if (!confirmed) return;
+
+            try {
+                showMessage('⏳ Échange en cours...', 'info');
+
+                // Générer un code unique de récompense
+                const rewardCode = generateRewardCode();
+                
+                // Transaction pour déduire les points et enregistrer l'échange
+                await db.runTransaction(async (transaction) => {
+                    const userRef = db.collection('users').doc(currentUser.uid);
+                    const userDoc = await transaction.get(userRef);
+                    
+                    if (!userDoc.exists) {
+                        throw new Error('Utilisateur non trouvé');
+                    }
+                    
+                    const userData = userDoc.data();
+                    const currentPoints = userData.points || 0;
+                    
+                    if (currentPoints < cost) {
+                        throw new Error('Points insuffisants');
+                    }
+                    
+                    // Déduire les points
+                    transaction.update(userRef, {
+                        points: currentPoints - cost
+                    });
+                    
+                    // Enregistrer l'échange
+                    const exchangeRef = db.collection('users').doc(currentUser.uid).collection('exchanges').doc();
+                    transaction.set(exchangeRef, {
+                        rewardId: rewardId,
+                        rewardName: rewardName,
+                        cost: cost,
+                        rewardCode: rewardCode,
+                        status: 'active',
+                        exchangedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        usedAt: null
+                    });
+                    
+                    // Ajouter à l'historique
+                    const historyRef = db.collection('users').doc(currentUser.uid).collection('history').doc();
+                    transaction.set(historyRef, {
+                        type: 'echange',
+                        description: `Échange: ${rewardName}`,
+                        points: -cost,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
+
+                showMessage('🎉 Échange réussi ! Votre code de récompense a été généré.', 'success');
+                
+                // Afficher le code de récompense
+                showRewardCode(rewardName, rewardCode);
+                
+                // Actualiser l'affichage des points
+                updateRewardsPointsBalance();
+                
+                // Recharger les récompenses pour mettre à jour les boutons
+                setTimeout(() => {
+                    loadRewards();
+                }, 1000);
+
+            } catch (error) {
+                console.error('❌ Erreur échange récompense:', error);
+                showMessage('❌ Erreur lors de l\'échange. Veuillez réessayer.', 'error');
+            }
+        }
+
+        // Générer un code de récompense unique
+        function generateRewardCode() {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+            return `CE-${timestamp}-${random}`;
+        }
+
+        // Afficher le code de récompense
+        function showRewardCode(rewardName, rewardCode) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center animate-slide-up">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Échange Réussi !</h2>
+                    <p class="text-gray-600 mb-6">Votre récompense "${rewardName}" est prête !</p>
+                    
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
+                        <p class="text-sm opacity-90 mb-2">Votre Code de Récompense :</p>
+                        <div class="text-2xl font-black tracking-wider">${rewardCode}</div>
+                        <p class="text-xs opacity-80 mt-2">Présentez ce code en magasin</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="copyRewardCode('${rewardCode}')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            📋 Copier le Code
+                        </button>
+                        <button onclick="closeRewardModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-xl transition-all">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Fermer en cliquant à l'extérieur
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeRewardModal();
+                }
+            });
+        }
+
+        // Copier le code de récompense
+        function copyRewardCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                showMessage('📋 Code de récompense copié !', 'success');
+                closeRewardModal();
+            });
+        }
+
+        // Fermer la modal de récompense
+        function closeRewardModal() {
+            const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
         // Déconnexion - Version optimisée
         function logout() {
             console.log('🚪 Déconnexion en cours...');
@@ -2432,5 +2816,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97751e8880220171',t:'MTc1NjU2NTYyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'977528b8c00f7f98',t:'MTc1NjU2NjA0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
